@@ -7,43 +7,16 @@ import { Badge } from '@/app/components/ui/badge';
 import avatarIcon from '@/images/dogegg_icon.png';
 import Cocos2dxIcon from '@/images/Cocos2dx_Icon.png';
 import CPlusPlusIcon from '@/images/CPlusPlus_Icon.png';
-import CrossHeader from '@/images/Cross_the_C_Header.png';
 import CSharpIcon from '@/images/CSharp_Icon.png';
 import CysharpIcon from '@/images/Cysharp_Icon.png';
-import DeeperHeader from '@/images/Deeper_and_Deeper_Header.png';
-import ElegoHeader from '@/images/ELEGO_Header.png';
-import NiHeader from '@/images/Ni_Header.png';
-import OrbitHeader from '@/images/Orbit_Header.png';
 import PythonIcon from '@/images/Python_Icon.png';
-import QueenBeeHeader from '@/images/QueenBee_Header.png';
 import UnityIcon from '@/images/Unity_Icon.png';
-import VariVaRevengeHeader from '@/images/VariVaRevenge_Header.png';
 import VContainerIcon from '@/images/VContainer_Icon.png';
+import { PROJECTS } from '@/data/projects';
 import type { ImageMetadata } from 'astro';
 import type { OgpData } from '@/lib/ogp';
 
 type ThemeKey = 'spring' | 'summer' | 'autumn' | 'winter';
-
-type ProjectLink = {
-  label: string;
-  url: string;
-};
-
-type ProjectGenre = 'ゲーム' | '謎解き';
-
-type ProjectItem = {
-  title: string;
-  period: string;
-  tech: string[];
-  member: string;
-  outline: string;
-  appeal: string;
-  genre: ProjectGenre;
-  playLink?: ProjectLink;
-  relatedLinks?: ProjectLink[];
-  headerImage?: ImageMetadata;
-  awards?: string[];
-};
 
 type OgpMap = Record<string, OgpData>;
 
@@ -260,26 +233,6 @@ const LABELS = {
   ticket: 'チケットサイト',
 } as const;
 
-const TECH = {
-  unity: 'Unity',
-  unityUrp: 'URP',
-  git: 'Git',
-  vcontainer: 'VContainer',
-  unitask: 'UniTask',
-  unirx: 'UniRx',
-  r3: 'R3',
-  feel: 'FEEL',
-  udon: 'Udon#',
-  vrchat: 'VRChat',
-  pun2: 'PUN2',
-  reEngine: 'RE ENGINE',
-} as const;
-
-const GENRE = {
-  game: 'ゲーム',
-  riddle: '謎解き',
-} as const;
-
 const PROFILE = {
   name: 'どぐえぐ',
   title: 'どぐえぐ',
@@ -302,8 +255,8 @@ const PROFILE = {
 
 const NAV_SECTIONS = [
   { id: 'top', label: PROFILE.sections.abaoutMeTitle },
-  { id: 'works', label: PROFILE.sections.worksTitle },
   { id: 'skills', label: PROFILE.sections.skillsTitle },
+  { id: 'works', label: PROFILE.sections.worksTitle },
   { id: 'career', label: PROFILE.sections.careerTitle },
   { id: 'hobby', label: PROFILE.sections.hobbyTitle },
 ] as const;
@@ -531,7 +484,8 @@ export default function App({ ogpData }: { ogpData: OgpMap }) {
     );
   };
 
-  const projects: { year: string; items: ProjectItem[] }[] = [
+/*
+export const PROJECTS: { year: string; items: ProjectItem[] }[] = [
     {
       year: '2025',
       items: [
@@ -710,8 +664,10 @@ export default function App({ ogpData }: { ogpData: OgpMap }) {
         },
       ],
     },
-  ];
+];
+*/
 
+  const projects = PROJECTS;
   const careers = CAREERS;
   const hobbies = HOBBIES;
   const skills = SKILLS;

@@ -1,17 +1,20 @@
 ---
 import App, { HOBBIES } from '../app/App';
 import '@/styles/index.css';
-import { projects } from '@/data/portfolio';
+import { PROJECTS } from '@/data/projects';
 import { fetchOgp, type OgpData } from '@/lib/ogp';
 
 const urlSet = new Set<string>();
 
-projects.forEach((group) => {
-  group.items.forEach((item) => {
+PROJECTS.forEach((group: (typeof PROJECTS)[number]) => {
+  group.items.forEach((item: (typeof PROJECTS)[number]['items'][number]) => {
     if (item.playLink) {
       urlSet.add(item.playLink.url);
     }
-    item.relatedLinks?.forEach((link) => urlSet.add(link.url));
+    item.relatedLinks?.forEach(
+      (link: NonNullable<(typeof PROJECTS)[number]['items'][number]['relatedLinks']>[number]) =>
+        urlSet.add(link.url),
+    );
   });
 });
 
