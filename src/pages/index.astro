@@ -1,6 +1,27 @@
 ---
-import App from '@/app/App.tsx';
+import App from '../app/App';
 import '@/styles/index.css';
+import { projects } from '@/data/portfolio';
+import { fetchOgp, type OgpData } from '@/lib/ogp';
+
+const urlSet = new Set<string>();
+
+projects.forEach((group) => {
+  group.items.forEach((item) => {
+    if (item.playLink) {
+      urlSet.add(item.playLink.url);
+    }
+    item.relatedLinks?.forEach((link) => urlSet.add(link.url));
+  });
+});
+
+const ogpEntries = await Promise.all(
+  Array.from(urlSet).map(async (url) => [url, await fetchOgp(url)] as const),
+);
+
+const ogpData = Object.fromEntries(
+  ogpEntries.filter(([, data]) => data !== null),
+) as Record<string, OgpData>;
 ---
 
 <html lang="ja">
@@ -12,6 +33,6 @@ import '@/styles/index.css';
 		<title>Personal Portfolio Website</title>
 	</head>
 	<body>
-		<App client:load />
+		<App client:load ogpData={ogpData} />
 	</body>
 </html>
