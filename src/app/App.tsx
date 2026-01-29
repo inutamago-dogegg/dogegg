@@ -5,13 +5,20 @@ import { Button } from '@/app/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/app/components/ui/card';
 import { Badge } from '@/app/components/ui/badge';
 import avatarIcon from '@/images/dogegg_icon.png';
+import Cocos2dxIcon from '@/images/Cocos2dx_Icon.png';
+import CPlusPlusIcon from '@/images/CPlusPlus_Icon.png';
 import CrossHeader from '@/images/Cross_the_C_Header.png';
+import CSharpIcon from '@/images/CSharp_Icon.png';
+import CysharpIcon from '@/images/Cysharp_Icon.png';
 import DeeperHeader from '@/images/Deeper_and_Deeper_Header.png';
 import ElegoHeader from '@/images/ELEGO_Header.png';
 import NiHeader from '@/images/Ni_Header.png';
 import OrbitHeader from '@/images/Orbit_Header.png';
+import PythonIcon from '@/images/Python_Icon.png';
 import QueenBeeHeader from '@/images/QueenBee_Header.png';
+import UnityIcon from '@/images/Unity_Icon.png';
 import VariVaRevengeHeader from '@/images/VariVaRevenge_Header.png';
+import VContainerIcon from '@/images/VContainer_Icon.png';
 import type { ImageMetadata } from 'astro';
 import type { OgpData } from '@/lib/ogp';
 
@@ -28,7 +35,9 @@ type ProjectItem = {
   title: string;
   period: string;
   tech: string[];
-  role: string;
+  member: string;
+  outline: string;
+  appeal: string;
   genre: ProjectGenre;
   playLink?: ProjectLink;
   relatedLinks?: ProjectLink[];
@@ -55,6 +64,13 @@ type HobbyItem = {
   details: string[];
   favoritesLabel?: string;
   favorites?: HobbyLink[];
+};
+
+type SkillItem = {
+  name: string;
+  icon: ImageMetadata;
+  level: number;
+  description: string;
 };
 
 const themeConfig = {
@@ -267,24 +283,27 @@ const GENRE = {
 const PROFILE = {
   name: 'どぐえぐ',
   title: 'どぐえぐ',
-  tagline: '持っている力を使って面白いゲームを作り出すのが好きです',
+  tagline: 'ゲームを作るのが好きです',
   affiliation: '東京科学大学 情報理工学院 数理・計算科学系 学士3年',
   clubs: '東京科学大学デジタル創作同好会traP / C-lock-row',
-  skills: 'Unity, C#を使ってゲーム制作をしています',
   sections: {
     abaoutMeTitle: 'About Me',
     worksTitle: 'Products',
     worksLead: 'これまでに制作したもの',
+    skillsTitle: 'Skills',
     careerTitle: 'Career',
+    careerLead: '経歴など',
     hobbyTitle: 'Hobbies',
+    hobbyLead: '趣味・好きなこと',
   },
-  footer: '© 2026 どぐえぐ ホームページ. All rights reserved.',
+  footer: '© 2026 @dogegg. All rights reserved.',
   iconAlt: 'どぐえぐのアイコン',
 } as const;
 
 const NAV_SECTIONS = [
   { id: 'top', label: PROFILE.sections.abaoutMeTitle },
   { id: 'works', label: PROFILE.sections.worksTitle },
+  { id: 'skills', label: PROFILE.sections.skillsTitle },
   { id: 'career', label: PROFILE.sections.careerTitle },
   { id: 'hobby', label: PROFILE.sections.hobbyTitle },
 ] as const;
@@ -353,6 +372,57 @@ export const HOBBIES: HobbyItem[] = [
     name: 'ゲーム(つくる方)',
     icon: '🛠️',
     details: ['Unity, C#を使います'],
+  },
+];
+
+export const SKILLS: SkillItem[] = [
+  {
+    name: 'Unity',
+    icon: UnityIcon,
+    level: 3,
+    description: '普段のゲーム制作はUnityを使っています。',
+  },
+  {
+    name: 'UniTask',
+    icon: CysharpIcon,
+    level: 3,
+    description: '普段から非同期処理やゲームフロー作成に使用しています。',
+  },
+  {
+    name: 'R3',
+    icon: CysharpIcon,
+    level: 3,
+    description: 'View部分とModel部分の同期によく仕様しています。',
+  },
+  {
+    name: 'C#',
+    icon: CSharpIcon,
+    level: 3,
+    description: 'Unityを使う時に書いています。',
+  },
+  {
+    name: 'VContainer',
+    icon: VContainerIcon,
+    level: 2,
+    description: 'DIコンテナとして普段から使っています。',
+  },
+  {
+    name: 'C++',
+    icon: CPlusPlusIcon,
+    level: 2,
+    description: '競プロで普段使っています。インターンでCocos-2dx使用時に書いたことがあります。',
+  },
+  {
+    name: 'Python',
+    icon: PythonIcon,
+    level: 2,
+    description: '競プロで使っていました。軽いアプリ作成で使います。',
+  },
+  {
+    name: 'Cocos-2dx',
+    icon: Cocos2dxIcon,
+    level: 1,
+    description: 'インターンで1ヶ月ほど使用しました。',
   },
 ];
 
@@ -469,18 +539,22 @@ export default function App({ ogpData }: { ogpData: OgpMap }) {
           title: 'ELEGO',
           period: '2025年4月～9月 (6か月)',
           tech: [TECH.reEngine],
-          role: 'CAPCOM GAMES COMPETITIONというイベントで制作しました。ディレクター兼マネージャーとして経験者のメンバー19人をまとめ、企画～完成までを担当しました。未知のエンジン・6か月で完全締め切り・3Dアクション制作未経験という状況ながら、なんとか完成まで持っていきました。',
+          member: 'プランナー5人, プログラマー5人, 3Dデザイナー4人, 2Dデザイナー2人, シナリオ1人, サウンド2人',
+          outline: '敵を操って脱出を目指すステルスアクションゲーム',
+          appeal: 'CAPCOM GAMES COMPETITIONというイベントで制作しました。ディレクター兼マネージャーとして経験者のメンバー19人をまとめ、企画～完成までを担当しました。未知のエンジン・6か月で完全締め切り・3Dアクション制作未経験という状況ながら、なんとか完成まで持っていきました。',
           genre: GENRE.game,
           playLink: { label: LABELS.play, url: 'https://gameparade.creators-guild.com/works/3532' },
           relatedLinks: [{ label: LABELS.related, url: 'https://www.capcom-games.com/cgc/2025/ja-jp/' }],
           headerImage: ElegoHeader,
-          awards: ['ゲームクリエイター甲子園2025セミファイナリスト'],
+          awards: ['ゲームクエイター甲子園2025セミファイナリスト'],
         },
         {
           title: '2',
           period: '',
           tech: [],
-          role: '全体構成・当日スタッフに関わりました。',
+          member: '',
+          outline: '',
+          appeal: '全体構成・当日スタッフに関わりました。',
           genre: GENRE.riddle,
           playLink: { label: LABELS.ticket, url: 'https://escape.id/Clockrow-org/e-url-wo-atenaidene22222/' },
           headerImage: NiHeader,
@@ -489,7 +563,9 @@ export default function App({ ogpData }: { ogpData: OgpMap }) {
           title: 'Deeper and Deeper',
           period: '2025年12月 (準備1週間, 制作1週間)',
           tech: [TECH.unity, TECH.git, TECH.vcontainer, TECH.unitask],
-          role: 'リードプログラマとしてほぼ全てのプログラムを書きました。',
+          member: 'プランナー1人, プログラマー3人, 2Dデザイナー3人, サウンド1人',
+          outline: 'ダンジョンの深く深くに進みお宝を手に入れて帰還するゲーム',
+          appeal: 'リードプログラマとしてほぼ全てのプログラムを書きました。',
           genre: GENRE.game,
           playLink: { label: LABELS.play, url: 'https://unityroom.com/games/deeper_and_deeper?ref=trap.jp' },
           relatedLinks: [{ label: LABELS.related, url: 'https://trap.jp/post/2798/' }],
@@ -502,9 +578,11 @@ export default function App({ ogpData }: { ogpData: OgpMap }) {
       items: [
         {
           title: 'Cross the C',
-          period: '2024年7月～現在 (約1年半)',
+          period: '2024年7月～現在',
           tech: [TECH.unityUrp, TECH.git, TECH.r3, TECH.unitask, TECH.vcontainer],
-          role: 'リーダーとして参加しています。',
+          member: 'プランナー4人, プログラマー3人, 3Dデザイナー3人, 2Dデザイナー1人, パズル制作7人',
+          outline: '船を操作してゴールを目指す氷床パズルゲーム',
+          appeal: 'リーダー・リードプログラマとして参加しています',
           genre: GENRE.game,
           playLink: { label: LABELS.play, url: 'https://gameparade.creators-guild.com/works/2763' },
           relatedLinks: [{ label: '関連リンク', url: 'https://store.steampowered.com/app/3382690/Cross_the_C/' }],
@@ -515,7 +593,9 @@ export default function App({ ogpData }: { ogpData: OgpMap }) {
           title: 'Queen Bee',
           period: '2025年1月 (準備1週間, 制作1週間)',
           tech: [TECH.unity, TECH.git, TECH.unitask],
-          role: 'リーダー・リードプログラマとして参加しました。',
+          member: 'プランナー1人, プログラマー3人, 2Dデザイナー2人, サウンド1人',
+          outline: '主人公・野心萌(やしん もえ)が学園トップを目指す学園シミュレーションカードゲーム',
+          appeal: 'リーダー・リードプログラマとして参加しました。',
           genre: GENRE.game,
           playLink: { label: LABELS.play, url: 'https://unityroom.com/games/queenbee' },
           relatedLinks: [{ label: LABELS.related, url: 'https://trap.jp/post/2483/' }],
@@ -530,7 +610,9 @@ export default function App({ ogpData }: { ogpData: OgpMap }) {
           title: '「」か？',
           period: '2023年6月 (準備1週間, 制作2日)',
           tech: [TECH.unity, TECH.git],
-          role: 'プログラマ兼チームリーダーとして、新入生への講習やサポート・レビューなどを行いながら、2日で完成させられるゲーム性の考案やプログラム制作を行いました。',
+          member: 'プログラマー3人, 2Dデザイナー2人',
+          outline: 'ひらがなを吸収して変身して戦う2D弾幕アクションゲーム',
+          appeal: 'プログラマ兼チームリーダーとして、新入生への講習やサポート・レビューなどを行いながら、2日で完成させられるゲーム性の考案やプログラム制作を行いました。',
           genre: GENRE.game,
           playLink: { label: LABELS.play, url: 'https://trap.jp/post/1911/' },
           relatedLinks: [{ label: LABELS.related, url: 'https://trap.jp/post/1911/' }],
@@ -539,15 +621,19 @@ export default function App({ ogpData }: { ogpData: OgpMap }) {
           title: 'Memory Transer',
           period: '2023年5月～7月 (約2か月)',
           tech: [TECH.unity, TECH.git, TECH.unirx, TECH.unitask],
-          role: 'リードエンジニアとして立候補し、他メンバーへのGitやコードエディター(Rider)の講習を行い、設計からタスクの割り振りまで行いました。途中からメンバーの脱落があり、急遽集会を開くなどして完成まで持っていきました。',
+          member: 'プランナー4人, プログラマー4人, 2Dデザイナー1人',
+          outline: '記憶を整理するアクションゲーム',
+          appeal: 'リードエンジニアとして立候補し、他メンバーへのGitやコードエディター(Rider)の講習を行い、設計からタスクの割り振りまで行いました。途中からメンバーの脱落があり、急遽集会を開くなどして完成まで持っていきました。',
           genre: GENRE.game,
           playLink: { label: LABELS.play, url: 'https://bitsummit-gamejam.itch.io/memorytranser' },
         },
         {
           title: 'バリバリベンジ',
-          period: '2023年7月～現在 (約2年半)',
+          period: '2023年7月～現在',
           tech: [TECH.unity, TECH.git, TECH.r3, TECH.unitask, TECH.feel],
-          role: '企画者に誘われ、リードプログラマとして技術的な面でメンバーを引っ張りました。プログラマでない人も敵の制作ができるようにエディター拡張に特に力を入れました。中盤から元リーダーが忙しくなり、リーダーとしても活動しています。',
+          member: 'プランナー3人, プログラマー5人, 2Dデザイナー2人, サウンド2人, 弾幕制作2人',
+          outline: '敵の出してくる弾をかいくぐり敵に直接アタックする弾幕ゲー×2Dアクションの新感覚ゲーム！',
+          appeal: '企画者に誘われ、リードプログラマとして技術的な面でメンバーを引っ張りました。プログラマでない人も敵の制作ができるようにエディター拡張に特に力を入れました。中盤から元リーダーが忙しくなり、リーダーとしても活動しています。',
           genre: GENRE.game,
           playLink: { label: LABELS.play, url: 'https://gameparade.creators-guild.com/works/1559' },
           relatedLinks : [{ label: LABELS.related, url: 'https://trap.jp/post/1971/' }],
@@ -558,7 +644,9 @@ export default function App({ ogpData }: { ogpData: OgpMap }) {
           title: 'Orbit',
           period: '2023年12月 (準備1週間, 制作1週間)',
           tech: [TECH.unityUrp, TECH.git, TECH.unirx, TECH.unitask],
-          role: 'メインプログラマとしてコードやGitの規約を定め、協力して設計とゲームの実装を行いました。英語版対応をしてSteamで配信しています。',
+          member: 'プランナー1人, プログラマー3人, 2Dデザイナー3人, サウンド1人',
+          outline: '星を回りながらその秘密を探るリソース管理アドベンチャー',
+          appeal: 'メインプログラマとしてコードやGitの規約を定め、協力して設計とゲームの実装を行いました。英語版対応をしてSteamで配信しています。',
           genre: GENRE.game,
           playLink: { label: LABELS.play, url: 'https://store.steampowered.com/app/2990710/Orbit/?ref=trap.jp' },
           relatedLinks: [{ label: LABELS.related, url: 'https://trap.jp/post/2106/' }],
@@ -574,7 +662,9 @@ export default function App({ ogpData }: { ogpData: OgpMap }) {
           title: 'つかまらないで！ゆうちゃん',
           period: '2022年6月 (準備1週間, 制作1週間)',
           tech: [TECH.unity, TECH.git],
-          role: '初心者枠として参加し、先輩の助けを借りながらプログラムを軽く書き、ゲームの仕様考案とステージ制作を主に行いました。',
+          member: 'プログラマ4人, 2Dデザイナー1人',
+          outline: '目玉に見つからないように主人公のゆうちゃんを操作してゴールを目指すアクションゲーム',
+          appeal: '初心者枠として参加し、先輩の助けを借りながらプログラムを軽く書き、ゲームの仕様考案とステージ制作を主に行いました。',
           genre: GENRE.game,
           playLink: { label: LABELS.play, url: 'https://trap.jp/post/1607/' },
           relatedLinks: [{ label: LABELS.related, url: 'https://trap.jp/post/1607/' }],
@@ -584,7 +674,9 @@ export default function App({ ogpData }: { ogpData: OgpMap }) {
           title: 'Logical Room',
           period: '2022年7月～2023年11月 (1年5か月)',
           tech: [TECH.unity, TECH.git],
-          role: 'プログラマとして参加し、プレイヤー挙動やゲームシステムなどのバグ修正・新規実装・リファクター・改良などを行いました。',
+          member: 'プログラマー8人, 2Dデザイナー1人',
+          outline: '単純なルールが複雑に絡み合う2Dパズルアクションゲーム',
+          appeal: 'プログラマとして参加し、プレイヤー挙動やゲームシステムなどのバグ修正・新規実装・リファクター・改良などを行いました。',
           genre: GENRE.game,
           playLink: { label: LABELS.play, url: 'https://trap.jp/post/2037/' },
           relatedLinks: [{ label: LABELS.related, url: 'https://trap.jp/post/2037/' }]
@@ -593,7 +685,9 @@ export default function App({ ogpData }: { ogpData: OgpMap }) {
           title: 'School Breakin` Tag',
           period: '2022年11月～2023年11月 (1年)',
           tech: [TECH.unity, TECH.git, TECH.udon, TECH.vrchat],
-          role: 'プロジェクト経験のあるプログラマとして初めは参加しました。しかし途中からリーダーがキャパオーバーしてしまい、サブリーダーとして制作を進行しました。他メンバーのGit周りのサポートやタスクのマネジメントなどを行いました。',
+          member: 'プログラマー5人, 3Dデザイナー3人',
+          outline: '学校を舞台に地形を破壊できる爆弾を使って逃げ回るVRおにごっこ',
+          appeal: 'プロジェクト経験のあるプログラマとして初めは参加しました。しかし途中からリーダーがキャパオーバーしてしまい、サブリーダーとして制作を進行しました。他メンバーのGit周りのサポートやタスクのマネジメントなどを行いました。',
           genre: GENRE.game,
           playLink: {
             label: LABELS.play,
@@ -606,7 +700,9 @@ export default function App({ ogpData }: { ogpData: OgpMap }) {
           title: 'Root Shooter',
           period: '2022年12月 (準備1週間, 制作1週間)',
           tech: [TECH.unity, TECH.git, TECH.pun2],
-          role: 'プロジェクト経験のあるプログラマとしてゲームの実装を行いました。',
+          member: 'プログラマー3人, 2Dデザイナー1人, サウンド1人',
+          outline: '野菜を育てて撃って戦う2D対戦アクションゲームです。',
+          appeal: 'プロジェクト経験のあるプログラマとしてゲームの実装を行いました。',
           genre: GENRE.game,
           playLink: { label: LABELS.play, url: 'https://trap.jp/post/1746/' },
           relatedLinks: [{ label: LABELS.related, url: 'https://trap.jp/post/1746/' }],
@@ -618,6 +714,7 @@ export default function App({ ogpData }: { ogpData: OgpMap }) {
 
   const careers = CAREERS;
   const hobbies = HOBBIES;
+  const skills = SKILLS;
 
   return (
     <div className="min-h-screen relative">
@@ -663,6 +760,26 @@ export default function App({ ogpData }: { ogpData: OgpMap }) {
                 </motion.div>
 
                 <div className="flex items-center gap-3">
+                  <Button
+                    size="icon"
+                    variant="ghost"
+                    className={isDark ? 'hover:bg-slate-800' : 'hover:bg-gray-100'}
+                    onClick={() => window.open('https://x.com/dogegg314', '_blank')}
+                    aria-label={LABELS.twitter}
+                  >
+                    <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+                    </svg>
+                  </Button>
+                  <Button
+                    size="icon"
+                    variant="ghost"
+                    className={isDark ? 'hover:bg-slate-800' : 'hover:bg-gray-100'}
+                    onClick={() => window.open('https://github.com/inutamago-dogegg', '_blank')}
+                    aria-label={LABELS.github}
+                  >
+                    <Github className="w-4 h-4" />
+                  </Button>
                   <Button
                     onClick={() => setIsDark((prev) => !prev)}
                     variant="outline"
@@ -768,18 +885,53 @@ export default function App({ ogpData }: { ogpData: OgpMap }) {
                   <br />
                   {PROFILE.clubs}
                 </p>
-
-                <div className="mb-8" />
-
-                <Card className={`max-w-2xl mx-auto border-2 ${config.cardBorderStatic} ${config.surfaceBg} backdrop-blur`}>
-                  <CardHeader>
-                    <CardTitle className={`text-2xl ${config.textPrimary}`}>できること</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <p className={`text-lg ${config.textSecondary}`}>{PROFILE.skills}</p>
-                  </CardContent>
-                </Card>
               </motion.div>
+            </div>
+          </section>
+
+          <section id="skills" className="py-20 px-4 relative">
+            <div className="container mx-auto max-w-4xl">
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.35 }}
+                className="text-center mb-16"
+              >
+                <h2 className={`text-5xl mb-4 ${config.textPrimary}`}>{PROFILE.sections.skillsTitle}</h2>
+              </motion.div>
+
+              <div className="grid gap-6 sm:grid-cols-2">
+                {skills.map((skill, index) => (
+                  <motion.div
+                    key={skill.name}
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.35, delay: index * 0.06 }}
+                  >
+                    <Card className={`border-2 ${config.cardBorderStatic} ${config.surfaceBg} backdrop-blur transition-all duration-300 h-full`}>
+                      <CardHeader>
+                        <div className="flex items-center justify-between gap-4">
+                          <div className="flex items-center gap-2">
+                            <img
+                              src={skill.icon.src}
+                              alt={`${skill.name} のアイコン`}
+                              className="h-8 w-8 rounded-md object-contain"
+                              loading="lazy"
+                            />
+                            <CardTitle className={`text-xl ${config.textPrimary}`}>{skill.name}</CardTitle>
+                          </div>
+                          <span className={`text-sm font-semibold ${config.textSecondary}`}>{'★'.repeat(skill.level)}</span>
+                        </div>
+                      </CardHeader>
+                      <CardContent>
+                        <p className={`text-sm ${config.textSecondary}`}>{skill.description}</p>
+                      </CardContent>
+                    </Card>
+                  </motion.div>
+                ))}
+              </div>
             </div>
           </section>
 
@@ -860,7 +1012,26 @@ export default function App({ ogpData }: { ogpData: OgpMap }) {
                                 />
                               </a>
                             )}
-                            <p className={`${config.textSecondary} mb-4`}>{project.role}</p>
+                            <div className="space-y-3 mb-4">
+                              {project.member && (
+                                <div>
+                                  <p className={`text-xs font-semibold ${config.textMuted}`}>メンバー</p>
+                                  <p className={`text-sm ${config.textSecondary}`}>{project.member}</p>
+                                </div>
+                              )}
+                              {project.outline && (
+                                <div>
+                                  <p className={`text-xs font-semibold ${config.textMuted}`}>概要</p>
+                                  <p className={`text-sm ${config.textSecondary}`}>{project.outline}</p>
+                                </div>
+                              )}
+                              {project.appeal && (
+                                <div>
+                                  <p className={`text-xs font-semibold ${config.textMuted}`}>やったこと</p>
+                                  <p className={`text-sm ${config.textSecondary}`}>{project.appeal}</p>
+                                </div>
+                              )}
+                            </div>
 
                             <div className="flex flex-wrap gap-2 mb-4">
                               {project.tech.map((tech, techIndex) => (
@@ -930,6 +1101,7 @@ export default function App({ ogpData }: { ogpData: OgpMap }) {
                 className="text-center mb-16"
               >
                 <h2 className={`text-5xl mb-4 ${config.textPrimary}`}>{PROFILE.sections.careerTitle}</h2>
+                <p className={`text-xl ${config.textSecondary}`}>{PROFILE.sections.careerLead}</p>
               </motion.div>
 
               <div className="space-y-4">
@@ -954,7 +1126,7 @@ export default function App({ ogpData }: { ogpData: OgpMap }) {
                         </div>
                       </CardHeader>
                       <CardContent>
-                        <ul className={`space-y-2 text-sm ${config.textMuted}`}>
+                        <ul className={`space-y-2 text-sm ${config.textSecondary}`}>
                           {career.details.map((detail, detailIndex) => (
                             <li key={detailIndex}>{detail}</li>
                           ))}
@@ -977,6 +1149,7 @@ export default function App({ ogpData }: { ogpData: OgpMap }) {
                 className="text-center mb-16"
               >
                 <h2 className={`text-5xl mb-4 ${config.textPrimary}`}>{PROFILE.sections.hobbyTitle}</h2>
+                <p className={`text-xl ${config.textSecondary}`}>{PROFILE.sections.hobbyLead}</p>
               </motion.div>
 
               <div className="grid gap-6">
@@ -996,7 +1169,7 @@ export default function App({ ogpData }: { ogpData: OgpMap }) {
                         </div>
                       </CardHeader>
                       <CardContent>
-                        <ul className={`space-y-2 text-sm ${config.textMuted}`}>
+                        <ul className={`space-y-2 text-sm ${config.textSecondary}`}>
                           {hobby.details.map((detail, detailIndex) => (
                             <li key={detailIndex}>{detail}</li>
                           ))}
@@ -1040,6 +1213,9 @@ export default function App({ ogpData }: { ogpData: OgpMap }) {
                   size="sm"
                   onClick={() => window.open('https://x.com/dogegg314', '_blank')}
                 >
+                  <svg className="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+                  </svg>
                   {LABELS.twitter}
                 </Button>
                 <Button
@@ -1047,6 +1223,7 @@ export default function App({ ogpData }: { ogpData: OgpMap }) {
                   size="sm"
                   onClick={() => window.open('https://github.com/inutamago-dogegg', '_blank')}
                 >
+                  <Github className="w-4 h-4 mr-2" />
                   {LABELS.github}
                 </Button>
               </div>
