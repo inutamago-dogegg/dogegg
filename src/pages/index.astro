@@ -1,5 +1,5 @@
 ---
-import App from '../app/App';
+import App, { HOBBIES } from '../app/App';
 import '@/styles/index.css';
 import { projects } from '@/data/portfolio';
 import { fetchOgp, type OgpData } from '@/lib/ogp';
@@ -15,13 +15,37 @@ projects.forEach((group) => {
   });
 });
 
+HOBBIES.forEach((hobby) => {
+  hobby.favorites?.forEach((favorite) => urlSet.add(favorite.url));
+});
+
 const ogpEntries = await Promise.all(
-  Array.from(urlSet).map(async (url) => [url, await fetchOgp(url)] as const),
+  Array.from(urlSet).map(async (url) => {
+    const data = await fetchOgp(url);
+    if (data) {
+      return [url, data] as const;
+    }
+
+    let host = url;
+    try {
+      host = new URL(url).hostname;
+    } catch {
+      host = url;
+    }
+
+    return [
+      url,
+      {
+        url,
+        title: url,
+        siteName: host,
+        description: host,
+      },
+    ] as const;
+  }),
 );
 
-const ogpData = Object.fromEntries(
-  ogpEntries.filter(([, data]) => data !== null),
-) as Record<string, OgpData>;
+const ogpData = Object.fromEntries(ogpEntries) as Record<string, OgpData>;
 ---
 
 <html lang="ja">
@@ -30,7 +54,12 @@ const ogpData = Object.fromEntries(
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 		<meta name="viewport" content="width=device-width" />
 		<meta name="generator" content={Astro.generator} />
-		<title>Personal Portfolio Website</title>
+		<meta property="og:title" content="どぐえぐ" />
+		<meta property="og:description" content="どぐえぐのホームページです。" />
+		<meta property="og:image" content="/images/dogegg_icon.png" />
+		<meta property="og:url" content="https://dogegg.github.io/dogegg" />
+		<meta property="og:type" content="website" />
+		<title>どぐえぐ</title>
 	</head>
 	<body>
 		<App client:load ogpData={ogpData} />
