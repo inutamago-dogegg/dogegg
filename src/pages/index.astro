@@ -55,9 +55,8 @@ const baseUrl = import.meta.env.BASE_URL.endsWith('/')
   ? import.meta.env.BASE_URL
   : `${import.meta.env.BASE_URL}/`;
 
-const ogImageUrl = Astro.site
-  ? new URL(dogeggIcon.src, Astro.site).toString()
-  : `${baseUrl}${dogeggIcon.src.replace(/^\/+/, '')}`;
+const siteUrl = Astro.site?.toString() ?? 'https://inutamago-dogegg.github.io/dogegg/';
+const ogImageUrl = new URL(dogeggIcon.src, siteUrl).toString();
 ---
 
 <html lang="ja">
@@ -72,7 +71,7 @@ const ogImageUrl = Astro.site
 		<meta property="og:image:width" content={String(dogeggIcon.width)} />
 		<meta property="og:image:height" content={String(dogeggIcon.height)} />
 		<meta property="og:image:alt" content="どぐえぐのアイコン" />
-		<meta property="og:url" content="https://dogegg.github.io/dogegg" />
+		<meta property="og:url" content="https://inutamago-dogegg.github.io/dogegg/" />
 		<meta property="og:type" content="website" />
 		<title>どぐえぐ</title>
 	</head>
