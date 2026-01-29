@@ -161,7 +161,7 @@ export const PROJECTS: ProjectYearGroup[] = [
         tech: [TECH.unity, TECH.git, TECH.r3, TECH.unitask, TECH.feel],
         member: 'プランナー3人, プログラマー5人, 2Dデザイナー2人, サウンド2人, 弾幕制作2人',
         outline: '敵の出してくる弾をかいくぐり敵に直接アタックする弾幕ゲー×2Dアクションの新感覚ゲーム！',
-        appeal: '企画者に誘われ、リードプログラマとして技術的な面でメンバーを引っ張りました。プログラマでない人も敵の制作ができるようにエディター拡張に特に力を入れました。中盤から元リーダーが忙しくなり、リーダーとしても活動しています。',
+        appeal: '企画者に誘われ、リードプログラマとして技術的な面でメンバーを引っ張りました。プログラマでない人も敵の制作ができるようにエディター拡張に特に力を入れました。',
         genre: GENRE.game,
         playLink: { label: LABELS.play, url: 'https://gameparade.creators-guild.com/works/1559' },
         relatedLinks: [{ label: LABELS.related, url: 'https://trap.jp/post/1971/' }],
