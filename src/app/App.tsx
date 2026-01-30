@@ -262,7 +262,7 @@ export default function App({ ogpData }: { ogpData: OgpMap }) {
     data?: OgpData;
     emphasis?: boolean;
   }) => {
-    const baseClass = `block rounded-xl border ${config.surfaceBg} px-4 py-3 text-sm ${config.textSecondary} hover:shadow-md transition-transform hover:-translate-y-0.5`;
+    const baseClass = `block rounded-xl border ${config.surfaceBg} px-4 py-3 text-sm ${config.textSecondary} hover:shadow-md transition-transform hover:-translate-y-0.5 break-words`;
     const highlightClass = emphasis ? 'border-primary/60 bg-primary/5 shadow-sm' : config.surfaceBorder;
     const labelClass = emphasis ? 'text-primary font-semibold' : config.textMuted;
     const hoverTitle = isDark ? 'group-hover:text-slate-200' : 'group-hover:text-gray-700';
@@ -569,7 +569,7 @@ export default function App({ ogpData }: { ogpData: OgpMap }) {
                         viewport={{ once: true }}
                         transition={{ duration: 0.35, delay: index * 0.06 }}
                       >
-                        <Card className={`border-2 ${config.cardBorderStatic} transition-all duration-300 ${config.surfaceBg} backdrop-blur h-full`}>
+                        <Card className={`border-2 ${config.cardBorderStatic} transition-all duration-300 ${config.surfaceBg} backdrop-blur h-full min-w-0`}>
                           <CardHeader>
                             <div className="mb-2">
                               <span
@@ -593,7 +593,7 @@ export default function App({ ogpData }: { ogpData: OgpMap }) {
                             </div>
                             <CardDescription className={`text-sm ${config.textMuted}`}>{project.period}</CardDescription>
                           </CardHeader>
-                          <CardContent>
+                          <CardContent className="min-w-0">
                             {project.headerImage && primaryLink && (
                                 <a
                                 href={primaryLink}
@@ -614,19 +614,19 @@ export default function App({ ogpData }: { ogpData: OgpMap }) {
                               {project.member && (
                                 <div>
                                   <p className={`text-xs font-semibold ${config.textMuted}`}>メンバー</p>
-                                  <p className={`text-sm ${config.textSecondary}`}>{project.member}</p>
+                                  <p className={`text-sm ${config.textSecondary} break-words`}>{project.member}</p>
                                 </div>
                               )}
                               {project.outline && (
                                 <div>
                                   <p className={`text-xs font-semibold ${config.textMuted}`}>概要</p>
-                                  <p className={`text-sm ${config.textSecondary}`}>{project.outline}</p>
+                                  <p className={`text-sm ${config.textSecondary} break-words`}>{project.outline}</p>
                                 </div>
                               )}
                               {project.appeal && (
                                 <div>
                                   <p className={`text-xs font-semibold ${config.textMuted}`}>やったこと</p>
-                                  <p className={`text-sm ${config.textSecondary}`}>{project.appeal}</p>
+                                  <p className={`text-sm ${config.textSecondary} break-words`}>{project.appeal}</p>
                                 </div>
                               )}
                             </div>
