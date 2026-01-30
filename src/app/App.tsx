@@ -361,7 +361,7 @@ export default function App({ ogpData }: { ogpData: OgpMap }) {
                   </a>
                 </motion.div>
 
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-3 min-w-0">
                   <Button
                     size="icon"
                     variant="ghost"
@@ -391,17 +391,19 @@ export default function App({ ogpData }: { ogpData: OgpMap }) {
                   >
                     {isDark ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
                   </Button>
-                  {(Object.keys(themeConfig) as ThemeKey[]).map((t) => (
-                    <Button
-                      key={t}
-                      onClick={() => setTheme(t)}
-                      variant={theme === t ? 'default' : 'outline'}
-                      size="sm"
-                      className={theme === t ? config.buttonBg : `hover:bg-gray-100 ${isDark ? 'hover:bg-gray-800' : ''}`}
-                    >
-                      {themeConfig[t].emoji} {themeConfig[t].name}
-                    </Button>
-                  ))}
+                  <div className="flex items-center gap-2 overflow-x-auto whitespace-nowrap scrollbar-thin pr-1">
+                    {(Object.keys(themeConfig) as ThemeKey[]).map((t) => (
+                      <Button
+                        key={t}
+                        onClick={() => setTheme(t)}
+                        variant={theme === t ? 'default' : 'outline'}
+                        size="sm"
+                        className={`${theme === t ? config.buttonBg : `hover:bg-gray-100 ${isDark ? 'hover:bg-gray-800' : ''}`} shrink-0`}
+                      >
+                        {themeConfig[t].emoji} {themeConfig[t].name}
+                      </Button>
+                    ))}
+                  </div>
                 </div>
               </div>
             </div>
