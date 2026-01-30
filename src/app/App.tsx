@@ -352,9 +352,13 @@ export default function App({ ogpData }: { ogpData: OgpMap }) {
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ duration: 0.25 }}
-                  className={`text-2xl font-bold ${config.textPrimary}`}
                 >
-                  {PROFILE.title}
+                  <a
+                    href="#top"
+                    className={`text-2xl font-bold ${config.textPrimary} whitespace-nowrap`}
+                  >
+                    {PROFILE.title}
+                  </a>
                 </motion.div>
 
                 <div className="flex items-center gap-3">
@@ -568,6 +572,7 @@ export default function App({ ogpData }: { ogpData: OgpMap }) {
                         whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true }}
                         transition={{ duration: 0.35, delay: index * 0.06 }}
+                        className="min-w-0"
                       >
                         <Card className={`border-2 ${config.cardBorderStatic} transition-all duration-300 ${config.surfaceBg} backdrop-blur h-full min-w-0`}>
                           <CardHeader>
@@ -578,8 +583,12 @@ export default function App({ ogpData }: { ogpData: OgpMap }) {
                                 {project.genre}
                               </span>
                             </div>
-                            <div className="flex items-start justify-between mb-2">
-                              <CardTitle className={`text-xl ${config.textPrimary}`}>{project.title}</CardTitle>
+                            <div className="flex items-start justify-between mb-2 gap-2">
+                              <div className="min-w-0 flex-1">
+                                <CardTitle className={`text-xl ${config.textPrimary} break-words`}>
+                                  {project.title}
+                                </CardTitle>
+                              </div>
                               {primaryLink && (
                                 <Button
                                   size="icon"
