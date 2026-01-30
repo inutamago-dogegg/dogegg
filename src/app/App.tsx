@@ -4,47 +4,21 @@ import { Github, ExternalLink, Award, Briefcase, Sun, Moon } from 'lucide-react'
 import { Button } from '@/app/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/app/components/ui/card';
 import { Badge } from '@/app/components/ui/badge';
+import {
+  CAREERS,
+  HOBBIES,
+  LABELS,
+  NAV_SECTIONS,
+  PROJECTS,
+  PROFILE,
+  SKILLS,
+} from '@/data/content';
 import avatarIcon from '@/images/dogegg_icon.png';
-import Cocos2dxIcon from '@/images/Cocos2dx_Icon.png';
-import CPlusPlusIcon from '@/images/CPlusPlus_Icon.png';
-import CSharpIcon from '@/images/CSharp_Icon.png';
-import CysharpIcon from '@/images/Cysharp_Icon.png';
-import PythonIcon from '@/images/Python_Icon.png';
-import UnityIcon from '@/images/Unity_Icon.png';
-import VContainerIcon from '@/images/VContainer_Icon.png';
-import { PROJECTS } from '@/data/projects';
-import type { ImageMetadata } from 'astro';
 import type { OgpData } from '@/lib/ogp';
 
 type ThemeKey = 'spring' | 'summer' | 'autumn' | 'winter';
 
 type OgpMap = Record<string, OgpData>;
-
-type CareerItem = {
-  company: string;
-  period: string;
-  details: string[];
-};
-
-type HobbyLink = {
-  label: string;
-  url: string;
-};
-
-type HobbyItem = {
-  name: string;
-  icon: string;
-  details: string[];
-  favoritesLabel?: string;
-  favorites?: HobbyLink[];
-};
-
-type SkillItem = {
-  name: string;
-  icon: ImageMetadata;
-  level: number;
-  description: string;
-};
 
 const themeConfig = {
   spring: {
@@ -225,160 +199,6 @@ const themeConfig = {
   },
 };
 
-const LABELS = {
-  play: 'プレイリンク',
-  related: '関連記事',
-  twitter: 'Twitter',
-  github: 'GitHub',
-  ticket: 'チケットサイト',
-} as const;
-
-const PROFILE = {
-  name: 'どぐえぐ',
-  title: 'どぐえぐ',
-  tagline: 'ゲームを作るのが好きです',
-  affiliation: '東京科学大学 情報理工学院 数理・計算科学系 学士3年',
-  clubs: '東京科学大学デジタル創作同好会traP / C-lock-row',
-  sections: {
-    abaoutMeTitle: 'About Me',
-    worksTitle: 'Products',
-    worksLead: 'これまでに制作したもの',
-    skillsTitle: 'Skills',
-    careerTitle: 'Career',
-    careerLead: '経歴など',
-    hobbyTitle: 'Hobbies',
-    hobbyLead: '趣味・好きなこと',
-  },
-  footer: '© 2026 @dogegg. All rights reserved.',
-  iconAlt: 'どぐえぐのアイコン',
-} as const;
-
-const NAV_SECTIONS = [
-  { id: 'top', label: PROFILE.sections.abaoutMeTitle },
-  { id: 'skills', label: PROFILE.sections.skillsTitle },
-  { id: 'works', label: PROFILE.sections.worksTitle },
-  { id: 'career', label: PROFILE.sections.careerTitle },
-  { id: 'hobby', label: PROFILE.sections.hobbyTitle },
-] as const;
-
-export const CAREERS: CareerItem[] = [
-  {
-    company: 'C-lock-row',
-    period: '2025年7月~現在',
-    details: ['最近謎解き制作の方を始めました。'],
-  },
-  {
-    company: 'GREE Jobs',
-    period: '2025年2月~3月',
-    details: ['1ヶ月のインターンに参加しました。ソーシャルゲームの新規機能の実装に取り組みました。'],
-  },
-  {
-    company: 'CA Tech Job',
-    period: '2024年9月',
-    details: [
-      '1ヶ月のインターンに参加しました。ソーシャルゲームのゲームクライアントのパフォーマンスチューニングに取り組みました。',
-    ],
-  },
-  {
-    company: '東京科学大学デジタル創作同好会traP',
-    period: '2022年4月~現在',
-    details: ['大学入学当初から加入しています。', '普段はここでゲーム制作をしています。', 'ゲーム班長や渉外担当としても活動していましたが、既に後輩に引き継いでいます。'],
-  },
-];
-
-export const HOBBIES: HobbyItem[] = [
-  {
-    name: '謎解き',
-    icon: '🔍',
-    details: ['タンブルウィードによく行きます'],
-    favoritesLabel:  '好きな謎解き公演',
-    favorites: [
-      { label: '未完', url: 'https://tumbleweed.jp/event/mikan' },
-      { label: 'ROLE', url: 'https://tumbleweed.jp/event/role/'},
-      { label: 'ここから先は自分の力で考えましょう。', url: 'https://www.xeoxy.com/event/ksk' },
-    ]
-  },
-  {
-    name: '漫画',
-    icon: '📚',
-    details: ['ジャンプラ購読してます'],
-    favoritesLabel: '好きな漫画',
-    favorites: [
-      { label: '亜人', url: 'https://pocket.shonenmagazine.com/title/01458/episode/324202' },
-      { label: '嘘喰い', url: 'https://ynjn.jp/title/129' },
-      { label: '宇宙兄弟', url: 'https://sbyomu.lp.koyamachuya.com/' },
-    ],
-  },
-  {
-    name: 'ゲーム(遊ぶ方)',
-    icon: '🎮',
-    details: ['AAAタイトルよりインディーゲームの方をよく遊びます'],
-    favoritesLabel: '好きなゲーム',
-    favorites: [
-      { label: 'The Witness', url: 'https://store.steampowered.com/app/210970/The_Witness/' },
-      { label: 'Outer Wilds', url: 'https://store.steampowered.com/app/753640/Outer_Wilds/' },
-      { label: 'パクレットのうさちゃん捕獲ゲーム', url: 'https://store.steampowered.com/app/1628610/_/' },
-      { label: 'Stray', url: 'https://store.steampowered.com/app/1332010/Stray/' },
-    ],
-  },
-  {
-    name: 'ゲーム(つくる方)',
-    icon: '🛠️',
-    details: ['Unity, C#を使います'],
-  },
-];
-
-export const SKILLS: SkillItem[] = [
-  {
-    name: 'Unity',
-    icon: UnityIcon,
-    level: 3,
-    description: '普段のゲーム制作はUnityを使っています。',
-  },
-  {
-    name: 'UniTask',
-    icon: CysharpIcon,
-    level: 3,
-    description: '普段から非同期処理やゲームフロー作成に使用しています。',
-  },
-  {
-    name: 'R3',
-    icon: CysharpIcon,
-    level: 3,
-    description: 'View部分とModel部分の同期によく仕様しています。',
-  },
-  {
-    name: 'C#',
-    icon: CSharpIcon,
-    level: 3,
-    description: 'Unityを使う時に書いています。',
-  },
-  {
-    name: 'VContainer',
-    icon: VContainerIcon,
-    level: 2,
-    description: 'DIコンテナとして普段から使っています。',
-  },
-  {
-    name: 'C++',
-    icon: CPlusPlusIcon,
-    level: 2,
-    description: '競プロで普段使っています。インターンでCocos-2dx使用時に書いたことがあります。',
-  },
-  {
-    name: 'Python',
-    icon: PythonIcon,
-    level: 2,
-    description: '競プロで使っていました。軽いアプリ作成で使います。',
-  },
-  {
-    name: 'Cocos-2dx',
-    icon: Cocos2dxIcon,
-    level: 1,
-    description: 'インターンで1ヶ月ほど使用しました。',
-  },
-];
-
 export default function App({ ogpData }: { ogpData: OgpMap }) {
   const getInitialTheme = (): ThemeKey => {
     const now = new Date();
@@ -492,7 +312,7 @@ export default function App({ ogpData }: { ogpData: OgpMap }) {
   const skills = SKILLS;
 
   return (
-    <div className="min-h-screen relative">
+    <div className="min-h-screen relative overflow-x-hidden">
       <div
         className={`min-h-screen ${isDark ? 'dark' : ''}`}
         style={
@@ -508,17 +328,20 @@ export default function App({ ogpData }: { ogpData: OgpMap }) {
             <motion.div
               animate={{ y: [0, -20, 0], x: [0, 10, 0] }}
               transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-              className={`absolute top-20 left-10 w-32 h-32 ${config.decorativeColors[0]} rounded-full blur-3xl opacity-20`}
+              className={`absolute top-20 left-10 w-32 h-32 ${config.decorativeColors[0]} rounded-full blur-3xl opacity-20 transform-gpu`}
+              style={{ willChange: 'transform' }}
             />
             <motion.div
               animate={{ y: [0, 20, 0], x: [0, -10, 0] }}
               transition={{ duration: 5, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
-              className={`absolute bottom-20 right-10 w-40 h-40 ${config.decorativeColors[1]} rounded-full blur-3xl opacity-20`}
+              className={`absolute bottom-20 right-10 w-40 h-40 ${config.decorativeColors[1]} rounded-full blur-3xl opacity-20 transform-gpu`}
+              style={{ willChange: 'transform' }}
             />
             <motion.div
               animate={{ y: [0, 15, 0], x: [0, -15, 0] }}
               transition={{ duration: 6, repeat: Infinity, ease: "easeInOut", delay: 1 }}
-              className={`absolute top-1/2 right-1/4 w-36 h-36 ${config.decorativeColors[2]} rounded-full blur-3xl opacity-20`}
+              className={`absolute top-1/2 right-1/4 w-36 h-36 ${config.decorativeColors[2]} rounded-full blur-3xl opacity-20 transform-gpu`}
+              style={{ willChange: 'transform' }}
             />
           </div>
 
@@ -895,7 +718,20 @@ export default function App({ ogpData }: { ogpData: OgpMap }) {
                             <Briefcase className="w-6 h-6 text-white" />
                           </div>
                           <div>
-                            <CardTitle className={`text-lg ${config.textPrimary}`}>{career.company}</CardTitle>
+                            {career.url ? (
+                              <CardTitle className={`text-lg ${config.textPrimary}`}>
+                                <a
+                                  href={career.url}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="hover:underline"
+                                >
+                                  {career.company}
+                                </a>
+                              </CardTitle>
+                            ) : (
+                              <CardTitle className={`text-lg ${config.textPrimary}`}>{career.company}</CardTitle>
+                            )}
                             <CardDescription className={config.textMuted}>{career.period}</CardDescription>
                           </div>
                         </div>
@@ -906,6 +742,15 @@ export default function App({ ogpData }: { ogpData: OgpMap }) {
                             <li key={detailIndex}>{detail}</li>
                           ))}
                         </ul>
+                        {career.tech && career.tech.length > 0 && (
+                          <div className="flex flex-wrap gap-2 mt-4">
+                            {career.tech.map((tech, techIndex) => (
+                              <Badge key={techIndex} className={`${config.badgeBg} border`}>
+                                {tech}
+                              </Badge>
+                            ))}
+                          </div>
+                        )}
                       </CardContent>
                     </Card>
                   </motion.div>

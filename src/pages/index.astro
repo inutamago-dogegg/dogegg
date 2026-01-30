@@ -1,7 +1,7 @@
 ---
-import App, { HOBBIES } from '../app/App';
+import App from '../app/App';
 import '@/styles/index.css';
-import { PROJECTS } from '@/data/projects';
+import { HOBBIES, PROJECTS } from '@/data/content';
 import { fetchOgp, type OgpData } from '@/lib/ogp';
 
 const urlSet = new Set<string>();
@@ -18,8 +18,11 @@ PROJECTS.forEach((group: (typeof PROJECTS)[number]) => {
   });
 });
 
-HOBBIES.forEach((hobby) => {
-  hobby.favorites?.forEach((favorite) => urlSet.add(favorite.url));
+HOBBIES.forEach((hobby: (typeof HOBBIES)[number]) => {
+  hobby.favorites?.forEach(
+    (favorite: NonNullable<(typeof HOBBIES)[number]['favorites']>[number]) =>
+      urlSet.add(favorite.url),
+  );
 });
 
 const ogpEntries = await Promise.all(
