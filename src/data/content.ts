@@ -13,6 +13,7 @@ import QueenBeeHeader from '@/images/QueenBee_Header.png';
 import UnityIcon from '@/images/Unity_Icon.png';
 import VariVaRevengeHeader from '@/images/VariVaRevenge_Header.png';
 import VContainerIcon from '@/images/VContainer_Icon.png';
+import DogeggIcon from '@/images/Dogegg_Icon.png';
 
 export type CareerItem = {
   company: string;
@@ -47,8 +48,6 @@ export type ProjectLink = {
   url: string;
 };
 
-export type ProjectGenre = 'ゲーム' | '謎解き';
-
 export type ProjectItem = {
   title: string;
   period: string;
@@ -56,7 +55,7 @@ export type ProjectItem = {
   member: string;
   outline: string;
   appeal: string;
-  genre: ProjectGenre;
+  genre: string;
   playLink?: ProjectLink;
   relatedLinks?: ProjectLink[];
   headerImage?: ImageMetadata;
@@ -92,11 +91,16 @@ const TECH = {
   cocos2dx: 'Cocos-2dx',
   cPlusPlus: 'C++',
   cSharp: 'C#',
+  python: 'Python',
+  astro: 'Astro',
+  react: 'React',
+  typescript: 'TypeScript',
 } as const;
 
 const GENRE = {
   game: 'ゲーム',
   riddle: '謎解き',
+  web: 'Web',
 } as const;
 
 export const PROFILE = {
@@ -131,7 +135,7 @@ export const CAREERS: CareerItem[] = [
   {
     company: 'C-lock-row',
     period: '2025年7月~現在',
-    details: ['最近謎解き制作の方を始めました。'],
+    details: ['科学大の謎解き制作サークルです。'],
     url: 'https://x.com/C_lock_row',
     tech: [],
   },
@@ -139,7 +143,7 @@ export const CAREERS: CareerItem[] = [
     company: 'GREE Jobs',
     period: '2025年2月~3月',
     details: [
-      '1ヶ月のインターンに参加しました。ソーシャルゲームの新機能実装について、プランナーとの仕様決定から実装、QAとのやり取りまでの一通りの業務を行いました。',
+      'グリーさんに1ヶ月間インターンでお邪魔しました。ソーシャルゲームの新機能実装について、プランナーとの仕様決定から実装、QAとのやり取りまでの一通りの業務を行いました。',
     ],
     url: 'https://hd.gree.net/jp/ja/recruit/internship/jobs/',
     tech: [TECH.cocos2dx, TECH.cPlusPlus],
@@ -147,7 +151,7 @@ export const CAREERS: CareerItem[] = [
   {
     company: 'Game Speed Hackathon Autumn 2024',
     period: '2024年9月',
-    details: ['ゲームの実装速度を競うイベントです。優勝することができました。'],
+    details: ['CyberAgentさん主催のゲームの実装速度を競うイベントです。優勝することができました。'],
     url: 'https://cyberagent.snar.jp/jobboard/detail.aspx?id=ohkV1eN5MKVBUTT67mLh3g',
     tech: [TECH.unity, TECH.cSharp],
   },
@@ -155,7 +159,7 @@ export const CAREERS: CareerItem[] = [
     company: 'CA Tech Job',
     period: '2024年9月',
     details: [
-      '1ヶ月のインターンに参加しました。ソーシャルゲームのゲームクライアントのパフォーマンスチューニングに取り組みました。',
+      'CyberAgentさんに1ヶ月インターンでお邪魔しました。ソーシャルゲームのゲームクライアントのパフォーマンスチューニングに取り組みました。',
     ],
     url: 'https://www.cyberagent.co.jp/careers/students/event/detail/id=32004',
     tech: [TECH.unity, TECH.cSharp, TECH.git],
@@ -187,6 +191,9 @@ export const HOBBIES: HobbyItem[] = [
     details: ['タンブルウィードによく行きます'],
     favoritesLabel: '好きな謎解き公演',
     favorites: [
+      { label: '海上の棺ヨーシズム号からの生還', url: 'https://tumbleweed.jp/event/yawsizm' },
+      { label: '転変の館ヨーカワリ荘からの生還', url: 'https://tumbleweed.jp/event/yawkawari' },
+      { label: '天空の沼ヨーフエル塔からの生還', url: 'https://tumbleweed.jp/event/yawfwel' },
       { label: '未完', url: 'https://tumbleweed.jp/event/mikan' },
       { label: 'ROLE', url: 'https://tumbleweed.jp/event/role/' },
       { label: 'ここから先は自分の力で考えましょう。', url: 'https://www.xeoxy.com/event/ksk' },
@@ -195,9 +202,10 @@ export const HOBBIES: HobbyItem[] = [
   {
     name: '漫画',
     icon: '📚',
-    details: ['ジャンプラ購読してます'],
+    details: ['ジャンプラに入ってます'],
     favoritesLabel: '好きな漫画',
     favorites: [
+      { label: 'カグラバチ', url: 'https://shonenjumpplus.com/episode/17106371875870549182' },
       { label: '亜人', url: 'https://pocket.shonenmagazine.com/title/01458/episode/324202' },
       { label: '嘘喰い', url: 'https://ynjn.jp/title/129' },
       { label: '宇宙兄弟', url: 'https://sbyomu.lp.koyamachuya.com/' },
@@ -224,49 +232,49 @@ export const HOBBIES: HobbyItem[] = [
 
 export const SKILLS: SkillItem[] = [
   {
-    name: 'Unity',
+    name: TECH.unity,
     icon: UnityIcon,
     level: 3,
     description: '普段のゲーム制作はUnityを使っています。',
   },
   {
-    name: 'UniTask',
+    name: TECH.unitask,
     icon: CysharpIcon,
     level: 3,
     description: '普段から非同期処理やゲームフロー作成に使用しています。',
   },
   {
-    name: 'R3',
+    name: TECH.r3,
     icon: CysharpIcon,
     level: 3,
     description: 'View部分とModel部分の同期によく仕様しています。',
   },
   {
-    name: 'C#',
+    name: TECH.cSharp,
     icon: CSharpIcon,
     level: 3,
     description: 'Unityを使う時に書いています。',
   },
   {
-    name: 'VContainer',
+    name: TECH.vcontainer,
     icon: VContainerIcon,
     level: 2,
     description: 'DIコンテナとして普段から使っています。',
   },
   {
-    name: 'C++',
+    name: TECH.cPlusPlus,
     icon: CPlusPlusIcon,
     level: 2,
     description: '競プロで普段使っています。インターンでCocos-2dx使用時に書いたことがあります。',
   },
   {
-    name: 'Python',
+    name: TECH.python,
     icon: PythonIcon,
     level: 2,
     description: '競プロで使っていました。軽いアプリ作成で使います。',
   },
   {
-    name: 'Cocos-2dx',
+    name: TECH.cocos2dx,
     icon: Cocos2dxIcon,
     level: 1,
     description: 'インターンで1ヶ月ほど使用しました。',
@@ -277,6 +285,17 @@ export const PROJECTS: ProjectYearGroup[] = [
   {
     year: '2025',
     items: [
+      {
+        title: 'このサイト',
+        period: '2026年1月~現在',
+        tech: [TECH.astro, TECH.react, TECH.typescript],
+        member: '1人',
+        outline: 'ポートフォリオサイトも兼ねて自分のホームページをつくりました',
+        genre: GENRE.web,
+        playLink: { label: '', url: 'https://inutamago-dogegg.github.io/dogegg/'},
+        appeal: 'Web制作は初めてでしたが、デザインはFigma AI、コーディングはCursorに手伝ってもらい公開まで何とかできました。',
+        headerImage: DogeggIcon,
+      },
       {
         title: 'ELEGO',
         period: '2025年4月～9月 (6か月)',
