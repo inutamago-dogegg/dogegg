@@ -115,7 +115,7 @@ export const PROFILE = {
     hobbyTitle: 'Hobbies',
     hobbyLead: '趣味・好きなこと',
   },
-  footer: '© 2026 @dogegg. All rights reserved.',
+  footer: '© 2026 @inutamago-dogegg All rights reserved.',
   iconAlt: 'どぐえぐのアイコン',
 } as const;
 
