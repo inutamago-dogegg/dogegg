@@ -270,7 +270,7 @@ export default function App({ ogpData }: { ogpData: OgpMap }) {
     data?: OgpData;
     emphasis?: boolean;
   }) => {
-    const baseClass = `block rounded-xl border ${config.surfaceBg} px-4 py-3 text-sm ${config.textSecondary} hover:shadow-md transition-transform hover:-translate-y-0.5 break-words`;
+    const baseClass = `block rounded-xl border ${config.surfaceBg} px-4 py-3 text-sm ${config.textSecondary} hover:shadow-md transition-transform hover:-translate-y-0.5 break-words min-w-0`;
     const highlightClass = emphasis ? 'border-primary/60 bg-primary/5 shadow-sm' : config.surfaceBorder;
     const labelClass = emphasis ? 'text-primary font-semibold' : config.textMuted;
     const hoverTitle = isDark ? 'group-hover:text-slate-200' : 'group-hover:text-gray-700';
