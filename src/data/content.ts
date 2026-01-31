@@ -80,7 +80,7 @@ export const LABELS = {
 
 const TECH = {
   unity: 'Unity',
-  unityUrp: 'Unity URP',
+  unityUrp: 'URP',
   git: 'Git',
   vcontainer: 'VContainer',
   unitask: 'UniTask',
@@ -91,7 +91,7 @@ const TECH = {
   vrchat: 'VRChat',
   pun2: 'PUN2',
   reEngine: 'RE ENGINE',
-  cocos2dx: 'Cocos-2dx',
+  cocos2dx: 'Cocos2d-x',
   cPlusPlus: 'C++',
   cSharp: 'C#',
   python: 'Python',
@@ -233,7 +233,7 @@ export const HOBBIES: HobbyItem[] = [
   {
     name: 'ゲーム(つくる方)',
     icon: '🛠️',
-    details: ['Unity, C#を使います'],
+    details: [`${TECH.unity}, ${TECH.cSharp}を使います`],
   },
 ];
 
@@ -242,7 +242,7 @@ export const SKILLS: SkillItem[] = [
     name: TECH.unity,
     icon: UnityIcon,
     level: 3,
-    description: '普段のゲーム制作はUnityを使っています。',
+    description: `普段のゲーム制作は${TECH.unity}を使っています。`,
   },
   {
     name: TECH.unitask,
@@ -260,7 +260,7 @@ export const SKILLS: SkillItem[] = [
     name: TECH.cSharp,
     icon: CSharpIcon,
     level: 3,
-    description: 'Unityを使う時に書いています。',
+    description: `${TECH.unity}を使う時に書いています。`,
   },
   {
     name: TECH.vcontainer,
@@ -272,7 +272,7 @@ export const SKILLS: SkillItem[] = [
     name: TECH.cPlusPlus,
     icon: CPlusPlusIcon,
     level: 2,
-    description: '競プロで普段使っています。インターンでCocos-2dx使用時に書いたことがあります。',
+    description: `競プロで普段使っています。インターンで${TECH.cocos2dx}使用時に書いたことがあります。`,
   },
   {
     name: TECH.python,
@@ -332,7 +332,7 @@ export const PROJECTS: ProjectYearGroup[] = [
       {
         title: 'Deeper and Deeper',
         period: '2025年12月 (準備1週間, 制作1週間)',
-        tech: [TECH.unity, TECH.git, TECH.vcontainer, TECH.unitask],
+        tech: [TECH.unityUrp, TECH.unity, TECH.git, TECH.vcontainer, TECH.unitask],
         member: 'プランナー1人, プログラマー3人, 2Dデザイナー3人, サウンド1人',
         outline: 'ダンジョンの深く深くに進みお宝を手に入れて帰還するゲーム',
         appeal: 'リードプログラマとしてほぼ全てのプログラムを書きました。',

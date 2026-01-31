@@ -23,7 +23,7 @@ type OgpMap = Record<string, OgpData>;
 
 const themeConfig = {
   spring: {
-    name: '春',
+    name: '',
     emoji: '🌸',
     palettes: {
       light: {
@@ -67,7 +67,7 @@ const themeConfig = {
     },
   },
   summer: {
-    name: '夏',
+    name: '',
     emoji: '☀️',
     palettes: {
       light: {
@@ -111,7 +111,7 @@ const themeConfig = {
     },
   },
   autumn: {
-    name: '秋',
+    name: '',
     emoji: '🍂',
     palettes: {
       light: {
@@ -155,7 +155,7 @@ const themeConfig = {
     },
   },
   winter: {
-    name: '冬',
+    name: '',
     emoji: '❄️',
     palettes: {
       light: {
@@ -793,7 +793,7 @@ export default function App({ ogpData }: { ogpData: OgpMap }) {
                                       >
                                         <span className="relative inline-flex">
                                           <img src={steamIcon.src} alt="" className="h-4 w-4" />
-                                          <span className="absolute -top-1 -right-1 text-[7px] leading-none">®</span>
+                                          <span className="absolute -top-2 -right-2 text-[14px] leading-none">®</span>
                                         </span>
                                       </Button>
                                     )}
@@ -840,7 +840,7 @@ export default function App({ ogpData }: { ogpData: OgpMap }) {
                                   >
                                     <span className="relative inline-flex">
                                       <img src={steamIcon.src} alt="" className="h-4 w-4" />
-                                      <span className="absolute -top-1 -right-1 text-[7px] leading-none">®</span>
+                                      <span className="absolute -top-2 -right-2 text-[14px] leading-none">®</span>
                                     </span>
                                   </Button>
                                 )}
