@@ -122,8 +122,8 @@ export const PROFILE = {
 export const NAV_SECTIONS = [
   { id: 'top', label: PROFILE.sections.abaoutMeTitle },
   { id: 'skills', label: PROFILE.sections.skillsTitle },
-  { id: 'works', label: PROFILE.sections.worksTitle },
   { id: 'career', label: PROFILE.sections.careerTitle },
+  { id: 'works', label: PROFILE.sections.worksTitle },
   { id: 'hobby', label: PROFILE.sections.hobbyTitle },
 ] as const;
 
@@ -176,7 +176,7 @@ export const CAREERS: CareerItem[] = [
       'ゲーム班長や渉外担当としても活動していましたが、既に後輩に引き継いでいます。',
     ],
     url: 'https://trap.jp',
-    tech: [TECH.unity, TECH.cSharp, TECH.git, TECH.vcontainer, TECH.unitask, TECH.r3, TECH.cPlusPlus],
+    tech: [TECH.unity, TECH.cSharp, TECH.git, TECH.vcontainer, TECH.unitask, TECH.r3, TECH.feel, TECH.cPlusPlus],
   },
 ];
 
