@@ -926,7 +926,7 @@ export default function App({ ogpData }: { ogpData: OgpMap }) {
             </div>
           </section>
 
-          <section id="hobby" className="py-20 px-4 relative">
+          <section id="hobby" className="py-20 px-4 relative overflow-x-hidden">
             <div className="container mx-auto max-w-6xl">
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
@@ -942,13 +942,14 @@ export default function App({ ogpData }: { ogpData: OgpMap }) {
               <div className="grid gap-6">
                 {hobbies.map((hobby, index) => (
                   <motion.div
+                    className='min-w-0'
                     key={index}
                     initial={{ opacity: 0, y: 20 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
                     transition={{ duration: 0.35, delay: index * 0.06 }}
                   >
-                    <Card className={`border-2 ${config.cardBorderStatic} ${config.surfaceBg} backdrop-blur transition-all duration-300`}>
+                    <Card className={`min-w-0 border-2 ${config.cardBorderStatic} ${config.surfaceBg} backdrop-blur transition-all duration-300`}>
                       <CardHeader>
                         <div className="flex items-center gap-3 mb-2">
                           <span className="text-3xl">{hobby.icon}</span>
@@ -968,7 +969,7 @@ export default function App({ ogpData }: { ogpData: OgpMap }) {
                                 {hobby.favoritesLabel}
                               </p>
                             )}
-                            <div className="grid gap-3 sm:grid-cols-2">
+                            <div className="grid gap-3 sm:grid-cols-2 min-w-0">
                               {hobby.favorites.map((favorite) => {
                                 const ogp = ogpData[favorite.url];
                                 return (

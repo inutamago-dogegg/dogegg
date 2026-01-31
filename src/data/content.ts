@@ -338,7 +338,7 @@ export const PROJECTS: ProjectYearGroup[] = [
         appeal: 'リードプログラマとしてほぼ全てのプログラムを書きました。',
         genre: GENRE.game,
         playLink: { label: LABELS.play, url: 'https://unityroom.com/games/deeper_and_deeper?ref=trap.jp' },
-        relatedLinks: [{ label: LABELS.related, url: 'https://trap.jp/post/2798/' }, { label: LABELS.related, url: 'trap.jp/post/2799/' }],
+        relatedLinks: [{ label: LABELS.related, url: 'https://trap.jp/post/2798/' }],
         headerImage: DeeperHeader,
       },
     ],
