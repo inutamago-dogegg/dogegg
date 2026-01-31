@@ -13,7 +13,7 @@ import QueenBeeHeader from '@/images/QueenBee_Header.png';
 import UnityIcon from '@/images/Unity_Icon.png';
 import VariVaRevengeHeader from '@/images/VariVaRevenge_Header.png';
 import VContainerIcon from '@/images/VContainer_Icon.png';
-import DogeggIcon from '@/images/Dogegg_Icon.png';
+import DogeggIcon from '@/images/dogegg_icon.png';
 
 export type CareerItem = {
   company: string;
