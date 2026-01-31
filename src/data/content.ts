@@ -56,6 +56,9 @@ export type ProjectItem = {
   outline: string;
   appeal: string;
   genre: string;
+  xUrl?: string;
+  githubUrl?: string;
+  steamUrl?: string;
   playLink?: ProjectLink;
   relatedLinks?: ProjectLink[];
   headerImage?: ImageMetadata;
@@ -114,8 +117,9 @@ export const PROFILE = {
     worksTitle: 'Products',
     worksLead: 'これまでに制作したもの',
     skillsTitle: 'Skills',
+    skillsLead: 'できること',
     careerTitle: 'Career',
-    careerLead: '経歴など',
+    careerLead: 'インターン・イベント参加記録など',
     hobbyTitle: 'Hobbies',
     hobbyLead: '趣味・好きなこと',
   },
@@ -209,18 +213,21 @@ export const HOBBIES: HobbyItem[] = [
       { label: '亜人', url: 'https://pocket.shonenmagazine.com/title/01458/episode/324202' },
       { label: '嘘喰い', url: 'https://ynjn.jp/title/129' },
       { label: '宇宙兄弟', url: 'https://sbyomu.lp.koyamachuya.com/' },
+      { label: '僕のヒーローアカデミア', url: 'https://shonenjumpplus.com/episode/10833519556325021790' },
     ],
   },
   {
     name: 'ゲーム(遊ぶ方)',
     icon: '🎮',
-    details: ['AAAタイトルよりインディーゲームの方をよく遊びます'],
+    details: ['インディーゲームをよく遊びます。'],
     favoritesLabel: '好きなゲーム',
     favorites: [
       { label: 'The Witness', url: 'https://store.steampowered.com/app/210970/The_Witness/' },
       { label: 'Outer Wilds', url: 'https://store.steampowered.com/app/753640/Outer_Wilds/' },
       { label: 'パクレットのうさちゃん捕獲ゲーム', url: 'https://store.steampowered.com/app/1628610/_/' },
       { label: 'Stray', url: 'https://store.steampowered.com/app/1332010/Stray/' },
+      { label: 'Leap Year', url: 'https://store.steampowered.com/app/2951770/Leap_Year/' },
+      { label: 'モンスターハンター', url: 'https://www.monsterhunter.com/ja/' },
     ],
   },
   {
@@ -295,6 +302,7 @@ export const PROJECTS: ProjectYearGroup[] = [
         playLink: { label: '', url: 'https://inutamago-dogegg.github.io/dogegg/'},
         appeal: 'Web制作は初めてでしたが、デザインはFigma AI、コーディングはCursorに手伝ってもらい公開まで何とかできました。',
         headerImage: DogeggIcon,
+        githubUrl: 'https://github.com/inutamago-dogegg/dogegg',
       },
       {
         title: 'ELEGO',
@@ -305,9 +313,10 @@ export const PROJECTS: ProjectYearGroup[] = [
         appeal: 'CAPCOM GAMES COMPETITIONというイベントで制作しました。ディレクター兼マネージャーとして経験者のメンバー19人をまとめ、企画～完成までを担当しました。未知のエンジン・6か月で完全締め切り・3Dアクション制作未経験という状況ながら、なんとか完成まで持っていきました。',
         genre: GENRE.game,
         playLink: { label: LABELS.play, url: 'https://gameparade.creators-guild.com/works/3532' },
-        relatedLinks: [{ label: LABELS.related, url: 'https://www.capcom-games.com/cgc/2025/ja-jp/' }],
+        relatedLinks: [{ label: 'CAPCOM GAMES COMPETITION 公式ページ', url: 'https://www.capcom-games.com/cgc/2025/ja-jp/' }],
         headerImage: ElegoHeader,
         awards: ['ゲームクエイター甲子園2025セミファイナリスト'],
+        xUrl: 'https://x.com/cgc2025_trap',
       },
       {
         title: '2',
@@ -346,9 +355,10 @@ export const PROJECTS: ProjectYearGroup[] = [
         appeal: 'リーダー・リードプログラマとして参加しています',
         genre: GENRE.game,
         playLink: { label: LABELS.play, url: 'https://gameparade.creators-guild.com/works/2763' },
-        relatedLinks: [{ label: '関連リンク', url: 'https://store.steampowered.com/app/3382690/Cross_the_C/' }],
         headerImage: CrossHeader,
         awards: ['ゲームクリエイター甲子園2024総合大賞ノミネート', 'ゲームクリエイター甲子園2025総合大賞ノミネート'],
+        xUrl: 'https://x.com/CrosstheC_trap',
+        steamUrl: 'https://store.steampowered.com/app/3382690/Cross_the_C/'
       },
       {
         title: 'Queen Bee',
@@ -384,22 +394,25 @@ export const PROJECTS: ProjectYearGroup[] = [
         tech: [TECH.unity, TECH.git, TECH.unirx, TECH.unitask],
         member: 'プランナー4人, プログラマー4人, 2Dデザイナー1人',
         outline: '記憶を整理するアクションゲーム',
-        appeal: 'リードエンジニアとして立候補し、他メンバーへのGitやコードエディター(Rider)の講習を行い、設計からタスクの割り振りまで行いました。途中からメンバーの脱落があり、急遽集会を開くなどして完成まで持っていきました。',
+        appeal: 'BitSummit Game Jam 2023で制作しました。リードエンジニアとして立候補し、他メンバーへのGitやコードエディター(Rider)の講習を行い、設計からタスクの割り振りまで行いました。途中からメンバーの脱落があり、急遽集会を開くなどして完成まで持っていきました。',
         genre: GENRE.game,
         playLink: { label: LABELS.play, url: 'https://bitsummit-gamejam.itch.io/memorytranser' },
+        githubUrl: 'https://github.com/BSGJ2023-T-Team07/MemoryTranser',
       },
       {
         title: 'バリバリベンジ',
         period: '2023年7月～現在 (約2年半)',
         tech: [TECH.unity, TECH.git, TECH.r3, TECH.unitask, TECH.feel],
         member: 'プランナー3人, プログラマー5人, 2Dデザイナー2人, サウンド2人, 弾幕制作2人',
-        outline: '敵の出してくる弾をかいくぐり敵に直接アタックする弾幕ゲー×2Dアクションの新感覚ゲーム！',
+        outline: '敵の出してくる弾をパリィし敵に直接アタックする弾幕ゲー×2Dアクションの新感覚ゲーム！',
         appeal: '企画者に誘われ、リードプログラマとして技術的な面でメンバーを引っ張りました。プログラマでない人も敵の制作ができるようにエディター拡張に特に力を入れました。',
         genre: GENRE.game,
         playLink: { label: LABELS.play, url: 'https://gameparade.creators-guild.com/works/1559' },
         relatedLinks: [{ label: LABELS.related, url: 'https://trap.jp/post/1971/' }],
         headerImage: VariVaRevengeHeader,
         awards: ['ゲームクリエイター甲子園2024総合大賞ノミネート', 'Game^3 19th 優秀賞'],
+        steamUrl: 'https://store.steampowered.com/app/2721190/_/',
+
       },
       {
         title: 'Orbit',
@@ -409,10 +422,11 @@ export const PROJECTS: ProjectYearGroup[] = [
         outline: '星を回りながらその秘密を探るリソース管理アドベンチャー',
         appeal: 'メインプログラマとしてコードやGitの規約を定め、協力して設計とゲームの実装を行いました。英語版対応をしてSteamで配信しています。',
         genre: GENRE.game,
-        playLink: { label: LABELS.play, url: 'https://store.steampowered.com/app/2990710/Orbit/?ref=trap.jp' },
+        playLink: { label: LABELS.play, url: 'https://store.steampowered.com/app/2990710/Orbit/' },
         relatedLinks: [{ label: LABELS.related, url: 'https://trap.jp/post/2106/' }],
         headerImage: OrbitHeader,
         awards: ['部内冬ハッカソン23 最優秀賞'],
+        steamUrl: 'https://store.steampowered.com/app/2990710/Orbit/'
       },
     ],
   },

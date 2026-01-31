@@ -90,7 +90,8 @@ export const fetchOgp = async (target: string): Promise<OgpData | null> => {
     const response = await fetch(target, {
       redirect: 'follow',
       headers: {
-        'user-agent': 'Astro-OGP-Preview/1.0',
+        'user-agent':
+          'Astro-OGP-Preview/1.0',
         accept: 'text/html,application/xhtml+xml',
       },
     });

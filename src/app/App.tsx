@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { motion } from 'motion/react';
-import { Github, ExternalLink, Award, Briefcase, Sun, Moon } from 'lucide-react';
+import { Github, Award, Briefcase, Sun, Moon } from 'lucide-react';
 import { Button } from '@/app/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/app/components/ui/card';
 import { Badge } from '@/app/components/ui/badge';
@@ -14,6 +14,7 @@ import {
   SKILLS,
 } from '@/data/content';
 import avatarIcon from '@/images/dogegg_icon.png';
+import steamIcon from '@/images/Steam_icon_logo.svg';
 import type { OgpData } from '@/lib/ogp';
 
 type ThemeKey = 'spring' | 'summer' | 'autumn' | 'winter';
@@ -215,6 +216,13 @@ export default function App({ ogpData }: { ogpData: OgpMap }) {
   const [isDark, setIsDark] = useState(false);
   const config = themeConfig[theme].palettes[isDark ? 'dark' : 'light'];
   const [activeSection, setActiveSection] = useState<string>('top');
+  const [openYears, setOpenYears] = useState<Record<string, boolean>>(() => {
+    const years = PROJECTS.map((group) => Number(group.year)).filter((value) => !Number.isNaN(value));
+    const latestYear = years.length > 0 ? Math.max(...years) : null;
+    return Object.fromEntries(
+      PROJECTS.map((group) => [group.year, Number(group.year) === latestYear]),
+    );
+  });
 
   useEffect(() => {
     document.documentElement.style.scrollBehavior = 'smooth';
@@ -270,7 +278,13 @@ export default function App({ ogpData }: { ogpData: OgpMap }) {
 
     if (!data) {
       return (
-        <a href={url} target="_blank" rel="noopener noreferrer" className={`${baseClass} ${highlightClass}`}>
+        <a
+          href={url}
+          target="_blank"
+          rel="noopener noreferrer"
+          className={`${baseClass} ${highlightClass}`}
+          title={url}
+        >
           <span className={`font-medium ${labelClass}`}>{label}</span>
           <span className={`block text-xs ${config.textMuted} break-all`}>{url}</span>
         </a>
@@ -278,7 +292,13 @@ export default function App({ ogpData }: { ogpData: OgpMap }) {
     }
 
     return (
-      <a href={url} target="_blank" rel="noopener noreferrer" className={`group ${baseClass} ${highlightClass} p-0`}>
+      <a
+        href={url}
+        target="_blank"
+        rel="noopener noreferrer"
+        className={`group ${baseClass} ${highlightClass} p-0`}
+        title={url}
+      >
         <div className="flex gap-4 p-4">
           {data.image ? (
             <img
@@ -356,6 +376,7 @@ export default function App({ ogpData }: { ogpData: OgpMap }) {
                   <a
                     href="#top"
                     className={`text-2xl font-bold ${config.textPrimary} whitespace-nowrap`}
+                    title="#top"
                   >
                     {PROFILE.title}
                   </a>
@@ -368,6 +389,7 @@ export default function App({ ogpData }: { ogpData: OgpMap }) {
                     className={isDark ? 'hover:bg-slate-800' : 'hover:bg-gray-100'}
                     onClick={() => window.open('https://x.com/dogegg314', '_blank')}
                     aria-label={LABELS.twitter}
+                    title="https://x.com/dogegg314"
                   >
                     <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
                       <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
@@ -379,6 +401,7 @@ export default function App({ ogpData }: { ogpData: OgpMap }) {
                     className={isDark ? 'hover:bg-slate-800' : 'hover:bg-gray-100'}
                     onClick={() => window.open('https://github.com/inutamago-dogegg', '_blank')}
                     aria-label={LABELS.github}
+                    title="https://github.com/inutamago-dogegg"
                   >
                     <Github className="w-4 h-4" />
                   </Button>
@@ -418,6 +441,7 @@ export default function App({ ogpData }: { ogpData: OgpMap }) {
                   href={`#${section.id}`}
                   className="group flex items-center justify-end gap-3"
                   aria-label={section.label}
+                  title={`#${section.id}`}
                 >
                   <span
                     className={`rounded-full border ${config.surfaceBorder} ${config.surfaceBg} px-3 py-1 text-xs font-medium ${config.textSecondary} shadow-md backdrop-blur-md transition-all duration-200 ${
@@ -464,6 +488,7 @@ export default function App({ ogpData }: { ogpData: OgpMap }) {
                         variant="outline"
                         className={`border-2 ${config.surfaceBorder} ${config.surfaceBg} hover:-translate-y-0.5`}
                         onClick={() => window.open('https://x.com/dogegg314', '_blank')}
+                        title="https://x.com/dogegg314"
                       >
                         <svg className="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 24 24">
                           <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
@@ -475,6 +500,7 @@ export default function App({ ogpData }: { ogpData: OgpMap }) {
                         variant="outline"
                         className={`border-2 ${config.surfaceBorder} ${config.surfaceBg} hover:-translate-y-0.5`}
                         onClick={() => window.open('https://github.com/inutamago-dogegg', '_blank')}
+                        title="https://github.com/inutamago-dogegg"
                       >
                         <Github className="w-4 h-4 mr-2" />
                         {LABELS.github}
@@ -503,6 +529,7 @@ export default function App({ ogpData }: { ogpData: OgpMap }) {
                 className="text-center mb-16"
               >
                 <h2 className={`text-5xl mb-4 ${config.textPrimary}`}>{PROFILE.sections.skillsTitle}</h2>
+                <p className={`text-xl ${config.textSecondary}`}>{PROFILE.sections.skillsLead}</p>
               </motion.div>
 
               <div className="grid gap-6 sm:grid-cols-2">
@@ -575,6 +602,7 @@ export default function App({ ogpData }: { ogpData: OgpMap }) {
                                   target="_blank"
                                   rel="noopener noreferrer"
                                   className="hover:underline"
+                                  title={career.url}
                                 >
                                   {career.company}
                                 </a>
@@ -595,7 +623,7 @@ export default function App({ ogpData }: { ogpData: OgpMap }) {
                         {career.tech && career.tech.length > 0 && (
                           <div className="flex flex-wrap gap-2 mt-4">
                             {career.tech.map((tech, techIndex) => (
-                              <Badge key={techIndex} className={`${config.badgeBg} border`}>
+                              <Badge variant="static" key={techIndex} className={`${config.badgeBg} pointer-events-none`}>
                                 {tech}
                               </Badge>
                             ))}
@@ -624,30 +652,61 @@ export default function App({ ogpData }: { ogpData: OgpMap }) {
 
               {projects.map((yearGroup, yearIndex) => (
                 <div key={yearGroup.year} className="mb-16">
-                  <motion.h3
+                  <motion.div
                     initial={{ opacity: 0, x: -20 }}
                     whileInView={{ opacity: 1, x: 0 }}
                     viewport={{ once: true }}
                     transition={{ duration: 0.35, delay: yearIndex * 0.06 }}
-                    className={`text-4xl mb-8 ${config.textPrimary} font-bold`}
+                    className="flex items-center justify-between mb-8 gap-4"
                   >
-                    {yearGroup.year}年度
-                  </motion.h3>
-
-                  <div className="grid md:grid-cols-2 gap-6">
-                    {yearGroup.items.map((project, index) => {
-                      const primaryLink = project.playLink?.url;
-                      return (
-                      <motion.div
-                        key={index}
-                        initial={{ opacity: 0, y: 20 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: true }}
-                        transition={{ duration: 0.35, delay: index * 0.06 }}
-                        className="min-w-0"
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setOpenYears((prev) => ({ ...prev, [yearGroup.year]: !prev[yearGroup.year] }))
+                      }
+                      className={`text-left text-4xl ${config.textPrimary} font-bold whitespace-nowrap inline-flex items-center gap-2 transition-all duration-200 hover:opacity-90 hover:scale-[1.03] hover:-translate-y-0.5`}
+                      aria-expanded={openYears[yearGroup.year]}
+                      aria-controls={`projects-${yearGroup.year}`}
+                    >
+                      {yearGroup.year}年度
+                      <span
+                        className={`text-2xl transition-transform ${
+                          openYears[yearGroup.year] ? 'rotate-180' : 'rotate-0'
+                        }`}
+                        aria-hidden="true"
                       >
-                        <Card className={`border-2 ${config.cardBorderStatic} transition-all duration-300 ${config.surfaceBg} backdrop-blur h-full min-w-0`}>
-                          <CardHeader>
+                        ▼
+                      </span>
+                    </button>
+                  </motion.div>
+
+                  <motion.div
+                    id={`projects-${yearGroup.year}`}
+                    initial={false}
+                    animate={{
+                      height: openYears[yearGroup.year] ? 'auto' : 0,
+                      opacity: openYears[yearGroup.year] ? 1 : 0,
+                    }}
+                    transition={{ duration: 0.25, ease: 'easeInOut' }}
+                    className="overflow-hidden"
+                  >
+                    <div className="grid md:grid-cols-2 gap-6">
+                      {yearGroup.items.map((project, index) => {
+                        const primaryLink = project.playLink?.url;
+                        const xUrl = project.xUrl;
+                        const githubUrl = project.githubUrl;
+                      const steamUrl = project.steamUrl;
+                        return (
+                        <motion.div
+                          key={index}
+                          initial={{ opacity: 0, y: 20 }}
+                          whileInView={{ opacity: 1, y: 0 }}
+                          viewport={{ once: true }}
+                          transition={{ duration: 0.35, delay: index * 0.06 }}
+                          className="min-w-0"
+                        >
+                          <Card className={`border-2 ${config.cardBorderStatic} transition-all duration-300 ${config.surfaceBg} backdrop-blur h-full min-w-0`}>
+                            <CardHeader>
                             <div className="mb-2">
                               <span
                                 className={`inline-flex items-center rounded-md border ${config.surfaceBorder} ${config.chipBg} px-2 py-0.5 text-xs font-medium ${config.chipText}`}
@@ -655,41 +714,137 @@ export default function App({ ogpData }: { ogpData: OgpMap }) {
                                 {project.genre}
                               </span>
                             </div>
-                            <div className="flex items-start justify-between mb-2 gap-2">
-                              <div className="min-w-0 flex-1">
-                                <CardTitle className={`text-xl ${config.textPrimary} break-words`}>
-                                  {project.title}
-                                </CardTitle>
-                              </div>
-                              {primaryLink && (
-                                <Button
-                                  size="icon"
-                                  variant="ghost"
-                                  className={isDark ? 'hover:bg-slate-800' : 'hover:bg-gray-100'}
-                                  onClick={() => window.open(primaryLink, '_blank')}
-                                >
-                                  <ExternalLink className="h-5 w-5" />
-                                </Button>
-                              )}
+                            <div className="mb-2 min-w-0">
+                              <CardTitle className={`text-xl ${config.textPrimary} break-words`}>
+                                {project.title}
+                              </CardTitle>
                             </div>
                             <CardDescription className={`text-sm ${config.textMuted}`}>{project.period}</CardDescription>
                           </CardHeader>
                           <CardContent className="min-w-0">
-                            {project.headerImage && primaryLink && (
-                                <a
-                                href={primaryLink}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                  className="block mb-4 transition-transform hover:-translate-y-0.5"
-                                  aria-label={`${project.title} の${LABELS.play}へ移動`}
-                              >
-                                <img
-                                  src={project.headerImage.src}
-                                  alt={`${project.title} のヘッダー画像`}
-                                  className={`h-44 w-full rounded-lg object-contain border ${config.surfaceBorder} ${config.surfaceBg}`}
-                                  loading="lazy"
-                                />
-                              </a>
+                            {project.headerImage && (
+                              <div className="relative mb-4">
+                                {primaryLink ? (
+                                  <a
+                                    href={primaryLink}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="block transition-transform hover:-translate-y-0.5"
+                                    aria-label={`${project.title} の${LABELS.play}へ移動`}
+                                    title={primaryLink}
+                                  >
+                                    <img
+                                      src={project.headerImage.src}
+                                      alt={`${project.title} のヘッダー画像`}
+                                      className={`h-44 w-full rounded-lg object-contain border ${config.surfaceBorder} ${config.surfaceBg}`}
+                                      loading="lazy"
+                                    />
+                                  </a>
+                                ) : (
+                                  <img
+                                    src={project.headerImage.src}
+                                    alt={`${project.title} のヘッダー画像`}
+                                    className={`h-44 w-full rounded-lg object-contain border ${config.surfaceBorder} ${config.surfaceBg}`}
+                                    loading="lazy"
+                                  />
+                                )}
+                                {(xUrl || githubUrl || steamUrl) && (
+                                  <div className="absolute left-2 bottom-2 flex items-center gap-1">
+                                    {xUrl && (
+                                      <Button
+                                        size="icon"
+                                        variant="ghost"
+                                        className={`${config.surfaceBg} ${config.surfaceBorder} border shadow-sm ${
+                                          isDark ? 'hover:bg-slate-800' : 'hover:bg-gray-100'
+                                        }`}
+                                        onClick={() => window.open(xUrl, '_blank')}
+                                        aria-label="X"
+                                        title={xUrl}
+                                      >
+                                        <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                                          <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+                                        </svg>
+                                      </Button>
+                                    )}
+                                    {githubUrl && (
+                                      <Button
+                                        size="icon"
+                                        variant="ghost"
+                                        className={`${config.surfaceBg} ${config.surfaceBorder} border shadow-sm ${
+                                          isDark ? 'hover:bg-slate-800' : 'hover:bg-gray-100'
+                                        }`}
+                                        onClick={() => window.open(githubUrl, '_blank')}
+                                        aria-label={LABELS.github}
+                                        title={githubUrl}
+                                      >
+                                        <Github className="h-4 w-4" />
+                                      </Button>
+                                    )}
+                                    {steamUrl && (
+                                      <Button
+                                        size="icon"
+                                        variant="ghost"
+                                        className={`${config.surfaceBg} ${config.surfaceBorder} border shadow-sm ${
+                                          isDark ? 'hover:bg-slate-800' : 'hover:bg-gray-100'
+                                        }`}
+                                        onClick={() => window.open(steamUrl, '_blank')}
+                                        aria-label="Steam"
+                                        title={steamUrl}
+                                      >
+                                        <span className="relative inline-flex">
+                                          <img src={steamIcon.src} alt="" className="h-4 w-4" />
+                                          <span className="absolute -top-1 -right-1 text-[7px] leading-none">®</span>
+                                        </span>
+                                      </Button>
+                                    )}
+                                  </div>
+                                )}
+                              </div>
+                            )}
+                            {!project.headerImage && (xUrl || githubUrl || steamUrl) && (
+                              <div className="flex items-center gap-1 mb-4">
+                                {xUrl && (
+                                  <Button
+                                    size="icon"
+                                    variant="ghost"
+                                    className={isDark ? 'hover:bg-slate-800' : 'hover:bg-gray-100'}
+                                    onClick={() => window.open(xUrl, '_blank')}
+                                    aria-label="X"
+                                    title={xUrl}
+                                  >
+                                    <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                                      <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+                                    </svg>
+                                  </Button>
+                                )}
+                                {githubUrl && (
+                                  <Button
+                                    size="icon"
+                                    variant="ghost"
+                                    className={isDark ? 'hover:bg-slate-800' : 'hover:bg-gray-100'}
+                                    onClick={() => window.open(githubUrl, '_blank')}
+                                    aria-label={LABELS.github}
+                                    title={githubUrl}
+                                  >
+                                    <Github className="h-4 w-4" />
+                                  </Button>
+                                )}
+                                {steamUrl && (
+                                  <Button
+                                    size="icon"
+                                    variant="ghost"
+                                    className={isDark ? 'hover:bg-slate-800' : 'hover:bg-gray-100'}
+                                    onClick={() => window.open(steamUrl, '_blank')}
+                                    aria-label="Steam"
+                                    title={steamUrl}
+                                  >
+                                    <span className="relative inline-flex">
+                                      <img src={steamIcon.src} alt="" className="h-4 w-4" />
+                                      <span className="absolute -top-1 -right-1 text-[7px] leading-none">®</span>
+                                    </span>
+                                  </Button>
+                                )}
+                              </div>
                             )}
                             <div className="space-y-3 mb-4">
                               {project.member && (
@@ -714,7 +869,7 @@ export default function App({ ogpData }: { ogpData: OgpMap }) {
 
                             <div className="flex flex-wrap gap-2 mb-4">
                               {project.tech.map((tech, techIndex) => (
-                                <Badge key={techIndex} className={`${config.badgeBg} border`}>
+                                <Badge variant="static" key={techIndex} className={`${config.badgeBg} pointer-events-none`}>
                                   {tech}
                                 </Badge>
                               ))}
@@ -759,12 +914,13 @@ export default function App({ ogpData }: { ogpData: OgpMap }) {
                                 ))}
                               </div>
                             )}
-                          </CardContent>
-                        </Card>
-                      </motion.div>
-                    );
-                    })}
-                  </div>
+                            </CardContent>
+                          </Card>
+                        </motion.div>
+                      );
+                      })}
+                    </div>
+                  </motion.div>
                 </div>
               ))}
             </div>
@@ -838,11 +994,16 @@ export default function App({ ogpData }: { ogpData: OgpMap }) {
           <footer className={`py-8 px-4 ${config.surfaceBg} backdrop-blur-md border-t ${config.surfaceBorder}`}>
             <div className="container mx-auto max-w-6xl text-center">
               <p className={`${config.textMuted} mb-4`}>{PROFILE.footer}</p>
+              <p className={`${config.textMuted} text-xs mb-4`}>
+                ©2026 Valve Corporation. Steam and the Steam logo are trademarks and/or registered trademarks of Valve
+                Corporation in the U.S. and/or other countries.
+              </p>
               <div className="flex gap-4 justify-center">
                 <Button
                   variant="ghost"
                   size="sm"
                   onClick={() => window.open('https://x.com/dogegg314', '_blank')}
+                  title="https://x.com/dogegg314"
                 >
                   <svg className="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 24 24">
                     <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
@@ -853,6 +1014,7 @@ export default function App({ ogpData }: { ogpData: OgpMap }) {
                   variant="ghost"
                   size="sm"
                   onClick={() => window.open('https://github.com/inutamago-dogegg', '_blank')}
+                  title="https://github.com/inutamago-dogegg"
                 >
                   <Github className="w-4 h-4 mr-2" />
                   {LABELS.github}
