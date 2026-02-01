@@ -162,6 +162,7 @@ export const CAREERS: CareerItem[] = [
     period: '2025年2月~3月',
     details: [
       'グリーさんに1ヶ月間インターンでお邪魔しました。ソーシャルゲームの新機能実装について、プランナーとの仕様決定から実装、QAとのやり取りまでの一通りの業務を行いました。',
+      '新規実装タスク終了後は業務効率化ツールの機能改善の提案を自主的に行い実装をしました。'
     ],
     category: 'インターン',
     url: 'https://hd.gree.net/jp/ja/recruit/internship/jobs/',
@@ -172,6 +173,7 @@ export const CAREERS: CareerItem[] = [
     period: '準備期間: 2024年12月~2025年3月, 制作期間: 2025年4月~9月',
     details: [
       'サークルのメンバー20人と共にCAPCOM GAMES COMPETITIONというイベントで制作しました。',
+      'ディレクター兼マネージャーとして経験者のメンバー19人をまとめ、企画~完成までを担当しました。'
     ],
     category: 'イベント',
     url: 'https://www.capcom-games.com/cgc/2025/ja-jp/',
@@ -190,6 +192,7 @@ export const CAREERS: CareerItem[] = [
     period: '2024年9月',
     details: [
       'CyberAgentさんに1ヶ月インターンでお邪魔しました。ソーシャルゲームのゲームクライアントのパフォーマンスチューニングに取り組みました。',
+      '渡されたタスクの終了後はパフォーマンス改善箇所を自ら調べPRを出しました。'
     ],
     category: 'インターン',
     url: 'https://www.cyberagent.co.jp/careers/students/event/detail/id=32004',
@@ -206,7 +209,10 @@ export const CAREERS: CareerItem[] = [
   {
     company: 'BitSummit Game Jam 2023',
     period: '2023年4月~7月',
-    details: ['BitSummit Game Jamというイベントで制作しました。'],
+    details: [
+      'BitSummit Game Jamというイベントでリードプログラマとして制作しました。',
+      '初対面のメンバー8人での制作でした。'
+    ],
     category: 'イベント',
     url: 'https://bitsummit-gamejam.itch.io',
     tech: [TECH.unity, TECH.cSharp, TECH.git, TECH.unirx, TECH.unitask],
