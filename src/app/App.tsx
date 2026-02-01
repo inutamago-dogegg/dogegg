@@ -677,7 +677,7 @@ export default function App({
                       className={`${isHomePage ? config.buttonBg : navGhostClass} gap-1 px-2`}
                     >
                       <a href={homeUrl}>
-                        <Home className="w-4 h-4 mr-1" />
+                        <Home className="w-4 h-4 mr-0" />
                         Home
                       </a>
                     </Button>
@@ -688,7 +688,7 @@ export default function App({
                       className={`${isAboutPage ? config.buttonBg : navGhostClass} gap-1 px-2`}
                     >
                       <a href={aboutUrl}>
-                        <User className="w-4 h-4 mr-1" />
+                        <User className="w-4 h-4 mr-0" />
                         About
                       </a>
                     </Button>
@@ -699,7 +699,7 @@ export default function App({
                       className={`${isWorksPage ? config.buttonBg : navGhostClass} gap-1 px-2`}
                     >
                       <a href={worksPageUrl}>
-                        <FolderOpen className="w-4 h-4 mr-1" />
+                        <FolderOpen className="w-4 h-4 mr-0" />
                         Works
                       </a>
                     </Button>
