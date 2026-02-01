@@ -30,6 +30,7 @@ export type CareerItem = {
 export type HobbyLink = {
   label: string;
   url: string;
+  note?: string;
 };
 
 export type HobbyItem = {
@@ -152,7 +153,9 @@ export const CAREERS: CareerItem[] = [
   {
     company: 'C-lock-row',
     period: '2025年7月~現在',
-    details: ['科学大の謎解き制作サークルです。'],
+    details: [
+      '科学大の謎解き制作サークルです。',
+    ],
     category: 'サークル',
     url: 'https://x.com/C_lock_row',
     tech: [TECH.makeRiddle],
@@ -211,7 +214,7 @@ export const CAREERS: CareerItem[] = [
     period: '2023年4月~7月',
     details: [
       'BitSummit Game Jamというイベントでリードプログラマとして制作しました。',
-      '初対面のメンバー8人での制作でした。'
+      '初対面のメンバー9人での制作でした。'
     ],
     category: 'イベント',
     url: 'https://bitsummit-gamejam.itch.io',
@@ -235,48 +238,95 @@ export const HOBBIES: HobbyItem[] = [
   {
     name: '謎解き',
     icon: '🔍',
-    details: ['タンブルウィードによく行きます'],
+    details: [
+      'タンブルウィードによく行きます。',
+      'Web謎やLINE謎も好きです。'
+    ],
     favoritesLabel: '好きな謎解き公演',
     favorites: [
-      { label: '海上の棺ヨーシズム号からの生還', url: 'https://tumbleweed.jp/event/yawsizm' },
-      { label: '転変の館ヨーカワリ荘からの生還', url: 'https://tumbleweed.jp/event/yawkawari' },
-      { label: '天空の沼ヨーフエル塔からの生還', url: 'https://tumbleweed.jp/event/yawfwel' },
-      { label: '未完', url: 'https://tumbleweed.jp/event/mikan' },
-      { label: 'ROLE', url: 'https://tumbleweed.jp/event/role/' },
-      { label: 'ここから先は自分の力で考えましょう。', url: 'https://www.xeoxy.com/event/ksk' },
+      { label: '海上の棺ヨーシズム号からの生還', url: 'https://tumbleweed.jp/event/yawsizm',
+        note: 'マジで面白いです。'
+      },
+      { label: '転変の館ヨーカワリ荘からの生還', url: 'https://tumbleweed.jp/event/yawkawari',
+        note: 'めちゃくちゃ面白いです。'
+      },
+      { label: '天空の沼ヨーフエル塔からの生還', url: 'https://tumbleweed.jp/event/yawfwel',
+        note: 'すごい面白いです。'
+      },
+      { label: '未完', url: 'https://tumbleweed.jp/event/mikan',
+        note: '本当に面白いです。'
+      },
+      { label: 'ROLE', url: 'https://tumbleweed.jp/event/role/',
+        note: 'めっちゃ面白いです。'
+      },
+      { label: 'ここから先は自分の力で考えましょう。', url: 'https://www.xeoxy.com/event/ksk',
+        note: 'はちゃめちゃに面白いです。'
+      },
     ],
   },
   {
     name: '漫画',
     icon: '📚',
-    details: ['ジャンプラに入ってます'],
+    details: [
+      'ジャンプラに入ってます。',
+      '少年漫画が好きです。'
+    ],
     favoritesLabel: '好きな漫画',
     favorites: [
-      { label: 'カグラバチ', url: 'https://shonenjumpplus.com/episode/17106371875870549182' },
-      { label: '亜人', url: 'https://pocket.shonenmagazine.com/title/01458/episode/324202' },
-      { label: '嘘喰い', url: 'https://ynjn.jp/title/129' },
-      { label: '宇宙兄弟', url: 'https://sbyomu.lp.koyamachuya.com/' },
-      { label: '僕のヒーローアカデミア', url: 'https://shonenjumpplus.com/episode/10833519556325021790' },
+      { label: 'カグラバチ', url: 'https://shonenjumpplus.com/episode/17106371875870549182',
+        note: '面白いです。'
+      },
+      { label: '亜人', url: 'https://pocket.shonenmagazine.com/title/01458/episode/324202',
+        note: '面白いです。'
+      },
+      { label: '嘘喰い', url: 'https://ynjn.jp/title/129',
+        note: '面白いです。'
+      },
+      { label: '宇宙兄弟', url: 'https://sbyomu.lp.koyamachuya.com/',
+        note: '面白いです。'
+      },
+      { label: '僕のヒーローアカデミア', url: 'https://shonenjumpplus.com/episode/10833519556325021790',
+        note: '面白いです。'
+      },
     ],
   },
   {
     name: 'ゲーム(遊ぶ方)',
     icon: '🎮',
-    details: ['インディーゲームをよく遊びます。'],
+    details: [
+      'インディーゲームをよく遊びます。',
+      'ネタバレが致命的なゲームが好きなことが多いです。知識ゲートと言われるゲームが特に好きです。',
+      '苦手・嫌いなジャンルは特にありません。'
+    ],
     favoritesLabel: '好きなゲーム',
     favorites: [
-      { label: 'The Witness', url: 'https://store.steampowered.com/app/210970/The_Witness/' },
-      { label: 'Outer Wilds', url: 'https://store.steampowered.com/app/753640/Outer_Wilds/' },
-      { label: 'パクレットのうさちゃん捕獲ゲーム', url: 'https://store.steampowered.com/app/1628610/_/' },
-      { label: 'Stray', url: 'https://store.steampowered.com/app/1332010/Stray/' },
-      { label: 'Leap Year', url: 'https://store.steampowered.com/app/2951770/Leap_Year/' },
-      { label: 'モンスターハンター', url: 'https://www.monsterhunter.com/ja/' },
+      { label: 'The Witness', url: 'https://store.steampowered.com/app/210970/The_Witness/',
+        note: '面白いです。'
+      },
+      { label: 'Outer Wilds', url: 'https://store.steampowered.com/app/753640/Outer_Wilds/',
+        note: '人生で1番のゲームです。'
+      },
+      { label: 'パクレットのうさちゃん捕獲ゲーム', url: 'https://store.steampowered.com/app/1628610/_/',
+        note: '面白いです。'
+      },
+      { label: 'Stray', url: 'https://store.steampowered.com/app/1332010/Stray/',
+        note: '猫ちゃんが可愛い'
+      },
+      { label: 'Leap Year', url: 'https://store.steampowered.com/app/2951770/Leap_Year/',
+        note: '面白いです。'
+      },
+      { label: 'モンスターハンター', url: 'https://www.monsterhunter.com/ja/',
+        note: '面白いです。'
+      },
     ],
   },
   {
     name: 'ゲーム(つくる方)',
     icon: '🛠️',
-    details: [`${TECH.unity}, ${TECH.cSharp}を使います`],
+    details: [
+      `${TECH.unity}, ${TECH.cSharp}を使います`,
+      '面白さがゲーム画面上で実現された時が1番好きです。'
+    ],
   },
 ];
 

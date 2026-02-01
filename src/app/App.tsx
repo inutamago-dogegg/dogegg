@@ -1124,12 +1124,16 @@ export default function App({
                               {hobby.favorites.map((favorite) => {
                                 const ogp = ogpData[favorite.url];
                                 return (
-                                  <OgpCard
-                                    key={favorite.url}
-                                    label={favorite.label}
-                                    url={favorite.url}
-                                    {...(ogp ? { data: ogp } : {})}
-                                  />
+                                  <div key={favorite.url} className="space-y-1 min-w-0">
+                                    <OgpCard
+                                      label={favorite.label}
+                                      url={favorite.url}
+                                      {...(ogp ? { data: ogp } : {})}
+                                    />
+                                    {favorite.note && (
+                                      <p className={`text-xs ${config.textMuted} px-2`}>{favorite.note}</p>
+                                    )}
+                                  </div>
                                 );
                               })}
                             </div>
