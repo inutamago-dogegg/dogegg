@@ -116,7 +116,7 @@ export const PROFILE = {
   sections: {
     abaoutMeTitle: 'About Me',
     featuredTitle: 'Highlighted Works',
-    featuredLead: '特に注目の作品',
+    featuredLead: '力を入れた作品',
     worksTitle: 'Works',
     worksLead: 'これまでに制作したもの',
     skillsTitle: 'Skills',
