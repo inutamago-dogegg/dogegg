@@ -315,7 +315,7 @@ export const PROJECTS: ProjectYearGroup[] = [
         playLink: { label: LABELS.play, url: 'https://gameparade.creators-guild.com/works/3532' },
         relatedLinks: [{ label: 'CAPCOM GAMES COMPETITION 公式ページ', url: 'https://www.capcom-games.com/cgc/2025/ja-jp/' }],
         headerImage: ElegoHeader,
-        awards: ['ゲームクエイター甲子園2025セミファイナリスト'],
+        awards: ['ゲームクリエイター甲子園2025セミファイナリスト'],
         xUrl: 'https://x.com/cgc2025_trap',
       },
       {
