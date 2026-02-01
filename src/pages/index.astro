@@ -1,21 +1,33 @@
 ---
+import App from '../app/App';
+import '@/styles/index.css';
+import { ViewTransitions } from 'astro:transitions';
+
 const baseUrl = import.meta.env.BASE_URL.endsWith('/')
   ? import.meta.env.BASE_URL
   : `${import.meta.env.BASE_URL}/`;
-const homeUrl = `${baseUrl}home/`;
+
+const siteUrl = Astro.site?.toString() ?? 'https://inutamago-dogegg.github.io/dogegg/';
+const ogImageUrl = new URL(`${baseUrl}ogp.png`, siteUrl).toString();
+const rootUrl = new URL(baseUrl, siteUrl).toString();
 ---
 
 <html lang="ja">
 	<head>
 		<meta charset="utf-8" />
+		<link rel="icon" type="image/svg+xml" sizes="any" href={`${baseUrl}favicon.svg`} />
 		<meta name="viewport" content="width=device-width" />
-		<meta http-equiv="refresh" content={`0; url=${homeUrl}`} />
-		<title>Redirecting...</title>
-		<script define:vars={{ homeUrl }}>
-			window.location.replace(homeUrl);
-		</script>
+		<meta name="generator" content={Astro.generator} />
+		<ViewTransitions />
+		<meta property="og:title" content="どぐえぐ" />
+		<meta property="og:description" content="トップページ" />
+		<meta property="og:image" content={ogImageUrl} />
+		<meta property="og:image:alt" content="どぐえぐのOGP画像" />
+		<meta property="og:url" content={rootUrl} />
+		<meta property="og:type" content="website" />
+		<title>どぐえぐ</title>
 	</head>
 	<body>
-		<a href={homeUrl}>home</a>
+		<App client:load ogpData={{}} mode="home" />
 	</body>
 </html>

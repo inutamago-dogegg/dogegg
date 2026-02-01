@@ -367,7 +367,7 @@ export default function App({
   const baseUrl = import.meta.env.BASE_URL.endsWith('/')
     ? import.meta.env.BASE_URL
     : `${import.meta.env.BASE_URL}/`;
-  const homeUrl = `${baseUrl}home/`;
+  const homeUrl = baseUrl;
   const aboutUrl = `${baseUrl}about/`;
   const worksPageUrl = `${baseUrl}works/`;
   const navGhostClass = `${config.textSecondary} ${isDark ? 'hover:bg-slate-800' : 'hover:bg-gray-100'}`;
