@@ -669,7 +669,7 @@ export default function App({
                 </motion.div>
 
                 <div className="flex items-center gap-3 min-w-0">
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-0">
                     <Button
                       asChild
                       variant={isHomePage ? 'default' : 'ghost'}
@@ -760,7 +760,7 @@ export default function App({
                     loading="lazy"
                   />
                   <span
-                    className={`absolute top-12 left-1/2 -translate-x-1/2 rounded-ful px-2 py-0.5 text-xl md:text-base`}
+                    className={`absolute top-[33%] left-1/2 -translate-x-1/2 rounded-ful px-2 py-0.5 text-xl md:text-base`}
                     aria-hidden="true"
                   >
                     {themeConfig[theme].emoji}
