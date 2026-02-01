@@ -99,6 +99,9 @@ const TECH = {
   astro: 'Astro',
   react: 'React',
   typescript: 'TypeScript',
+  subversion: 'Subversion(SVN)',
+  perforce: 'Perforce',
+  makeRiddle: '謎制作',
 } as const;
 
 const GENRE = {
@@ -140,6 +143,8 @@ export const ABOUT_NAV_SECTIONS = [
 
 export const WORKS_NAV_SECTIONS = [{ id: 'works', label: PROFILE.sections.worksTitle }] as const;
 
+const CGC_TECHS = [TECH.reEngine, TECH.cSharp, TECH.python, TECH.subversion, TECH.perforce];
+
 export const CAREERS: CareerItem[] = [
   {
     company: 'C-lock-row',
@@ -147,7 +152,7 @@ export const CAREERS: CareerItem[] = [
     details: ['科学大の謎解き制作サークルです。'],
     category: 'サークル',
     url: 'https://x.com/C_lock_row',
-    tech: [],
+    tech: [TECH.makeRiddle],
   },
   {
     company: 'GREE Jobs',
@@ -158,6 +163,16 @@ export const CAREERS: CareerItem[] = [
     category: 'インターン',
     url: 'https://hd.gree.net/jp/ja/recruit/internship/jobs/',
     tech: [TECH.cocos2dx, TECH.cPlusPlus],
+  },
+  {
+    company: 'CAPCOM GAMES COMPETITION',
+    period: '準備期間: 2024年12月~2025年3月, 制作期間: 2025年4月~9月',
+    details: [
+      'サークルのメンバー20人と共にCAPCOM GAMES COMPETITIONというイベントで制作しました。',
+    ],
+    category: 'イベント',
+    url: 'https://www.capcom-games.com/cgc/2025/ja-jp/',
+    tech: CGC_TECHS,
   },
   {
     company: 'Game Speed Hackathon Autumn 2024',
@@ -184,6 +199,14 @@ export const CAREERS: CareerItem[] = [
     category: 'インターン',
     url: 'https://job.tracks.run/internship/koeitecmoholdings-26-01',
     tech: [TECH.cPlusPlus],
+  },
+  {
+    company: 'BitSummit Game Jam 2023',
+    period: '2023年4月~7月',
+    details: ['BitSummit Game Jamというイベントで制作しました。'],
+    category: 'イベント',
+    url: 'https://bitsummit-gamejam.itch.io',
+    tech: [TECH.unity, TECH.cSharp, TECH.git, TECH.unirx, TECH.unitask],
   },
   {
     company: '東京科学大学デジタル創作同好会traP',
@@ -317,11 +340,11 @@ export const PROJECTS: ProjectYearGroup[] = [
       },
       {
         title: 'ELEGO',
-        period: '2025年4月～9月 (6か月)',
-        tech: [TECH.reEngine],
-        member: 'プランナー5人, プログラマー5人, 3Dデザイナー4人, 2Dデザイナー2人, シナリオ1人, サウンド2人',
+        period: '2025年4月~9月 (6か月)',
+        tech: CGC_TECHS,
+        member: '20人(プランナー5人, プログラマー6人, 3Dデザイナー4人, 2Dデザイナー2人, シナリオ1人, サウンド2人)',
         outline: '敵を操って脱出を目指すステルスアクションゲーム',
-        appeal: 'CAPCOM GAMES COMPETITIONというイベントで制作しました。ディレクター兼マネージャーとして経験者のメンバー19人をまとめ、企画～完成までを担当しました。未知のエンジン・6か月で完全締め切り・3Dアクション制作未経験という状況ながら、なんとか完成まで持っていきました。',
+        appeal: 'CAPCOM GAMES COMPETITIONというイベントで制作しました。ディレクター兼マネージャーとして経験者のメンバー19人をまとめ、企画~完成までを担当しました。未知のエンジン・6か月で完全締め切り・3Dアクション制作未経験という状況ながら、なんとか完成まで持っていきました。',
         genre: GENRE.game,
         playLink: { label: LABELS.play, url: 'https://gameparade.creators-guild.com/works/3532' },
         relatedLinks: [{ label: 'CAPCOM GAMES COMPETITION 公式ページ', url: 'https://www.capcom-games.com/cgc/2025/ja-jp/' }],
@@ -332,7 +355,7 @@ export const PROJECTS: ProjectYearGroup[] = [
       {
         title: '2',
         period: '',
-        tech: [],
+        tech: [TECH.makeRiddle],
         member: '',
         outline: '',
         appeal: '全体構成・当日スタッフに関わりました。',
@@ -344,7 +367,7 @@ export const PROJECTS: ProjectYearGroup[] = [
         title: 'Deeper and Deeper',
         period: '2025年12月 (準備1週間, 制作1週間)',
         tech: [TECH.unityUrp, TECH.unity, TECH.git, TECH.vcontainer, TECH.unitask],
-        member: 'プランナー1人, プログラマー3人, 2Dデザイナー3人, サウンド1人',
+        member: '8人(プランナー1人, プログラマー3人, 2Dデザイナー3人, サウンド1人)',
         outline: 'ダンジョンの深く深くに進みお宝を手に入れて帰還するゲーム',
         appeal: 'リードプログラマとしてほぼ全てのプログラムを書きました。',
         genre: GENRE.game,
@@ -359,9 +382,9 @@ export const PROJECTS: ProjectYearGroup[] = [
     items: [
       {
         title: 'Cross the C',
-        period: '2024年7月～現在 (約1年半)',
+        period: '2024年7月~現在 (約1年半)',
         tech: [TECH.unityUrp, TECH.git, TECH.r3, TECH.unitask, TECH.vcontainer],
-        member: 'プランナー4人, プログラマー3人, 3Dデザイナー3人, 2Dデザイナー1人, パズル制作7人',
+        member: '約15人(プランナー4人, プログラマー3人, 3Dデザイナー3人, 2Dデザイナー1人, パズル制作7人)',
         outline: '船を操作してゴールを目指す氷床パズルゲーム',
         appeal: 'リーダー・リードプログラマとして参加しています',
         genre: GENRE.game,
@@ -375,7 +398,7 @@ export const PROJECTS: ProjectYearGroup[] = [
         title: 'Queen Bee',
         period: '2025年1月 (準備1週間, 制作1週間)',
         tech: [TECH.unity, TECH.git, TECH.unitask],
-        member: 'プランナー1人, プログラマー3人, 2Dデザイナー2人, サウンド1人',
+        member: '6人(プランナー1人, プログラマー3人, 2Dデザイナー2人, サウンド1人)',
         outline: '主人公・野心萌(やしん もえ)が学園トップを目指す学園シミュレーションカードゲーム',
         appeal: 'リーダー兼リードプログラマとして制作しました。同じ学年で対等なメンバーが多く、白熱した企画議論ができましたが、あまりまとまりませんでした。拙いながらも仕様決定をし、メンバーに指示出しをしながら最後までプログラムを書きました。',
         genre: GENRE.game,
@@ -392,7 +415,7 @@ export const PROJECTS: ProjectYearGroup[] = [
         title: '「」か？',
         period: '2023年6月 (準備1週間, 制作2日)',
         tech: [TECH.unity, TECH.git],
-        member: 'プログラマー3人, 2Dデザイナー2人',
+        member: '5人(プログラマー3人, 2Dデザイナー2人)',
         outline: 'ひらがなを吸収して変身して戦う2D弾幕アクションゲーム',
         appeal: 'プログラマ兼チームリーダーとして、新入生への講習やサポート・レビューなどを行いながら、2日で完成させられるゲーム性の考案やプログラム制作を行いました。',
         genre: GENRE.game,
@@ -401,9 +424,9 @@ export const PROJECTS: ProjectYearGroup[] = [
       },
       {
         title: 'Memory Transer',
-        period: '2023年5月～7月 (約2か月)',
+        period: '2023年5月~7月 (約2か月)',
         tech: [TECH.unity, TECH.git, TECH.unirx, TECH.unitask],
-        member: 'プランナー4人, プログラマー4人, 2Dデザイナー1人',
+        member: '9人(プランナー4人, プログラマー4人, 2Dデザイナー1人)',
         outline: '記憶を整理するアクションゲーム',
         appeal: 'BitSummit Game Jam 2023で制作しました。リードエンジニアとして立候補し、他メンバーへのGitやコードエディター(Rider)の講習を行い、設計からタスクの割り振りまで行いました。途中からメンバーの脱落があり、急遽集会を開くなどして完成まで持っていきました。',
         genre: GENRE.game,
@@ -412,9 +435,9 @@ export const PROJECTS: ProjectYearGroup[] = [
       },
       {
         title: 'バリバリベンジ',
-        period: '2023年7月～現在 (約2年半)',
+        period: '2023年7月~現在 (約2年半)',
         tech: [TECH.unity, TECH.git, TECH.r3, TECH.unitask, TECH.feel],
-        member: 'プランナー3人, プログラマー5人, 2Dデザイナー2人, サウンド2人, 弾幕制作2人',
+        member: '約10人(プランナー3人, プログラマー5人, 2Dデザイナー2人, サウンド2人, 弾幕制作2人)',
         outline: '敵の出してくる弾をパリィし敵に直接アタックする弾幕ゲー×2Dアクションの新感覚ゲーム！',
         appeal: '企画者に誘われ、リードプログラマとして技術的な面でメンバーを引っ張りました。プログラマでない人も敵の制作ができるようにエディター拡張に特に力を入れました。',
         genre: GENRE.game,
@@ -429,7 +452,7 @@ export const PROJECTS: ProjectYearGroup[] = [
         title: 'Orbit',
         period: '2023年12月 (準備1週間, 制作1週間)',
         tech: [TECH.unityUrp, TECH.git, TECH.unirx, TECH.unitask],
-        member: 'プランナー1人, プログラマー3人, 2Dデザイナー3人, サウンド1人',
+        member: '5人(プランナー1人, プログラマー3人, 2Dデザイナー3人, サウンド1人)',
         outline: '星を回りながらその秘密を探るリソース管理アドベンチャー',
         appeal: 'メインプログラマとしてコードやGitの規約を定め、協力して設計とゲームの実装を行いました。英語版対応をしてSteamで配信しています。',
         genre: GENRE.game,
@@ -448,7 +471,7 @@ export const PROJECTS: ProjectYearGroup[] = [
         title: 'つかまらないで！ゆうちゃん',
         period: '2022年6月 (準備1週間, 制作1週間)',
         tech: [TECH.unity, TECH.git],
-        member: 'プログラマ4人, 2Dデザイナー1人',
+        member: '5人(プログラマ4人, 2Dデザイナー1人)',
         outline: '目玉に見つからないように主人公のゆうちゃんを操作してゴールを目指すアクションゲーム',
         appeal: '初心者枠として参加し、先輩の助けを借りながらプログラムを軽く書き、ゲームの仕様考案とステージ制作を主に行いました。',
         genre: GENRE.game,
@@ -458,9 +481,9 @@ export const PROJECTS: ProjectYearGroup[] = [
       },
       {
         title: 'Logical Room',
-        period: '2022年7月～2023年11月 (1年5か月)',
+        period: '2022年7月~2023年11月 (1年5か月)',
         tech: [TECH.unity, TECH.git],
-        member: 'プログラマー8人, 2Dデザイナー1人',
+        member: '約10人(プログラマー8人, 2Dデザイナー1人)',
         outline: '単純なルールが複雑に絡み合う2Dパズルアクションゲーム',
         appeal: 'プログラマとして参加し、プレイヤー挙動やゲームシステムなどのバグ修正・新規実装・リファクター・改良などを行いました。',
         genre: GENRE.game,
@@ -469,9 +492,9 @@ export const PROJECTS: ProjectYearGroup[] = [
       },
       {
         title: 'School Breakin` Tag',
-        period: '2022年11月～2023年11月 (1年)',
+        period: '2022年11月~2023年11月 (1年)',
         tech: [TECH.unity, TECH.git, TECH.udon, TECH.vrchat],
-        member: 'プログラマー5人, 3Dデザイナー3人',
+        member: '約8人(プログラマー5人, 3Dデザイナー3人)',
         outline: '学校を舞台に地形を破壊できる爆弾を使って逃げ回るVRおにごっこ',
         appeal: 'プロジェクト経験のあるプログラマとして初めは参加しました。しかし途中からリーダーがキャパオーバーしてしまい、サブリーダーとして制作を進行しました。他メンバーのGit周りのサポートやタスクのマネジメントなどを行いました。',
         genre: GENRE.game,
@@ -486,7 +509,7 @@ export const PROJECTS: ProjectYearGroup[] = [
         title: 'Root Shooter',
         period: '2022年12月 (準備1週間, 制作1週間)',
         tech: [TECH.unity, TECH.git, TECH.pun2],
-        member: 'プログラマー3人, 2Dデザイナー1人, サウンド1人',
+        member: '5人(プログラマー3人, 2Dデザイナー1人, サウンド1人)',
         outline: '野菜を育てて撃って戦う2D対戦アクションゲームです。',
         appeal: 'プロジェクト経験のあるプログラマとしてゲームの実装を行いました。',
         genre: GENRE.game,
