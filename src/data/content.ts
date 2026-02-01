@@ -19,6 +19,7 @@ export type CareerItem = {
   company: string;
   period: string;
   details: string[];
+  category: 'サークル' | 'インターン' | 'イベント';
   tech?: string[];
   url?: string;
 };
@@ -144,6 +145,7 @@ export const CAREERS: CareerItem[] = [
     company: 'C-lock-row',
     period: '2025年7月~現在',
     details: ['科学大の謎解き制作サークルです。'],
+    category: 'サークル',
     url: 'https://x.com/C_lock_row',
     tech: [],
   },
@@ -153,6 +155,7 @@ export const CAREERS: CareerItem[] = [
     details: [
       'グリーさんに1ヶ月間インターンでお邪魔しました。ソーシャルゲームの新機能実装について、プランナーとの仕様決定から実装、QAとのやり取りまでの一通りの業務を行いました。',
     ],
+    category: 'インターン',
     url: 'https://hd.gree.net/jp/ja/recruit/internship/jobs/',
     tech: [TECH.cocos2dx, TECH.cPlusPlus],
   },
@@ -160,6 +163,7 @@ export const CAREERS: CareerItem[] = [
     company: 'Game Speed Hackathon Autumn 2024',
     period: '2024年9月',
     details: ['CyberAgentさん主催のゲームの実装速度を競うイベントです。優勝することができました。'],
+    category: 'イベント',
     url: 'https://cyberagent.snar.jp/jobboard/detail.aspx?id=ohkV1eN5MKVBUTT67mLh3g',
     tech: [TECH.unity, TECH.cSharp],
   },
@@ -169,6 +173,7 @@ export const CAREERS: CareerItem[] = [
     details: [
       'CyberAgentさんに1ヶ月インターンでお邪魔しました。ソーシャルゲームのゲームクライアントのパフォーマンスチューニングに取り組みました。',
     ],
+    category: 'インターン',
     url: 'https://www.cyberagent.co.jp/careers/students/event/detail/id=32004',
     tech: [TECH.unity, TECH.cSharp, TECH.git],
   },
@@ -176,6 +181,7 @@ export const CAREERS: CareerItem[] = [
     company: 'コーエーテクモゲームエンジン開発インターンシップ',
     period: '2024年8月~9月',
     details: ['2週間でゲームエンジンの一機能について実装しました。'],
+    category: 'インターン',
     url: 'https://job.tracks.run/internship/koeitecmoholdings-26-01',
     tech: [TECH.cPlusPlus],
   },
@@ -187,6 +193,7 @@ export const CAREERS: CareerItem[] = [
       '普段はここでゲーム制作をしています。',
       'ゲーム班長や渉外担当としても活動していましたが、既に後輩に引き継いでいます。',
     ],
+    category: 'サークル',
     url: 'https://trap.jp',
     tech: [TECH.unity, TECH.cSharp, TECH.git, TECH.vcontainer, TECH.unitask, TECH.r3, TECH.feel, TECH.cPlusPlus],
   },

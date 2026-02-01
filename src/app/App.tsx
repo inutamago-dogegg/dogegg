@@ -1,6 +1,6 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { motion } from 'motion/react';
-import { Github, Award, Briefcase, Sun, Moon, Home, FolderOpen, User } from 'lucide-react';
+import { Github, Award, Briefcase, Sun, Moon, Home, FolderOpen, User, Users, Trophy } from 'lucide-react';
 import { Button } from '@/app/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/app/components/ui/card';
 import { Badge } from '@/app/components/ui/badge';
@@ -12,7 +12,6 @@ import {
   PROJECTS,
   PROFILE,
   SKILLS,
-  WORKS_NAV_SECTIONS,
   type ProjectItem,
 } from '@/data/content';
 import avatarIcon from '@/images/dogegg_icon.png';
@@ -226,9 +225,20 @@ export default function App({
   const [theme, setTheme] = useState<ThemeKey>(getInitialTheme);
   const [isDark, setIsDark] = useState(false);
   const config = themeConfig[theme].palettes[isDark ? 'dark' : 'light'];
-  const navSections = isAboutPage ? ABOUT_NAV_SECTIONS : isWorksPage ? WORKS_NAV_SECTIONS : [];
+  const worksNavSections = useMemo(
+    () =>
+      PROJECTS.map((group) => ({
+        id: `works-${group.year}`,
+        label: `${group.year}年度`,
+      })),
+    [],
+  );
+  const navSections = useMemo(
+    () => (isAboutPage ? ABOUT_NAV_SECTIONS : isWorksPage ? worksNavSections : []),
+    [isAboutPage, isWorksPage, worksNavSections],
+  );
   const [activeSection, setActiveSection] = useState<string>(
-    navSections[0]?.id ?? (isWorksPage ? 'works' : 'home'),
+    navSections[0]?.id ?? (isWorksPage ? worksNavSections[0]?.id ?? 'works' : 'home'),
   );
   const [openYears, setOpenYears] = useState<Record<string, boolean>>(() => {
     const years = PROJECTS.map((group) => Number(group.year)).filter((value) => !Number.isNaN(value));
@@ -242,7 +252,7 @@ export default function App({
     document.documentElement.style.scrollBehavior = 'smooth';
 
     if (navSections.length === 0) {
-      setActiveSection(isWorksPage ? 'works' : 'home');
+      setActiveSection(isWorksPage ? worksNavSections[0]?.id ?? 'works' : 'home');
       return;
     }
 
@@ -276,7 +286,7 @@ export default function App({
       window.removeEventListener('scroll', updateActiveByCenter);
       window.removeEventListener('resize', updateActiveByCenter);
     };
-  }, [isWorksPage, navSections]);
+  }, [isWorksPage, navSections, worksNavSections]);
 
   const OgpCard = ({
     url,
@@ -361,6 +371,10 @@ export default function App({
   const aboutUrl = `${baseUrl}about/`;
   const worksPageUrl = `${baseUrl}works/`;
   const navGhostClass = `${config.textSecondary} ${isDark ? 'hover:bg-slate-800' : 'hover:bg-gray-100'}`;
+  const staticButtonBg = config.buttonBg
+    .split(' ')
+    .filter((item) => !item.startsWith('hover:'))
+    .join(' ');
   const renderProjectCard = (project: ProjectItem, index: number, key: string) => {
     const primaryLink = project.playLink?.url;
     const xUrl = project.xUrl;
@@ -590,6 +604,18 @@ export default function App({
       </motion.div>
     );
   };
+  const getCareerIcon = (category: (typeof CAREERS)[number]['category']) => {
+    switch (category) {
+      case 'サークル':
+        return Users;
+      case 'インターン':
+        return Briefcase;
+      case 'イベント':
+        return Trophy;
+      default:
+        return Briefcase;
+    }
+  };
 
   return (
     <div className="min-h-screen relative overflow-x-hidden">
@@ -726,13 +752,19 @@ export default function App({
                 transition={{ duration: 0.35 }}
                 className="text-center"
               >
-                <div className="inline-block mb-8">
+                <div className="relative inline-block mb-8">
                   <img
                     src={avatarIcon.src}
                     alt={PROFILE.iconAlt}
                     className={`h-28 w-28 md:h-36 md:w-36 rounded-full border-2 ${config.surfaceBorder} shadow-lg object-cover`}
                     loading="lazy"
                   />
+                  <span
+                    className={`absolute top-12 left-1/2 -translate-x-1/2 rounded-ful px-2 py-0.5 text-xl md:text-base`}
+                    aria-hidden="true"
+                  >
+                    {themeConfig[theme].emoji}
+                  </span>
                 </div>
                 <h1 className={`text-5xl md:text-6xl mb-6 ${config.textPrimary}`}>{PROFILE.title}</h1>
                 <p className={`text-xl md:text-2xl ${config.textSecondary} mb-10`}>{PROFILE.tagline}</p>
@@ -742,14 +774,14 @@ export default function App({
                     size="lg"
                     className={`${config.buttonBg} text-white shadow-lg text-lg py-6`}
                   >
-                    <a href={aboutUrl}>Aboutへ</a>
+                    <a href={aboutUrl}>About</a>
                   </Button>
                   <Button
                     asChild
                     size="lg"
                     className={`${config.buttonBg} text-white shadow-lg text-lg py-6`}
                   >
-                    <a href={worksPageUrl}>Worksページへ</a>
+                    <a href={worksPageUrl}>Works</a>
                   </Button>
                 </div>
               </motion.div>
@@ -888,13 +920,21 @@ export default function App({
                   >
                     <Card className={`border-2 ${config.cardBorderStatic} ${config.surfaceBg} backdrop-blur transition-all duration-300`}>
                       <CardHeader>
-                        <div className="flex items-center gap-3">
-                          <div className={`p-3 ${config.buttonBg} rounded-lg`}>
-                            <Briefcase className="w-6 h-6 text-white" />
+                        <div className="flex items-end gap-4">
+                          <div className="flex flex-col items-center gap-2">
+                            <Badge variant="static" className={`${config.badgeBg} pointer-events-none`}>
+                              {career.category}
+                            </Badge>
+                            <div className={`p-3 ${staticButtonBg} rounded-lg`}>
+                              {(() => {
+                                const Icon = getCareerIcon(career.category);
+                                return <Icon className="w-6 h-6 text-white" />;
+                              })()}
+                            </div>
                           </div>
-                          <div>
+                          <div className="min-w-0">
                             {career.url ? (
-                              <CardTitle className={`text-lg ${config.textPrimary}`}>
+                              <CardTitle className={`text-xl md:text-1xl ${config.textPrimary}`}>
                                 <a
                                   href={career.url}
                                   target="_blank"
@@ -906,7 +946,9 @@ export default function App({
                                 </a>
                               </CardTitle>
                             ) : (
-                              <CardTitle className={`text-lg ${config.textPrimary}`}>{career.company}</CardTitle>
+                              <CardTitle className={`text-xl md:text-1xl ${config.textPrimary}`}>
+                                {career.company}
+                              </CardTitle>
                             )}
                             <CardDescription className={config.textMuted}>{career.period}</CardDescription>
                           </div>
@@ -983,7 +1025,7 @@ export default function App({
               </motion.div>
 
               {projects.map((yearGroup, yearIndex) => (
-                <div key={yearGroup.year} className="mb-16">
+                <div key={yearGroup.year} id={`works-${yearGroup.year}`} className="mb-16">
                   <motion.div
                     initial={{ opacity: 0, x: -20 }}
                     whileInView={{ opacity: 1, x: 0 }}
