@@ -6,10 +6,13 @@ import CysharpIcon from '@/images/Cysharp_Icon.png';
 import CrossHeader from '@/images/Cross_the_C_Header.png';
 import DeeperHeader from '@/images/Deeper_and_Deeper_Header.png';
 import ElegoHeader from '@/images/ELEGO_Header.png';
+import GitIcon from '@/images/Git_Icon.svg';
 import NiHeader from '@/images/Ni_Header.png';
 import OrbitHeader from '@/images/Orbit_Header.png';
+import PerforceIcon from '@/images/Perforce_Icon.svg';
 import PythonIcon from '@/images/Python_Icon.png';
 import QueenBeeHeader from '@/images/QueenBee_Header.png';
+import SvnIcon from '@/images/SVN_Icon.svg';
 import UnityIcon from '@/images/Unity_Icon.png';
 import VariVaRevengeHeader from '@/images/VariVaRevenge_Header.png';
 import VContainerIcon from '@/images/VContainer_Icon.png';
@@ -83,6 +86,8 @@ const TECH = {
   unity: 'Unity',
   unityUrp: 'URP',
   git: 'Git',
+  perforce: 'Perforce',
+  subversion: 'Subversion(SVN)',
   vcontainer: 'VContainer',
   unitask: 'UniTask',
   unirx: 'UniRx',
@@ -99,8 +104,6 @@ const TECH = {
   astro: 'Astro',
   react: 'React',
   typescript: 'TypeScript',
-  subversion: 'Subversion(SVN)',
-  perforce: 'Perforce',
   makeRiddle: '謎制作',
 } as const;
 
@@ -279,6 +282,12 @@ export const SKILLS: SkillItem[] = [
     description: `普段のゲーム制作は${TECH.unity}を使っています。`,
   },
   {
+    name: TECH.git,
+    icon: GitIcon,
+    level: 3,
+    description: '個人制作・チーム制作で日常的に使っています。',
+  },
+  {
     name: TECH.unitask,
     icon: CysharpIcon,
     level: 3,
@@ -319,6 +328,18 @@ export const SKILLS: SkillItem[] = [
     icon: Cocos2dxIcon,
     level: 1,
     description: 'インターンで1ヶ月ほど使用しました。',
+  },
+  {
+    name: TECH.perforce,
+    icon: PerforceIcon,
+    level: 1,
+    description: 'CAPCOM GAMES COMPETITIONで6ヶ月間使用しました',
+  },
+  {
+    name: TECH.subversion,
+    icon: SvnIcon,
+    level: 1,
+    description: 'CAPCOM GAMES COMPETITIONで6ヶ月間使用しました。',
   },
 ];
 
