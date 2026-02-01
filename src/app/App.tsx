@@ -674,10 +674,10 @@ export default function App({
                       asChild
                       variant={isHomePage ? 'default' : 'ghost'}
                       size="sm"
-                      className={isHomePage ? config.buttonBg : navGhostClass}
+                      className={`${isHomePage ? config.buttonBg : navGhostClass} gap-1 px-2`}
                     >
                       <a href={homeUrl}>
-                        <Home className="w-4 h-4 mr-2" />
+                        <Home className="w-4 h-4 mr-1" />
                         Home
                       </a>
                     </Button>
@@ -685,10 +685,10 @@ export default function App({
                       asChild
                       variant={isAboutPage ? 'default' : 'ghost'}
                       size="sm"
-                      className={isAboutPage ? config.buttonBg : navGhostClass}
+                      className={`${isAboutPage ? config.buttonBg : navGhostClass} gap-1 px-2`}
                     >
                       <a href={aboutUrl}>
-                        <User className="w-4 h-4 mr-2" />
+                        <User className="w-4 h-4 mr-1" />
                         About
                       </a>
                     </Button>
@@ -696,10 +696,10 @@ export default function App({
                       asChild
                       variant={isWorksPage ? 'default' : 'ghost'}
                       size="sm"
-                      className={isWorksPage ? config.buttonBg : navGhostClass}
+                      className={`${isWorksPage ? config.buttonBg : navGhostClass} gap-1 px-2`}
                     >
                       <a href={worksPageUrl}>
-                        <FolderOpen className="w-4 h-4 mr-2" />
+                        <FolderOpen className="w-4 h-4 mr-1" />
                         Works
                       </a>
                     </Button>
@@ -1150,24 +1150,24 @@ export default function App({
                 <Button
                   size="icon"
                   variant="ghost"
-                  className={isDark ? 'hover:bg-slate-800' : 'hover:bg-gray-100'}
+                  className={`${config.textMuted} border ${config.surfaceBorder} ${isDark ? 'hover:bg-slate-800' : 'hover:bg-gray-100'}`}
                   onClick={() => window.open('https://x.com/dogegg314', '_blank')}
                   aria-label={LABELS.twitter}
                   title="https://x.com/dogegg314"
                 >
-                  <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-4 h-4 text-current" fill="currentColor" viewBox="0 0 24 24">
                     <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
                   </svg>
                 </Button>
                 <Button
                   size="icon"
                   variant="ghost"
-                  className={isDark ? 'hover:bg-slate-800' : 'hover:bg-gray-100'}
+                  className={`${config.textMuted} border ${config.surfaceBorder} ${isDark ? 'hover:bg-slate-800' : 'hover:bg-gray-100'}`}
                   onClick={() => window.open('https://github.com/inutamago-dogegg', '_blank')}
                   aria-label={LABELS.github}
                   title="https://github.com/inutamago-dogegg"
                 >
-                  <Github className="w-4 h-4" />
+                  <Github className="w-4 h-4 text-current" />
                 </Button>
                 <Button
                   onClick={() => setIsDark((prev) => !prev)}
