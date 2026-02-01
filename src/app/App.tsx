@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { motion } from 'motion/react';
-import { Github, Award, Briefcase, Sun, Moon } from 'lucide-react';
+import { Github, Award, Briefcase, Sun, Moon, Home, FolderOpen, User } from 'lucide-react';
 import { Button } from '@/app/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/app/components/ui/card';
 import { Badge } from '@/app/components/ui/badge';
@@ -8,10 +8,12 @@ import {
   CAREERS,
   HOBBIES,
   LABELS,
-  NAV_SECTIONS,
+  ABOUT_NAV_SECTIONS,
   PROJECTS,
   PROFILE,
   SKILLS,
+  WORKS_NAV_SECTIONS,
+  type ProjectItem,
 } from '@/data/content';
 import avatarIcon from '@/images/dogegg_icon.png';
 import steamIcon from '@/images/Steam_icon_logo.svg';
@@ -200,7 +202,16 @@ const themeConfig = {
   },
 };
 
-export default function App({ ogpData }: { ogpData: OgpMap }) {
+export default function App({
+  ogpData,
+  mode = 'home',
+}: {
+  ogpData: OgpMap;
+  mode?: 'home' | 'about' | 'works';
+}) {
+  const isHomePage = mode === 'home';
+  const isAboutPage = mode === 'about';
+  const isWorksPage = mode === 'works';
   const getInitialTheme = (): ThemeKey => {
     const now = new Date();
     const jst = new Date(now.getTime() + (9 * 60 + now.getTimezoneOffset()) * 60000);
@@ -215,7 +226,10 @@ export default function App({ ogpData }: { ogpData: OgpMap }) {
   const [theme, setTheme] = useState<ThemeKey>(getInitialTheme);
   const [isDark, setIsDark] = useState(false);
   const config = themeConfig[theme].palettes[isDark ? 'dark' : 'light'];
-  const [activeSection, setActiveSection] = useState<string>('top');
+  const navSections = isAboutPage ? ABOUT_NAV_SECTIONS : isWorksPage ? WORKS_NAV_SECTIONS : [];
+  const [activeSection, setActiveSection] = useState<string>(
+    navSections[0]?.id ?? (isWorksPage ? 'works' : 'home'),
+  );
   const [openYears, setOpenYears] = useState<Record<string, boolean>>(() => {
     const years = PROJECTS.map((group) => Number(group.year)).filter((value) => !Number.isNaN(value));
     const latestYear = years.length > 0 ? Math.max(...years) : null;
@@ -227,7 +241,12 @@ export default function App({ ogpData }: { ogpData: OgpMap }) {
   useEffect(() => {
     document.documentElement.style.scrollBehavior = 'smooth';
 
-    const sections = NAV_SECTIONS.map((section) => document.getElementById(section.id)).filter(
+    if (navSections.length === 0) {
+      setActiveSection(isWorksPage ? 'works' : 'home');
+      return;
+    }
+
+    const sections = navSections.map((section) => document.getElementById(section.id)).filter(
       (section): section is HTMLElement => Boolean(section),
     );
 
@@ -257,7 +276,7 @@ export default function App({ ogpData }: { ogpData: OgpMap }) {
       window.removeEventListener('scroll', updateActiveByCenter);
       window.removeEventListener('resize', updateActiveByCenter);
     };
-  }, []);
+  }, [isWorksPage, navSections]);
 
   const OgpCard = ({
     url,
@@ -330,6 +349,247 @@ export default function App({ ogpData }: { ogpData: OgpMap }) {
   const careers = CAREERS;
   const hobbies = HOBBIES;
   const skills = SKILLS;
+  const allProjects = PROJECTS.flatMap((group) => group.items);
+  const featuredOrder = ['Cross the C', 'ELEGO', 'Orbit', 'バリバリベンジ'];
+  const featuredProjects = featuredOrder
+    .map((title) => allProjects.find((project) => project.title === title))
+    .filter((project): project is ProjectItem => Boolean(project));
+  const baseUrl = import.meta.env.BASE_URL.endsWith('/')
+    ? import.meta.env.BASE_URL
+    : `${import.meta.env.BASE_URL}/`;
+  const homeUrl = `${baseUrl}home/`;
+  const aboutUrl = `${baseUrl}about/`;
+  const worksPageUrl = `${baseUrl}works/`;
+  const navGhostClass = `${config.textSecondary} ${isDark ? 'hover:bg-slate-800' : 'hover:bg-gray-100'}`;
+  const renderProjectCard = (project: ProjectItem, index: number, key: string) => {
+    const primaryLink = project.playLink?.url;
+    const xUrl = project.xUrl;
+    const githubUrl = project.githubUrl;
+    const steamUrl = project.steamUrl;
+
+    return (
+      <motion.div
+        key={key}
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.35, delay: index * 0.06 }}
+        className="min-w-0"
+      >
+        <Card className={`border-2 ${config.cardBorderStatic} transition-all duration-300 ${config.surfaceBg} backdrop-blur h-full min-w-0`}>
+          <CardHeader>
+            <div className="mb-2">
+              <span
+                className={`inline-flex items-center rounded-md border ${config.surfaceBorder} ${config.chipBg} px-2 py-0.5 text-xs font-medium ${config.chipText}`}
+              >
+                {project.genre}
+              </span>
+            </div>
+            <div className="mb-2 min-w-0">
+              <CardTitle className={`text-xl ${config.textPrimary} break-words`}>
+                {project.title}
+              </CardTitle>
+            </div>
+            <CardDescription className={`text-sm ${config.textMuted}`}>{project.period}</CardDescription>
+          </CardHeader>
+          <CardContent className="min-w-0">
+            {project.headerImage && (
+              <div className="relative mb-4">
+                {primaryLink ? (
+                  <a
+                    href={primaryLink}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="block transition-transform hover:-translate-y-0.5"
+                    aria-label={`${project.title} の${LABELS.play}へ移動`}
+                    title={primaryLink}
+                  >
+                    <img
+                      src={project.headerImage.src}
+                      alt={`${project.title} のヘッダー画像`}
+                      className={`h-44 w-full rounded-lg object-contain border ${config.surfaceBorder} ${config.surfaceBg}`}
+                      loading="lazy"
+                    />
+                  </a>
+                ) : (
+                  <img
+                    src={project.headerImage.src}
+                    alt={`${project.title} のヘッダー画像`}
+                    className={`h-44 w-full rounded-lg object-contain border ${config.surfaceBorder} ${config.surfaceBg}`}
+                    loading="lazy"
+                  />
+                )}
+                {(xUrl || githubUrl || steamUrl) && (
+                  <div className="absolute left-2 bottom-2 flex items-center gap-1">
+                    {xUrl && (
+                      <Button
+                        size="icon"
+                        variant="ghost"
+                        className={`${config.surfaceBg} ${config.surfaceBorder} border shadow-sm ${
+                          isDark ? 'hover:bg-slate-800' : 'hover:bg-gray-100'
+                        }`}
+                        onClick={() => window.open(xUrl, '_blank')}
+                        aria-label="X"
+                        title={xUrl}
+                      >
+                        <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                          <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+                        </svg>
+                      </Button>
+                    )}
+                    {githubUrl && (
+                      <Button
+                        size="icon"
+                        variant="ghost"
+                        className={`${config.surfaceBg} ${config.surfaceBorder} border shadow-sm ${
+                          isDark ? 'hover:bg-slate-800' : 'hover:bg-gray-100'
+                        }`}
+                        onClick={() => window.open(githubUrl, '_blank')}
+                        aria-label={LABELS.github}
+                        title={githubUrl}
+                      >
+                        <Github className="h-4 w-4" />
+                      </Button>
+                    )}
+                    {steamUrl && (
+                      <Button
+                        size="icon"
+                        variant="ghost"
+                        className={`${config.surfaceBg} ${config.surfaceBorder} border shadow-sm ${
+                          isDark ? 'hover:bg-slate-800' : 'hover:bg-gray-100'
+                        }`}
+                        onClick={() => window.open(steamUrl, '_blank')}
+                        aria-label="Steam"
+                        title={steamUrl}
+                      >
+                        <span className="relative inline-flex">
+                          <img src={steamIcon.src} alt="" className="h-4 w-4" />
+                          <span className="absolute -top-2 -right-2 text-[14px] leading-none">®</span>
+                        </span>
+                      </Button>
+                    )}
+                  </div>
+                )}
+              </div>
+            )}
+            {!project.headerImage && (xUrl || githubUrl || steamUrl) && (
+              <div className="flex items-center gap-1 mb-4">
+                {xUrl && (
+                  <Button
+                    size="icon"
+                    variant="ghost"
+                    className={isDark ? 'hover:bg-slate-800' : 'hover:bg-gray-100'}
+                    onClick={() => window.open(xUrl, '_blank')}
+                    aria-label="X"
+                    title={xUrl}
+                  >
+                    <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+                    </svg>
+                  </Button>
+                )}
+                {githubUrl && (
+                  <Button
+                    size="icon"
+                    variant="ghost"
+                    className={isDark ? 'hover:bg-slate-800' : 'hover:bg-gray-100'}
+                    onClick={() => window.open(githubUrl, '_blank')}
+                    aria-label={LABELS.github}
+                    title={githubUrl}
+                  >
+                    <Github className="h-4 w-4" />
+                  </Button>
+                )}
+                {steamUrl && (
+                  <Button
+                    size="icon"
+                    variant="ghost"
+                    className={isDark ? 'hover:bg-slate-800' : 'hover:bg-gray-100'}
+                    onClick={() => window.open(steamUrl, '_blank')}
+                    aria-label="Steam"
+                    title={steamUrl}
+                  >
+                    <span className="relative inline-flex">
+                      <img src={steamIcon.src} alt="" className="h-4 w-4" />
+                      <span className="absolute -top-2 -right-2 text-[14px] leading-none">®</span>
+                    </span>
+                  </Button>
+                )}
+              </div>
+            )}
+            <div className="space-y-3 mb-4">
+              {project.member && (
+                <div>
+                  <p className={`text-xs font-semibold ${config.textMuted}`}>メンバー</p>
+                  <p className={`text-sm ${config.textSecondary} break-words`}>{project.member}</p>
+                </div>
+              )}
+              {project.outline && (
+                <div>
+                  <p className={`text-xs font-semibold ${config.textMuted}`}>概要</p>
+                  <p className={`text-sm ${config.textSecondary} break-words`}>{project.outline}</p>
+                </div>
+              )}
+              {project.appeal && (
+                <div>
+                  <p className={`text-xs font-semibold ${config.textMuted}`}>やったこと</p>
+                  <p className={`text-sm ${config.textSecondary} break-words`}>{project.appeal}</p>
+                </div>
+              )}
+            </div>
+
+            <div className="flex flex-wrap gap-2 mb-4">
+              {project.tech.map((tech, techIndex) => (
+                <Badge variant="static" key={techIndex} className={`${config.badgeBg} pointer-events-none`}>
+                  {tech}
+                </Badge>
+              ))}
+            </div>
+
+            {project.playLink && (
+              <div className="mb-4">
+                <OgpCard
+                  label={project.playLink.label}
+                  url={project.playLink.url}
+                  emphasis
+                  {...(ogpData[project.playLink.url]
+                    ? { data: ogpData[project.playLink.url] }
+                    : {})}
+                />
+              </div>
+            )}
+
+            {project.relatedLinks && project.relatedLinks.length > 0 && (
+              <div className="space-y-2 mb-6">
+                {project.relatedLinks.map((link) => {
+                  const ogp = ogpData[link.url];
+                  return (
+                    <OgpCard
+                      key={`${project.title}-${link.url}`}
+                      label={link.label}
+                      url={link.url}
+                      {...(ogp ? { data: ogp } : {})}
+                    />
+                  );
+                })}
+              </div>
+            )}
+
+            {project.awards && project.awards.length > 0 && (
+              <div className="space-y-2">
+                {project.awards.map((award, awardIndex) => (
+                  <div key={awardIndex} className={`flex items-center gap-2 text-sm ${config.textMuted}`}>
+                    <Award className="w-4 h-4 text-yellow-500" />
+                    <span>{award}</span>
+                  </div>
+                ))}
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      </motion.div>
+    );
+  };
 
   return (
     <div className="min-h-screen relative overflow-x-hidden">
@@ -374,96 +634,130 @@ export default function App({ ogpData }: { ogpData: OgpMap }) {
                   transition={{ duration: 0.25 }}
                 >
                   <a
-                    href="#top"
+                    href={isWorksPage ? '#works' : '#top'}
                     className={`text-2xl font-bold ${config.textPrimary} whitespace-nowrap`}
-                    title="#top"
+                    title={isWorksPage ? '#works' : '#top'}
                   >
                     {PROFILE.title}
                   </a>
                 </motion.div>
 
                 <div className="flex items-center gap-3 min-w-0">
-                  <Button
-                    size="icon"
-                    variant="ghost"
-                    className={isDark ? 'hover:bg-slate-800' : 'hover:bg-gray-100'}
-                    onClick={() => window.open('https://x.com/dogegg314', '_blank')}
-                    aria-label={LABELS.twitter}
-                    title="https://x.com/dogegg314"
-                  >
-                    <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
-                    </svg>
-                  </Button>
-                  <Button
-                    size="icon"
-                    variant="ghost"
-                    className={isDark ? 'hover:bg-slate-800' : 'hover:bg-gray-100'}
-                    onClick={() => window.open('https://github.com/inutamago-dogegg', '_blank')}
-                    aria-label={LABELS.github}
-                    title="https://github.com/inutamago-dogegg"
-                  >
-                    <Github className="w-4 h-4" />
-                  </Button>
-                  <Button
-                    onClick={() => setIsDark((prev) => !prev)}
-                    variant="outline"
-                    size="icon"
-                    className={`border-2 ${config.buttonOutline}`}
-                    aria-label={isDark ? 'ライトモードに切り替え' : 'ダークモードに切り替え'}
-                  >
-                    {isDark ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
-                  </Button>
-                  <div className="flex items-center gap-2 overflow-x-auto whitespace-nowrap scrollbar-thin pr-1">
-                    {(Object.keys(themeConfig) as ThemeKey[]).map((t) => (
-                      <Button
-                        key={t}
-                        onClick={() => setTheme(t)}
-                        variant={theme === t ? 'default' : 'outline'}
-                        size="sm"
-                        className={`${theme === t ? config.buttonBg : `hover:bg-gray-100 ${isDark ? 'hover:bg-gray-800' : ''}`} shrink-0`}
-                      >
-                        {themeConfig[t].emoji} {themeConfig[t].name}
-                      </Button>
-                    ))}
+                  <div className="flex items-center gap-2">
+                    <Button
+                      asChild
+                      variant={isHomePage ? 'default' : 'ghost'}
+                      size="sm"
+                      className={isHomePage ? config.buttonBg : navGhostClass}
+                    >
+                      <a href={homeUrl}>
+                        <Home className="w-4 h-4 mr-2" />
+                        Home
+                      </a>
+                    </Button>
+                    <Button
+                      asChild
+                      variant={isAboutPage ? 'default' : 'ghost'}
+                      size="sm"
+                      className={isAboutPage ? config.buttonBg : navGhostClass}
+                    >
+                      <a href={aboutUrl}>
+                        <User className="w-4 h-4 mr-2" />
+                        About
+                      </a>
+                    </Button>
+                    <Button
+                      asChild
+                      variant={isWorksPage ? 'default' : 'ghost'}
+                      size="sm"
+                      className={isWorksPage ? config.buttonBg : navGhostClass}
+                    >
+                      <a href={worksPageUrl}>
+                        <FolderOpen className="w-4 h-4 mr-2" />
+                        Works
+                      </a>
+                    </Button>
                   </div>
                 </div>
               </div>
             </div>
           </nav>
 
-          <aside className="hidden lg:flex fixed right-6 top-1/2 -translate-y-1/2 z-40 flex-col gap-3">
-            {NAV_SECTIONS.map((section) => {
-              const isActive = activeSection === section.id;
-              return (
-                <a
-                  key={section.id}
-                  href={`#${section.id}`}
-                  className="group flex items-center justify-end gap-3"
-                  aria-label={section.label}
-                  title={`#${section.id}`}
-                >
-                  <span
-                    className={`rounded-full border ${config.surfaceBorder} ${config.surfaceBg} px-3 py-1 text-xs font-medium ${config.textSecondary} shadow-md backdrop-blur-md transition-all duration-200 ${
-                      isActive ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-2 group-hover:opacity-100 group-hover:translate-x-0'
-                    }`}
+          {navSections.length > 0 && (
+            <aside className="hidden lg:flex fixed right-6 top-1/2 -translate-y-1/2 z-40 flex-col gap-3">
+              {navSections.map((section) => {
+                const isActive = activeSection === section.id;
+                return (
+                  <a
+                    key={section.id}
+                    href={`#${section.id}`}
+                    className="group flex items-center justify-end gap-3"
+                    aria-label={section.label}
+                    title={`#${section.id}`}
                   >
-                    {section.label}
-                  </span>
-                  <span
-                    className={`h-3 w-3 rounded-full transition-all duration-200 ${
-                      isActive
-                        ? 'bg-primary shadow-[0_0_12px_rgba(33,150,243,0.6)]'
-                        : isDark
-                          ? 'bg-slate-600'
-                          : 'bg-gray-300'
-                    } group-hover:-translate-x-2`}
-                  />
-                </a>
-              );
-            })}
-          </aside>
+                    <span
+                      className={`rounded-full border ${config.surfaceBorder} ${config.surfaceBg} px-3 py-1 text-xs font-medium ${config.textSecondary} shadow-md backdrop-blur-md transition-all duration-200 ${
+                        isActive ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-2 group-hover:opacity-100 group-hover:translate-x-0'
+                      }`}
+                    >
+                      {section.label}
+                    </span>
+                    <span
+                      className={`h-3 w-3 rounded-full transition-all duration-200 ${
+                        isActive
+                          ? 'bg-primary shadow-[0_0_12px_rgba(33,150,243,0.6)]'
+                          : isDark
+                            ? 'bg-slate-600'
+                            : 'bg-gray-300'
+                      } group-hover:-translate-x-2`}
+                    />
+                  </a>
+                );
+              })}
+            </aside>
+          )}
 
+          {isHomePage && (
+          <section className="min-h-screen flex items-center justify-center px-4 relative">
+            <div className="container mx-auto max-w-4xl">
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.35 }}
+                className="text-center"
+              >
+                <div className="inline-block mb-8">
+                  <img
+                    src={avatarIcon.src}
+                    alt={PROFILE.iconAlt}
+                    className={`h-28 w-28 md:h-36 md:w-36 rounded-full border-2 ${config.surfaceBorder} shadow-lg object-cover`}
+                    loading="lazy"
+                  />
+                </div>
+                <h1 className={`text-5xl md:text-6xl mb-6 ${config.textPrimary}`}>{PROFILE.title}</h1>
+                <p className={`text-xl md:text-2xl ${config.textSecondary} mb-10`}>{PROFILE.tagline}</p>
+                <div className="flex flex-col sm:flex-row gap-4 justify-center max-w-2xl mx-auto">
+                  <Button
+                    asChild
+                    size="lg"
+                    className={`${config.buttonBg} text-white shadow-lg text-lg py-6`}
+                  >
+                    <a href={aboutUrl}>Aboutへ</a>
+                  </Button>
+                  <Button
+                    asChild
+                    size="lg"
+                    className={`${config.buttonBg} text-white shadow-lg text-lg py-6`}
+                  >
+                    <a href={worksPageUrl}>Worksページへ</a>
+                  </Button>
+                </div>
+              </motion.div>
+            </div>
+          </section>
+          )}
+
+          {isAboutPage && (
           <section id="top" className="pt-32 pb-20 px-4 relative">
             <div className="container mx-auto max-w-6xl">
               <motion.div
@@ -518,7 +812,9 @@ export default function App({ ogpData }: { ogpData: OgpMap }) {
               </motion.div>
             </div>
           </section>
+          )}
 
+          {isAboutPage && (
           <section id="skills" className="py-20 px-4 relative">
             <div className="container mx-auto max-w-4xl">
               <motion.div
@@ -565,7 +861,9 @@ export default function App({ ogpData }: { ogpData: OgpMap }) {
               </div>
             </div>
           </section>
+          )}
 
+          {isAboutPage && (
           <section id="career" className="py-20 px-4 relative">
             <div className="container mx-auto max-w-4xl">
               <motion.div
@@ -636,7 +934,41 @@ export default function App({ ogpData }: { ogpData: OgpMap }) {
               </div>
             </div>
           </section>
+          )}
 
+          {isAboutPage && (
+          <section id="featured" className="py-20 px-4 relative">
+            <div className="container mx-auto max-w-6xl">
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.35 }}
+                className="text-center mb-16"
+              >
+                <h2 className={`text-5xl mb-4 ${config.textPrimary}`}>{PROFILE.sections.featuredTitle}</h2>
+                <p className={`text-xl ${config.textSecondary}`}>{PROFILE.sections.featuredLead}</p>
+              </motion.div>
+
+              <div className="grid gap-6 md:grid-cols-2">
+                {featuredProjects.map((project, index) =>
+                  renderProjectCard(project, index, `featured-${project.title}-${index}`),
+                )}
+              </div>
+              <div className="mt-10 flex justify-center">
+                <Button
+                  asChild
+                  variant="outline"
+                  className={`border-2 ${config.buttonOutline} w-full max-w-2xl`}
+                >
+                  <a href={worksPageUrl}>全ての制作物を見る</a>
+                </Button>
+              </div>
+            </div>
+          </section>
+          )}
+
+          {isWorksPage && (
           <section id="works" className="py-20 px-4 relative">
             <div className="container mx-auto max-w-6xl">
               <motion.div
@@ -691,241 +1023,18 @@ export default function App({ ogpData }: { ogpData: OgpMap }) {
                     className="overflow-hidden"
                   >
                     <div className="grid md:grid-cols-2 gap-6">
-                      {yearGroup.items.map((project, index) => {
-                        const primaryLink = project.playLink?.url;
-                        const xUrl = project.xUrl;
-                        const githubUrl = project.githubUrl;
-                      const steamUrl = project.steamUrl;
-                        return (
-                        <motion.div
-                          key={index}
-                          initial={{ opacity: 0, y: 20 }}
-                          whileInView={{ opacity: 1, y: 0 }}
-                          viewport={{ once: true }}
-                          transition={{ duration: 0.35, delay: index * 0.06 }}
-                          className="min-w-0"
-                        >
-                          <Card className={`border-2 ${config.cardBorderStatic} transition-all duration-300 ${config.surfaceBg} backdrop-blur h-full min-w-0`}>
-                            <CardHeader>
-                            <div className="mb-2">
-                              <span
-                                className={`inline-flex items-center rounded-md border ${config.surfaceBorder} ${config.chipBg} px-2 py-0.5 text-xs font-medium ${config.chipText}`}
-                              >
-                                {project.genre}
-                              </span>
-                            </div>
-                            <div className="mb-2 min-w-0">
-                              <CardTitle className={`text-xl ${config.textPrimary} break-words`}>
-                                {project.title}
-                              </CardTitle>
-                            </div>
-                            <CardDescription className={`text-sm ${config.textMuted}`}>{project.period}</CardDescription>
-                          </CardHeader>
-                          <CardContent className="min-w-0">
-                            {project.headerImage && (
-                              <div className="relative mb-4">
-                                {primaryLink ? (
-                                  <a
-                                    href={primaryLink}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="block transition-transform hover:-translate-y-0.5"
-                                    aria-label={`${project.title} の${LABELS.play}へ移動`}
-                                    title={primaryLink}
-                                  >
-                                    <img
-                                      src={project.headerImage.src}
-                                      alt={`${project.title} のヘッダー画像`}
-                                      className={`h-44 w-full rounded-lg object-contain border ${config.surfaceBorder} ${config.surfaceBg}`}
-                                      loading="lazy"
-                                    />
-                                  </a>
-                                ) : (
-                                  <img
-                                    src={project.headerImage.src}
-                                    alt={`${project.title} のヘッダー画像`}
-                                    className={`h-44 w-full rounded-lg object-contain border ${config.surfaceBorder} ${config.surfaceBg}`}
-                                    loading="lazy"
-                                  />
-                                )}
-                                {(xUrl || githubUrl || steamUrl) && (
-                                  <div className="absolute left-2 bottom-2 flex items-center gap-1">
-                                    {xUrl && (
-                                      <Button
-                                        size="icon"
-                                        variant="ghost"
-                                        className={`${config.surfaceBg} ${config.surfaceBorder} border shadow-sm ${
-                                          isDark ? 'hover:bg-slate-800' : 'hover:bg-gray-100'
-                                        }`}
-                                        onClick={() => window.open(xUrl, '_blank')}
-                                        aria-label="X"
-                                        title={xUrl}
-                                      >
-                                        <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-                                          <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
-                                        </svg>
-                                      </Button>
-                                    )}
-                                    {githubUrl && (
-                                      <Button
-                                        size="icon"
-                                        variant="ghost"
-                                        className={`${config.surfaceBg} ${config.surfaceBorder} border shadow-sm ${
-                                          isDark ? 'hover:bg-slate-800' : 'hover:bg-gray-100'
-                                        }`}
-                                        onClick={() => window.open(githubUrl, '_blank')}
-                                        aria-label={LABELS.github}
-                                        title={githubUrl}
-                                      >
-                                        <Github className="h-4 w-4" />
-                                      </Button>
-                                    )}
-                                    {steamUrl && (
-                                      <Button
-                                        size="icon"
-                                        variant="ghost"
-                                        className={`${config.surfaceBg} ${config.surfaceBorder} border shadow-sm ${
-                                          isDark ? 'hover:bg-slate-800' : 'hover:bg-gray-100'
-                                        }`}
-                                        onClick={() => window.open(steamUrl, '_blank')}
-                                        aria-label="Steam"
-                                        title={steamUrl}
-                                      >
-                                        <span className="relative inline-flex">
-                                          <img src={steamIcon.src} alt="" className="h-4 w-4" />
-                                          <span className="absolute -top-2 -right-2 text-[14px] leading-none">®</span>
-                                        </span>
-                                      </Button>
-                                    )}
-                                  </div>
-                                )}
-                              </div>
-                            )}
-                            {!project.headerImage && (xUrl || githubUrl || steamUrl) && (
-                              <div className="flex items-center gap-1 mb-4">
-                                {xUrl && (
-                                  <Button
-                                    size="icon"
-                                    variant="ghost"
-                                    className={isDark ? 'hover:bg-slate-800' : 'hover:bg-gray-100'}
-                                    onClick={() => window.open(xUrl, '_blank')}
-                                    aria-label="X"
-                                    title={xUrl}
-                                  >
-                                    <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-                                      <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
-                                    </svg>
-                                  </Button>
-                                )}
-                                {githubUrl && (
-                                  <Button
-                                    size="icon"
-                                    variant="ghost"
-                                    className={isDark ? 'hover:bg-slate-800' : 'hover:bg-gray-100'}
-                                    onClick={() => window.open(githubUrl, '_blank')}
-                                    aria-label={LABELS.github}
-                                    title={githubUrl}
-                                  >
-                                    <Github className="h-4 w-4" />
-                                  </Button>
-                                )}
-                                {steamUrl && (
-                                  <Button
-                                    size="icon"
-                                    variant="ghost"
-                                    className={isDark ? 'hover:bg-slate-800' : 'hover:bg-gray-100'}
-                                    onClick={() => window.open(steamUrl, '_blank')}
-                                    aria-label="Steam"
-                                    title={steamUrl}
-                                  >
-                                    <span className="relative inline-flex">
-                                      <img src={steamIcon.src} alt="" className="h-4 w-4" />
-                                      <span className="absolute -top-2 -right-2 text-[14px] leading-none">®</span>
-                                    </span>
-                                  </Button>
-                                )}
-                              </div>
-                            )}
-                            <div className="space-y-3 mb-4">
-                              {project.member && (
-                                <div>
-                                  <p className={`text-xs font-semibold ${config.textMuted}`}>メンバー</p>
-                                  <p className={`text-sm ${config.textSecondary} break-words`}>{project.member}</p>
-                                </div>
-                              )}
-                              {project.outline && (
-                                <div>
-                                  <p className={`text-xs font-semibold ${config.textMuted}`}>概要</p>
-                                  <p className={`text-sm ${config.textSecondary} break-words`}>{project.outline}</p>
-                                </div>
-                              )}
-                              {project.appeal && (
-                                <div>
-                                  <p className={`text-xs font-semibold ${config.textMuted}`}>やったこと</p>
-                                  <p className={`text-sm ${config.textSecondary} break-words`}>{project.appeal}</p>
-                                </div>
-                              )}
-                            </div>
-
-                            <div className="flex flex-wrap gap-2 mb-4">
-                              {project.tech.map((tech, techIndex) => (
-                                <Badge variant="static" key={techIndex} className={`${config.badgeBg} pointer-events-none`}>
-                                  {tech}
-                                </Badge>
-                              ))}
-                            </div>
-
-                            {project.playLink && (
-                              <div className="mb-4">
-                                <OgpCard
-                                  label={project.playLink.label}
-                                  url={project.playLink.url}
-                                  emphasis
-                                  {...(ogpData[project.playLink.url]
-                                    ? { data: ogpData[project.playLink.url] }
-                                    : {})}
-                                />
-                              </div>
-                            )}
-
-                            {project.relatedLinks && project.relatedLinks.length > 0 && (
-                              <div className="space-y-2 mb-6">
-                                {project.relatedLinks.map((link) => {
-                                  const ogp = ogpData[link.url];
-                                  return (
-                                    <OgpCard
-                                      key={`${project.title}-${link.url}`}
-                                      label={link.label}
-                                      url={link.url}
-                                      {...(ogp ? { data: ogp } : {})}
-                                    />
-                                  );
-                                })}
-                              </div>
-                            )}
-
-                            {project.awards && project.awards.length > 0 && (
-                              <div className="space-y-2">
-                                {project.awards.map((award, awardIndex) => (
-                                  <div key={awardIndex} className={`flex items-center gap-2 text-sm ${config.textMuted}`}>
-                                    <Award className="w-4 h-4 text-yellow-500" />
-                                    <span>{award}</span>
-                                  </div>
-                                ))}
-                              </div>
-                            )}
-                            </CardContent>
-                          </Card>
-                        </motion.div>
-                      );
-                      })}
+                      {yearGroup.items.map((project, index) =>
+                        renderProjectCard(project, index, `${yearGroup.year}-${project.title}-${index}`),
+                      )}
                     </div>
                   </motion.div>
                 </div>
               ))}
             </div>
           </section>
+          )}
 
+          {isAboutPage && (
           <section id="hobby" className="py-20 px-4 relative overflow-x-hidden">
             <div className="container mx-auto max-w-6xl">
               <motion.div
@@ -991,36 +1100,61 @@ export default function App({ ogpData }: { ogpData: OgpMap }) {
               </div>
             </div>
           </section>
+          )}
 
           <footer className={`py-8 px-4 ${config.surfaceBg} backdrop-blur-md border-t ${config.surfaceBorder}`}>
             <div className="container mx-auto max-w-6xl text-center">
+              <div className="flex flex-wrap items-center justify-center gap-3 mb-6">
+                <Button
+                  size="icon"
+                  variant="ghost"
+                  className={isDark ? 'hover:bg-slate-800' : 'hover:bg-gray-100'}
+                  onClick={() => window.open('https://x.com/dogegg314', '_blank')}
+                  aria-label={LABELS.twitter}
+                  title="https://x.com/dogegg314"
+                >
+                  <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+                  </svg>
+                </Button>
+                <Button
+                  size="icon"
+                  variant="ghost"
+                  className={isDark ? 'hover:bg-slate-800' : 'hover:bg-gray-100'}
+                  onClick={() => window.open('https://github.com/inutamago-dogegg', '_blank')}
+                  aria-label={LABELS.github}
+                  title="https://github.com/inutamago-dogegg"
+                >
+                  <Github className="w-4 h-4" />
+                </Button>
+                <Button
+                  onClick={() => setIsDark((prev) => !prev)}
+                  variant="outline"
+                  size="icon"
+                  className={`border-2 ${config.buttonOutline}`}
+                  aria-label={isDark ? 'ライトモードに切り替え' : 'ダークモードに切り替え'}
+                >
+                  {isDark ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
+                </Button>
+                <div className="flex items-center gap-2 overflow-x-auto whitespace-nowrap scrollbar-thin pr-1">
+                  {(Object.keys(themeConfig) as ThemeKey[]).map((t) => (
+                    <Button
+                      key={t}
+                      onClick={() => setTheme(t)}
+                      variant={theme === t ? 'default' : 'outline'}
+                      size="sm"
+                      className={`${theme === t ? config.buttonBg : `hover:bg-gray-100 ${isDark ? 'hover:bg-gray-800' : ''}`} shrink-0`}
+                    >
+                      {themeConfig[t].emoji} {themeConfig[t].name}
+                    </Button>
+                  ))}
+                </div>
+              </div>
               <p className={`${config.textMuted} mb-4`}>{PROFILE.footer}</p>
               <p className={`${config.textMuted} text-xs mb-4`}>
                 ©2026 Valve Corporation. Steam and the Steam logo are trademarks and/or registered trademarks of Valve
                 Corporation in the U.S. and/or other countries.
               </p>
-              <div className="flex gap-4 justify-center">
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => window.open('https://x.com/dogegg314', '_blank')}
-                  title="https://x.com/dogegg314"
-                >
-                  <svg className="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
-                  </svg>
-                  {LABELS.twitter}
-                </Button>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => window.open('https://github.com/inutamago-dogegg', '_blank')}
-                  title="https://github.com/inutamago-dogegg"
-                >
-                  <Github className="w-4 h-4 mr-2" />
-                  {LABELS.github}
-                </Button>
-              </div>
             </div>
           </footer>
       </div>

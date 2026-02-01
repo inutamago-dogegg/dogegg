@@ -1,0 +1,31 @@
+---
+import App from '../app/App';
+import '@/styles/index.css';
+
+const baseUrl = import.meta.env.BASE_URL.endsWith('/')
+  ? import.meta.env.BASE_URL
+  : `${import.meta.env.BASE_URL}/`;
+
+const siteUrl = Astro.site?.toString() ?? 'https://inutamago-dogegg.github.io/dogegg/';
+const ogImageUrl = new URL(`${baseUrl}ogp.png`, siteUrl).toString();
+const homeUrl = new URL(`${baseUrl}home/`, siteUrl).toString();
+---
+
+<html lang="ja">
+	<head>
+		<meta charset="utf-8" />
+		<link rel="icon" type="image/svg+xml" sizes="any" href={`${baseUrl}favicon.svg`} />
+		<meta name="viewport" content="width=device-width" />
+		<meta name="generator" content={Astro.generator} />
+		<meta property="og:title" content="Home | どぐえぐ" />
+		<meta property="og:description" content="どぐえぐのホームページです。" />
+		<meta property="og:image" content={ogImageUrl} />
+		<meta property="og:image:alt" content="どぐえぐのOGP画像" />
+		<meta property="og:url" content={homeUrl} />
+		<meta property="og:type" content="website" />
+		<title>Home | どぐえぐ</title>
+	</head>
+	<body>
+		<App client:load ogpData={{}} mode="home" />
+	</body>
+</html>

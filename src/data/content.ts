@@ -114,7 +114,9 @@ export const PROFILE = {
   clubs: '東京科学大学デジタル創作同好会traP / C-lock-row',
   sections: {
     abaoutMeTitle: 'About Me',
-    worksTitle: 'Products',
+    featuredTitle: 'Highlighted Works',
+    featuredLead: '特に注目の作品',
+    worksTitle: 'Works',
     worksLead: 'これまでに制作したもの',
     skillsTitle: 'Skills',
     skillsLead: 'できること',
@@ -127,13 +129,15 @@ export const PROFILE = {
   iconAlt: 'どぐえぐのアイコン',
 } as const;
 
-export const NAV_SECTIONS = [
+export const ABOUT_NAV_SECTIONS = [
   { id: 'top', label: PROFILE.sections.abaoutMeTitle },
   { id: 'skills', label: PROFILE.sections.skillsTitle },
   { id: 'career', label: PROFILE.sections.careerTitle },
-  { id: 'works', label: PROFILE.sections.worksTitle },
+  { id: 'featured', label: PROFILE.sections.featuredTitle },
   { id: 'hobby', label: PROFILE.sections.hobbyTitle },
 ] as const;
+
+export const WORKS_NAV_SECTIONS = [{ id: 'works', label: PROFILE.sections.worksTitle }] as const;
 
 export const CAREERS: CareerItem[] = [
   {
