@@ -175,7 +175,7 @@ export const CAREERS: CareerItem[] = [
     company: 'CAPCOM GAMES COMPETITION',
     period: '準備期間: 2024年12月~2025年3月, 制作期間: 2025年4月~9月',
     details: [
-      'サークルのメンバー20人と共にCAPCOM GAMES COMPETITIONというイベントで制作しました。',
+      'サークルのメンバー20人でCAPCOM GAMES COMPETITIONというイベントに参加しました。',
       'ディレクター兼マネージャーとして経験者のメンバー19人をまとめ、企画~完成までを担当しました。'
     ],
     category: 'イベント',

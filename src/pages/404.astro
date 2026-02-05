@@ -1,12 +1,7 @@
 ---
+import App from '../app/App';
 import '@/styles/index.css';
 import { ViewTransitions } from 'astro:transitions';
-
-const baseUrl = import.meta.env.BASE_URL.endsWith('/')
-  ? import.meta.env.BASE_URL
-  : `${import.meta.env.BASE_URL}/`;
-const diceBase = `${baseUrl}dice/`;
-const showDebugPinzoro = false;
 ---
 
 <html lang="ja">
@@ -15,110 +10,8 @@ const showDebugPinzoro = false;
 		<meta name="viewport" content="width=device-width" />
 		<title>404 | Not Found</title>
 		<ViewTransitions />
-		<style>
-			@keyframes pinzoro-pop {
-				0% { transform: scale(1); }
-				50% { transform: scale(1.5); }
-				100% { transform: scale(1); }
-			}
-			@keyframes pinzoro-rainbow {
-				0% { background-position: 0% 50%; }
-				50% { background-position: 100% 50%; }
-				100% { background-position: 0% 50%; }
-			}
-			.pinzoro-animate {
-				animation: pinzoro-pop 0.9s ease-in-out infinite, pinzoro-rainbow 2.4s linear infinite;
-				background: linear-gradient(90deg, #ff0080, #ff8c00, #f8e71c, #7ed321, #50e3c2, #4a90e2, #9013fe, #ff0080);
-				background-size: 300% 300%;
-				-webkit-background-clip: text;
-				background-clip: text;
-				color: transparent;
-				text-shadow: 0 8px 20px rgba(255, 0, 128, 0.25);
-			}
-		</style>
 	</head>
-	<body class="min-h-screen px-4">
-		<div class="fixed inset-0 pointer-events-none overflow-hidden">
-			<div class="absolute top-16 left-8 h-32 w-32 rounded-full bg-blue-300/30 blur-3xl"></div>
-			<div class="absolute bottom-16 right-10 h-40 w-40 rounded-full bg-cyan-300/30 blur-3xl"></div>
-			<div class="absolute top-1/2 right-1/4 h-36 w-36 rounded-full bg-sky-300/30 blur-3xl"></div>
-		</div>
-		<main class="relative min-h-screen flex items-center justify-center">
-			<div class="w-full max-w-2xl text-center space-y-6 rounded-2xl border border-slate-200 bg-white/90 px-6 py-10 shadow-lg backdrop-blur">
-				<p class="text-sm font-semibold text-slate-500">404</p>
-				<h1 class="text-4xl font-bold text-slate-900">ページが見つかりませんでした</h1>
-				<p class="text-base text-slate-600">サイコロで運試し！</p>
-
-				<div class="flex items-center justify-center gap-4">
-					<img data-dice src={`${diceBase}dice-1.svg`} alt="Dice 1" class="h-20 w-20" />
-					<img data-dice src={`${diceBase}dice-1.svg`} alt="Dice 2" class="h-20 w-20" />
-					<img data-dice src={`${diceBase}dice-1.svg`} alt="Dice 3" class="h-20 w-20" />
-				</div>
-
-				<div class="space-y-3">
-					<button
-						id="roll-button"
-						type="button"
-						class="inline-flex items-center justify-center rounded-md border border-slate-300 bg-white/90 px-6 py-3 text-sm font-semibold text-slate-700 shadow-sm transition hover:bg-white"
-					>
-						ダイスを振る
-					</button>
-					<button
-						id="pinzoro-button"
-						type="button"
-						class:list={[
-							"mx-auto items-center justify-center rounded-md border border-slate-300 bg-white/90 px-4 py-2 text-xs font-semibold text-slate-500 shadow-sm transition hover:bg-white",
-							showDebugPinzoro ? "inline-flex" : "hidden",
-						]}
-					>
-						デバッグ: ピンゾロ
-					</button>
-					<p id="result" class="text-lg font-semibold text-slate-700" aria-live="polite"></p>
-				</div>
-			</div>
-		</main>
-
-		<script define:vars={{ diceBase, showDebugPinzoro }}>
-			const diceImages = Array.from(document.querySelectorAll("[data-dice]"));
-			const result = document.getElementById("result");
-			const rollButton = document.getElementById("roll-button");
-			const pinzoroButton = document.getElementById("pinzoro-button");
-
-			const rollDie = () => Math.floor(Math.random() * 6) + 1;
-
-			const updateDice = (values) => {
-				values.forEach((value, index) => {
-					const img = diceImages[index];
-					img.src = `${diceBase}dice-${value}.svg`;
-					img.alt = `Dice ${value}`;
-				});
-			};
-
-			const updateResult = (values) => {
-				const isTriple = values.every((value) => value === values[0]);
-				const isPinzoro = isTriple && values[0] === 1;
-
-				result.textContent = isTriple ? "おめでとう！" : "残念！";
-				result.classList.toggle("pinzoro-animate", isPinzoro);
-			};
-
-			const roll = () => {
-				const values = [rollDie(), rollDie(), rollDie()];
-				updateDice(values);
-				updateResult(values);
-			};
-
-			const forcePinzoro = () => {
-				const values = [1, 1, 1];
-				updateDice(values);
-				updateResult(values);
-			};
-
-			rollButton.addEventListener("click", roll);
-			if (showDebugPinzoro && pinzoroButton) {
-				pinzoroButton.addEventListener("click", forcePinzoro);
-			}
-			roll();
-		</script>
+	<body>
+		<App client:load ogpData={{}} mode="notFound" />
 	</body>
 </html>
