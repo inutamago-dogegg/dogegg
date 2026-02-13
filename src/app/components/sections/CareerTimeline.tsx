@@ -290,7 +290,7 @@ export function CareerTimeline({ careers, isDark, config, onCareerClick }: Caree
             className="absolute"
             style={{
               top: `${((yearPos?.topY ?? 0) + (yearPos?.bottomY ?? 0)) / 2 - 10}px`,
-              left: `${TIMELINE_LEFT - 60}px`,
+              left: `${TIMELINE_LEFT - 48}px`,
               transform: 'translateX(-100%)',
               writingMode: 'vertical-rl',
               textOrientation: 'mixed',
@@ -358,7 +358,7 @@ export function CareerTimeline({ careers, isDark, config, onCareerClick }: Caree
             animate={{ opacity: 1 }}
             className={`absolute text-xs ${config.textMuted}`}
             style={{
-              left: `${TIMELINE_LEFT - 12}px`,
+              left: `${TIMELINE_LEFT - 4}px`,
               top: `${item.y}px`,
               transform: 'translate(-100%, -50%)',
               zIndex: 20,
