@@ -7,16 +7,27 @@ import { ABOUT_NAV_SECTIONS, PROJECTS, PROFILE, type ProjectItem } from '@/data/
 import type { OgpMap } from '@/app/types';
 import { themeConfig, type ThemeKey, getInitialThemeKey } from '@/lib/theme';
 
-const AboutIntroSection = lazy(() => import('@/app/components/sections/AboutIntroSection'));
-const ArticlesSection = lazy(() => import('@/app/components/sections/ArticlesSection'));
-const CareerSection = lazy(() => import('@/app/components/sections/CareerSection'));
-const FeaturedSection = lazy(() => import('@/app/components/sections/FeaturedSection'));
-const HobbySection = lazy(() => import('@/app/components/sections/HobbySection'));
-const HomeSection = lazy(() => import('@/app/components/sections/HomeSection'));
-const NotFoundSection = lazy(() => import('@/app/components/sections/NotFoundSection'));
-const RecentArticlesSection = lazy(() => import('@/app/components/sections/RecentArticlesSection'));
-const SkillsSection = lazy(() => import('@/app/components/sections/SkillsSection'));
-const WorksSection = lazy(() => import('@/app/components/sections/WorksSection'));
+const loadAboutIntroSection = () => import('@/app/components/sections/AboutIntroSection');
+const loadArticlesSection = () => import('@/app/components/sections/ArticlesSection');
+const loadCareerSection = () => import('@/app/components/sections/CareerSection');
+const loadFeaturedSection = () => import('@/app/components/sections/FeaturedSection');
+const loadHobbySection = () => import('@/app/components/sections/HobbySection');
+const loadHomeSection = () => import('@/app/components/sections/HomeSection');
+const loadNotFoundSection = () => import('@/app/components/sections/NotFoundSection');
+const loadRecentArticlesSection = () => import('@/app/components/sections/RecentArticlesSection');
+const loadSkillsSection = () => import('@/app/components/sections/SkillsSection');
+const loadWorksSection = () => import('@/app/components/sections/WorksSection');
+
+const AboutIntroSection = lazy(loadAboutIntroSection);
+const ArticlesSection = lazy(loadArticlesSection);
+const CareerSection = lazy(loadCareerSection);
+const FeaturedSection = lazy(loadFeaturedSection);
+const HobbySection = lazy(loadHobbySection);
+const HomeSection = lazy(loadHomeSection);
+const NotFoundSection = lazy(loadNotFoundSection);
+const RecentArticlesSection = lazy(loadRecentArticlesSection);
+const SkillsSection = lazy(loadSkillsSection);
+const WorksSection = lazy(loadWorksSection);
 
 export type AppProps = {
   ogpData: OgpMap;
@@ -60,11 +71,7 @@ export default function App({ ogpData, articlesOgpData = {}, mode = 'home' }: Ap
   });
   const [visibleSections, setVisibleSections] = useState<Record<string, boolean>>({});
 
-  const sectionFallback = (
-    <div className={`py-16 text-center ${config.textMuted}`}>
-      <p>Loading...</p>
-    </div>
-  );
+  const sectionFallback = null;
 
   useEffect(() => {
     document.documentElement.style.scrollBehavior = 'smooth';
@@ -126,7 +133,29 @@ export default function App({ ogpData, articlesOgpData = {}, mode = 'home' }: Ap
     const timers: number[] = [];
 
     const firstKey = sequence[0];
-    setVisibleSections(firstKey ? { [firstKey]: true } : {});
+    const loaderMap: Partial<Record<string, () => Promise<unknown>>> = {
+      aboutIntro: loadAboutIntroSection,
+      skills: loadSkillsSection,
+      career: loadCareerSection,
+      featured: loadFeaturedSection,
+      recentArticles: loadRecentArticlesSection,
+      hobby: loadHobbySection,
+      works: loadWorksSection,
+      articles: loadArticlesSection,
+      home: loadHomeSection,
+      notFound: loadNotFoundSection,
+    };
+
+    const preload = (key: string | undefined) => {
+      if (!key) return Promise.resolve();
+      return loaderMap[key]?.() ?? Promise.resolve();
+    };
+
+    preload(firstKey).then(() => {
+      if (!cancelled && firstKey) {
+        setVisibleSections({ [firstKey]: true });
+      }
+    });
 
     const scheduleNext = () => {
       if (cancelled || index >= sequence.length) return;
@@ -138,9 +167,12 @@ export default function App({ ogpData, articlesOgpData = {}, mode = 'home' }: Ap
       if (cancelled || index >= sequence.length) return;
       const key = sequence[index];
       if (!key) return;
-      index += 1;
-      setVisibleSections((prev) => ({ ...prev, [key]: true }));
-      scheduleNext();
+      preload(key).then(() => {
+        if (cancelled) return;
+        index += 1;
+        setVisibleSections((prev) => ({ ...prev, [key]: true }));
+        scheduleNext();
+      });
     };
 
     index = 1;

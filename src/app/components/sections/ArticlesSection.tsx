@@ -17,7 +17,7 @@ export default function ArticlesSection({ config, ogpData }: ArticlesSectionProp
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
+          transition={{ duration: 0.3 }}
           className="text-center mb-16"
         >
           <h2 className={`text-4xl mb-4 ${config.textPrimary}`}>記事</h2>
@@ -48,7 +48,7 @@ export default function ArticlesSection({ config, ogpData }: ArticlesSectionProp
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
-                  transition={{ duration: 0.6, delay: index * 0.1 }}
+                  transition={{ duration: 0.3, delay: index * 0.1 }}
                   whileHover={{ y: -8 }}
                 >
                   <Card
