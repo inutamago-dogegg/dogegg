@@ -111,46 +111,44 @@ export default function App({ ogpData, articlesOgpData = {}, mode = 'home' }: Ap
 
   useEffect(() => {
     const sequence = isAboutPage
-      ? ['aboutIntro', 'skills', 'career', 'featured', 'recentArticles', 'hobby']
+      ? ['aboutIntro', 'skills', 'career', 'featured', 'recentArticles', 'hobby', 'footer']
       : isWorksPage
-          ? ['works']
+          ? ['works', 'footer']
           : isArticlesPage
-              ? ['articles']
+              ? ['articles', 'footer']
               : isHomePage
-                  ? ['home']
+                  ? ['home', 'footer']
                   : isNotFoundPage
-                      ? ['notFound']
-                      : [];
+                      ? ['notFound', 'footer']
+                      : ['footer'];
     let cancelled = false;
     let index = 0;
+    const timers: number[] = [];
 
-    setVisibleSections({});
+    const firstKey = sequence[0];
+    setVisibleSections(firstKey ? { [firstKey]: true } : {});
 
-    function scheduleNext() {
-      if (index >= sequence.length || cancelled) return;
-      const requestIdle = (window as Window & {
-        requestIdleCallback?: (cb: () => void, opts?: { timeout: number }) => number;
-      }).requestIdleCallback;
-      if (requestIdle) {
-        requestIdle(showNext, { timeout: 300 });
-      } else {
-        window.setTimeout(showNext, 120);
-      }
-    }
+    const scheduleNext = () => {
+      if (cancelled || index >= sequence.length) return;
+      const timeoutId = window.setTimeout(showNext, 120);
+      timers.push(timeoutId);
+    };
 
-    function showNext() {
+    const showNext = () => {
       if (cancelled || index >= sequence.length) return;
       const key = sequence[index];
       if (!key) return;
       index += 1;
       setVisibleSections((prev) => ({ ...prev, [key]: true }));
       scheduleNext();
-    }
+    };
 
-    showNext();
+    index = 1;
+    scheduleNext();
 
     return () => {
       cancelled = true;
+      timers.forEach((id) => window.clearTimeout(id));
     };
   }, [isAboutPage, isArticlesPage, isHomePage, isNotFoundPage, isWorksPage]);
 
@@ -288,7 +286,17 @@ export default function App({ ogpData, articlesOgpData = {}, mode = 'home' }: Ap
             </Suspense>
           )}
 
-          <SiteFooter config={config} isDark={isDark} theme={theme} setTheme={setTheme} setIsDark={setIsDark} />
+          {visibleSections.footer && (
+            <Suspense fallback={null}>
+              <SiteFooter
+                config={config}
+                isDark={isDark}
+                theme={theme}
+                setTheme={setTheme}
+                setIsDark={setIsDark}
+              />
+            </Suspense>
+          )}
       </div>
     </div>
   );
