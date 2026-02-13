@@ -137,8 +137,8 @@ export default function App({ ogpData, articlesOgpData = {}, mode = 'home' }: Ap
             worksUrl={worksPageUrl}
             articlesUrl={articlesPageUrl}
             titleText={PROFILE.title}
-            titleHref={isWorksPage ? '#works' : '#top'}
-            titleTitle={isWorksPage ? '#works' : '#top'}
+            titleHref={homeUrl}
+            titleTitle={homeUrl}
             activePage={isHomePage ? 'home' : isAboutPage ? 'about' : isArticlesPage ? 'articles' : 'works'}
           />
 

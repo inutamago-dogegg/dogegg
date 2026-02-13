@@ -1,5 +1,6 @@
 import { Home, FolderOpen, User, FileText } from 'lucide-react';
 import { Button } from '@/app/components/ui/button';
+import DogeggIcon from '@/images/dogegg_icon.png';
 
 type HeaderConfig = {
   navBg: string;
@@ -48,8 +49,21 @@ export default function SiteHeader({
             href={titleHref}
             className={`text-2xl font-bold ${config.textPrimary} whitespace-nowrap`}
             title={titleTitle}
+            onClick={(event) => {
+              if (typeof window === 'undefined') return;
+              event.preventDefault();
+              const targetUrl = new URL(homeUrl, window.location.origin).toString();
+              if (window.location.href === targetUrl) {
+                window.location.reload();
+              } else {
+                window.location.assign(targetUrl);
+              }
+            }}
           >
-            {titleText}
+            <span className="inline-flex items-center gap-2">
+              <img src={DogeggIcon.src} alt="" className="h-6 w-6" />
+              {titleText}
+            </span>
           </a>
           <div className="flex items-center gap-3 min-w-0">
             <div className="flex items-center gap-0 overflow-x-auto whitespace-nowrap max-w-full [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">

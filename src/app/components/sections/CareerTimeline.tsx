@@ -173,6 +173,19 @@ export function CareerTimeline({ careers, isDark, config, onCareerClick }: Caree
 
   yearLinePositions[(years[years.length - 1] ?? 0) - 1] = timelineHeight;
 
+  const monthTicks = years.flatMap((year) =>
+    Array.from({ length: 12 }, (_, index) => {
+      const month = index + 1;
+      const date = new Date(year, index, 1);
+      return {
+        key: `${year}-${month}`,
+        y: getYPosition(date),
+        month,
+        year,
+      };
+    }),
+  );
+
   return (
     <div className="relative max-w-3xl mx-auto" style={{ minHeight: `${timelineHeight}px` }}>
       {/* Timeline line */}
@@ -181,20 +194,35 @@ export function CareerTimeline({ careers, isDark, config, onCareerClick }: Caree
         style={{ height: `${timelineHeight}px`, zIndex: 10 }}
       />
 
+      {/* Month ticks */}
+      {monthTicks.map((tick) => (
+        <div
+          key={tick.key}
+          className={`absolute h-px ${isDark ? 'bg-gray-600' : 'bg-gray-400'}`}
+          style={{
+            left: `${TIMELINE_LEFT}px`,
+            top: `${tick.y}px`,
+            width: tick.month === 7 ? '24px' : '10px',
+            transform: 'translateX(-50%)',
+            zIndex: 11,
+          }}
+        />
+      ))}
+
       {/* Year markers */}
       {Object.entries(yearLinePositions).map(([year, yearPos]) => {
         return (
           <motion.div
             key={year}
             initial={{ opacity: 0, x: 0 }}
-            whileInView={{ opacity: 1, x: 20 }}
+            whileInView={{ opacity: 1, x: 12 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
             className="absolute left-0"
             style={{ top: `${yearPos}px`, zIndex: 15 }}
           >
             <div className="flex items-center gap-2">
-              <div className={`w-6 h-0.5 ${isDark ? 'bg-gray-600' : 'bg-gray-400'}`} />
+              <div className={`w-10 h-0.5 ${isDark ? 'bg-gray-600' : 'bg-gray-400'}`} />
             </div>
           </motion.div>
         );
@@ -247,6 +275,42 @@ export function CareerTimeline({ careers, isDark, config, onCareerClick }: Caree
             <div className={`h-full ${config.buttonBg} opacity-80`} />
           </motion.div>
         );
+      })()}
+
+      {/* Month labels (hover only) */}
+      {hoveredCareer && (() => {
+        const startDate = hoveredCareer.career.startDate;
+        const endDate = hoveredCareer.career.endDate;
+        const getMonthCenterY = (date: Date) => getYPosition(new Date(date.getFullYear(), date.getMonth(), 15));
+        const startLabel = `${startDate.getMonth() + 1}月`;
+        const endLabel = `${endDate.getMonth() + 1}月`;
+        const startY = getMonthCenterY(startDate);
+        const endY = getMonthCenterY(endDate);
+        const labels =
+          startDate.getFullYear() === endDate.getFullYear() &&
+          startDate.getMonth() === endDate.getMonth()
+            ? [{ label: startLabel, y: startY }]
+            : [
+                { label: startLabel, y: startY },
+                { label: endLabel, y: endY },
+              ];
+
+        return labels.map((item) => (
+          <motion.div
+            key={`month-${item.label}-${item.y}`}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className={`absolute text-xs ${config.textMuted}`}
+            style={{
+              left: `${TIMELINE_LEFT - 12}px`,
+              top: `${item.y}px`,
+              transform: 'translate(-100%, -50%)',
+              zIndex: 20,
+            }}
+          >
+            {item.label}
+          </motion.div>
+        ));
       })()}
 
       {/* Connector triangle from period to card (hover only) */}
