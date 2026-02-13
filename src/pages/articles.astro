@@ -1,0 +1,63 @@
+---
+import App from '../app/App';
+import '@/styles/index.css';
+import { ViewTransitions } from 'astro:transitions';
+import { ARTICLES } from '@/data/content';
+import { fetchOgp, type OgpData } from '@/lib/ogp';
+
+const baseUrl = import.meta.env.BASE_URL.endsWith('/')
+  ? import.meta.env.BASE_URL
+  : `${import.meta.env.BASE_URL}/`;
+
+const siteUrl = Astro.site?.toString() ?? 'https://inutamago-dogegg.github.io/dogegg/';
+const ogImageUrl = new URL(`${baseUrl}ogp.png`, siteUrl).toString();
+const articlesUrl = new URL(`${baseUrl}articles/`, siteUrl).toString();
+
+const ogpEntries = await Promise.all(
+  ARTICLES.map(async (article) => {
+    const data = await fetchOgp(article.url);
+    if (data) {
+      return [article.url, data] as const;
+    }
+
+    let host = article.url;
+    try {
+      host = new URL(article.url).hostname;
+    } catch {
+      host = article.url;
+    }
+
+    return [
+      article.url,
+      {
+        url: article.url,
+        title: article.title ?? article.url,
+        siteName: host,
+        description: host,
+      },
+    ] as const;
+  }),
+);
+
+const articlesOgpData = Object.fromEntries(ogpEntries) as Record<string, OgpData>;
+---
+
+<html lang="ja">
+	<head>
+		<meta charset="utf-8" />
+		<link rel="icon" type="image/svg+xml" sizes="any" href={`${baseUrl}favicon.svg`} />
+		<meta name="viewport" content="width=device-width" />
+		<meta name="generator" content={Astro.generator} />
+		<ViewTransitions />
+		<meta property="og:title" content="Articles | どぐえぐ" />
+		<meta property="og:description" content="技術記事一覧" />
+		<meta property="og:image" content={ogImageUrl} />
+		<meta property="og:image:alt" content="どぐえぐのOGP画像" />
+		<meta property="og:url" content={articlesUrl} />
+		<meta property="og:type" content="website" />
+		<title>Articles | どぐえぐ</title>
+	</head>
+	<body>
+		<App client:load ogpData={{}} articlesOgpData={articlesOgpData} mode="articles" />
+	</body>
+</html>
