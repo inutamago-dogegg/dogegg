@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { motion } from 'motion/react';
 import { Github } from 'lucide-react';
 import { Card, CardContent } from '@/app/components/ui/card';
@@ -15,6 +16,10 @@ export default function AboutIntroSection({ config, theme }: AboutIntroSectionPr
     .split(' ')
     .filter((item) => !item.startsWith('hover:'))
     .join(' ');
+  const collapsibleTitles = ['考え方', '目指すキャリア'] as const;
+  const [openSections, setOpenSections] = useState<Record<string, boolean>>(() =>
+    Object.fromEntries(collapsibleTitles.map((title) => [title, true])),
+  );
 
   return (
     <section id="top" className="pt-32 pb-20 px-4 relative">
@@ -88,31 +93,61 @@ export default function AboutIntroSection({ config, theme }: AboutIntroSectionPr
                 </div>
               </div>
 
-              {ABOUT_CONTENT.sections.map((section) => (
-                <div key={section.title}>
-                  <h3 className={`text-3xl ${config.textPrimary} mb-4`}>{section.title}</h3>
-                  {section.paragraphs?.map((paragraph) => (
-                    <p
-                      key={paragraph}
-                      className={`text-lg ${config.textSecondary} leading-relaxed`}
-                    >
-                      {paragraph}
-                    </p>
-                  ))}
-                  {section.email && (
-                    <div className={`text-lg sm:text-xl ${config.textPrimary} font-mono text-center break-words`}>
-                      <span className="whitespace-nowrap">Mail:</span>{' '}
-                      <a
-                        href={`mailto:${section.email}`}
-                        className={`inline-flex items-center rounded-md border border-slate-300/70 px-2 py-0.5 transition bg-slate-100/70 dark:bg-slate-800/70 hover:bg-slate-200/60 hover:dark:bg-slate-700/60 ${config.textPrimary}`}
+              {ABOUT_CONTENT.sections.map((section) => {
+                const isCollapsible = collapsibleTitles.includes(section.title as (typeof collapsibleTitles)[number]);
+                const isOpen = openSections[section.title] ?? true;
+
+                return (
+                  <div key={section.title}>
+                    {isCollapsible ? (
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setOpenSections((prev) => ({ ...prev, [section.title]: !isOpen }))
+                        }
+                        className={`w-full text-left text-3xl ${config.textPrimary} font-bold whitespace-nowrap inline-flex items-center gap-2 transition-all duration-200 hover:opacity-90 hover:scale-[1.02] hover:-translate-y-0.5 mb-4`}
+                        aria-expanded={isOpen}
                       >
-                        {section.email}
-                      </a>{' '}
-                      <span className="whitespace-nowrap">{ABOUT_CONTENT.contactDisplayName}</span>
-                    </div>
-                  )}
-                </div>
-              ))}
+                        {section.title}
+                        <span
+                          className={`text-2xl ${config.textMuted} transition-transform ${
+                            isOpen ? 'rotate-180' : 'rotate-0'
+                          }`}
+                          aria-hidden="true"
+                        >
+                          ▼
+                        </span>
+                      </button>
+                    ) : (
+                      <h3 className={`text-3xl ${config.textPrimary} mb-4`}>{section.title}</h3>
+                    )}
+                    {(!isCollapsible || isOpen) && (
+                      <div className="space-y-3">
+                        {section.paragraphs?.map((paragraph) => (
+                          <p
+                            key={paragraph}
+                            className={`text-lg ${config.textSecondary} leading-relaxed`}
+                          >
+                            {paragraph}
+                          </p>
+                        ))}
+                        {section.email && (
+                          <div className={`text-lg sm:text-xl ${config.textPrimary} font-mono text-center break-words`}>
+                            <span className="whitespace-nowrap">Mail:</span>{' '}
+                            <a
+                              href={`mailto:${section.email}`}
+                              className={`inline-flex items-center rounded-md border border-slate-300/70 px-2 py-0.5 transition bg-slate-100/70 dark:bg-slate-800/70 hover:bg-slate-200/60 hover:dark:bg-slate-700/60 ${config.textPrimary}`}
+                            >
+                              {section.email}
+                            </a>{' '}
+                            <span className="whitespace-nowrap">{ABOUT_CONTENT.contactDisplayName}</span>
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
             </CardContent>
           </Card>
         </motion.div>
