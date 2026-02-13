@@ -73,44 +73,51 @@ export default function ProjectDetailDialog({
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent
-        className={`${isDark ? 'bg-gray-900 border-gray-700' : 'bg-white'} max-w-2xl relative max-h-[85vh] overflow-y-auto`}
+        className={`${isDark ? 'bg-gray-900 border-gray-700' : 'bg-white'} max-w-2xl overflow-hidden`}
       >
-        <Button
-          type="button"
-          size="icon"
-          variant="ghost"
-          className="absolute right-3 top-3"
-          onClick={() => onOpenChange(false)}
-          aria-label="閉じる"
-        >
-          <X className="h-4 w-4" />
-        </Button>
-        <DialogHeader>
-          <div className="flex items-center gap-3 mb-2">
-            {project.playLink ? (
-              <button
-                type="button"
-                onClick={() => window.open(project.playLink?.url, '_blank')}
-                className={`p-3 ${config.buttonBg} rounded-lg`}
-                aria-label={project.playLink.label}
-              >
-                <ExternalLink className="w-6 h-6 text-white" />
-              </button>
-            ) : (
-              <div className={`p-3 ${config.buttonBg} rounded-lg`}>
-                <ExternalLink className="w-6 h-6 text-white" />
-              </div>
-            )}
-            <div>
-              <DialogTitle className={`text-2xl ${config.textPrimary}`}>{project.title}</DialogTitle>
-              <DialogDescription className={`text-base ${config.textMuted} mt-1`}>
-                {project.period}
-              </DialogDescription>
+        <div className="max-h-[85vh] overflow-y-auto">
+          <div
+            className={`sticky top-0 z-10 border-b ${isDark ? 'bg-gray-900 border-gray-700' : 'bg-white'}`}
+          >
+            <Button
+              type="button"
+              size="icon"
+              variant="ghost"
+              className="absolute right-3 top-3"
+              onClick={() => onOpenChange(false)}
+              aria-label="閉じる"
+            >
+              <X className="h-4 w-4" />
+            </Button>
+            <div className="px-6 pt-6 pb-4">
+              <DialogHeader>
+                <div className="flex items-center gap-3">
+                  {project.playLink ? (
+                    <button
+                      type="button"
+                      onClick={() => window.open(project.playLink?.url, '_blank')}
+                      className={`p-3 ${config.buttonBg} rounded-lg`}
+                      aria-label={project.playLink.label}
+                    >
+                      <ExternalLink className="w-6 h-6 text-white" />
+                    </button>
+                  ) : (
+                    <div className={`p-3 ${config.buttonBg} rounded-lg`}>
+                      <ExternalLink className="w-6 h-6 text-white" />
+                    </div>
+                  )}
+                  <div>
+                    <DialogTitle className={`text-2xl ${config.textPrimary}`}>{project.title}</DialogTitle>
+                    <DialogDescription className={`text-base ${config.textMuted} mt-1`}>
+                      {project.period}
+                    </DialogDescription>
+                  </div>
+                </div>
+              </DialogHeader>
             </div>
           </div>
-        </DialogHeader>
 
-        <div className="mt-4 space-y-4">
+          <div className="px-6 pb-6 pt-3 space-y-4">
           <div>
             <h4 className={`text-sm font-semibold ${config.textMuted} mb-2`}>ジャンル</h4>
             <Badge className={`${config.badgeBg} border`}>{project.genre}</Badge>
@@ -147,6 +154,7 @@ export default function ProjectDetailDialog({
               ))}
             </div>
           )}
+          </div>
         </div>
       </DialogContent>
     </Dialog>

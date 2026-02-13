@@ -131,86 +131,94 @@ export default function CareerSection({ config, isDark }: CareerSectionProps) {
           onOpenChange={(open) => !open && closeCareerDetail()}
         >
           <DialogContent
-            className={`${isDark ? 'bg-gray-900 border-gray-700' : 'bg-white'} max-w-2xl relative max-h-[85vh] overflow-y-auto`}
+            className={`${isDark ? 'bg-gray-900 border-gray-700' : 'bg-white'} max-w-2xl overflow-hidden`}
           >
-            <Button
-              type="button"
-              size="icon"
-              variant="ghost"
-              className="absolute right-3 top-3"
-              onClick={() => closeCareerDetail()}
-              aria-label="閉じる"
-            >
-              <X className="h-4 w-4" />
-            </Button>
-            {selectedCareer && (
-              <>
-                <DialogHeader>
-                  <div className="flex items-center gap-3 mb-2">
-                    {selectedCareer.url ? (
-                      <button
-                        type="button"
-                        onClick={() => window.open(selectedCareer.url, '_blank')}
-                        className={`p-3 ${config.buttonBg} rounded-lg`}
-                        aria-label="関連リンクを開く"
-                      >
-                        <Briefcase className="w-6 h-6 text-white" />
-                      </button>
-                    ) : (
-                      <div className={`p-3 ${config.buttonBg} rounded-lg`}>
-                        <Briefcase className="w-6 h-6 text-white" />
+            <div className="max-h-[85vh] overflow-y-auto">
+              <div
+                className={`sticky top-0 z-10 border-b ${isDark ? 'bg-gray-900 border-gray-700' : 'bg-white'}`}
+              >
+                <Button
+                  type="button"
+                  size="icon"
+                  variant="ghost"
+                  className="absolute right-3 top-3"
+                  onClick={() => closeCareerDetail()}
+                  aria-label="閉じる"
+                >
+                  <X className="h-4 w-4" />
+                </Button>
+                {selectedCareer && (
+                  <div className="px-6 pt-6 pb-4">
+                    <DialogHeader>
+                      <div className="flex items-center gap-3">
+                        {selectedCareer.url ? (
+                          <button
+                            type="button"
+                            onClick={() => window.open(selectedCareer.url, '_blank')}
+                            className={`p-3 ${config.buttonBg} rounded-lg`}
+                            aria-label="関連リンクを開く"
+                          >
+                            <Briefcase className="w-6 h-6 text-white" />
+                          </button>
+                        ) : (
+                          <div className={`p-3 ${config.buttonBg} rounded-lg`}>
+                            <Briefcase className="w-6 h-6 text-white" />
+                          </div>
+                        )}
+                        <div>
+                          <DialogTitle className={`text-2xl ${config.textPrimary}`}>
+                            {selectedCareer.company}
+                          </DialogTitle>
+                          <DialogDescription className={`text-base ${config.textMuted} mt-1`}>
+                            {selectedCareer.period}
+                          </DialogDescription>
+                        </div>
                       </div>
-                    )}
-                    <div>
-                      <DialogTitle className={`text-2xl ${config.textPrimary}`}>
-                        {selectedCareer.company}
-                      </DialogTitle>
-                      <DialogDescription className={`text-base ${config.textMuted} mt-1`}>
-                        {selectedCareer.period}
-                      </DialogDescription>
-                    </div>
+                    </DialogHeader>
                   </div>
-                </DialogHeader>
+                )}
+              </div>
 
-                <div className="mt-4 space-y-4">
-                  <div>
-                    <h4 className={`text-sm font-semibold ${config.textMuted} mb-2`}>カテゴリ</h4>
-                    <Badge className={`${config.badgeBg} border`}>{selectedCareer.category}</Badge>
-                  </div>
-
-                  <div>
-                    <h4 className={`text-sm font-semibold ${config.textMuted} mb-2`}>詳細</h4>
-                    <MarkdownContent
-                      content={selectedCareer.detailMarkdown ?? selectedCareer.details.join('\n\n')}
-                      config={config}
-                    />
-                  </div>
-
-                  <div>
-                    <h4 className={`text-sm font-semibold ${config.textMuted} mb-2`}>使用技術</h4>
-                    <div className="flex flex-wrap gap-2">
-                      {selectedCareer.tech.map((tech, index) => (
-                        <Badge key={index} variant="static" className={`${config.badgeBg} border pointer-events-none`}>
-                          {tech}
-                        </Badge>
-                      ))}
-                    </div>
-                  </div>
-
-                  {selectedCareer.url && (
-                    <div className="pt-4">
-                      <Button
-                        className={`${config.buttonBg} text-white w-full`}
-                        onClick={() => window.open(selectedCareer.url, '_blank')}
-                      >
-                        <ExternalLink className="w-4 h-4 mr-2" />
-                        詳細を見る
-                      </Button>
-                    </div>
-                  )}
+              {selectedCareer && (
+                <div className="px-6 pb-6 pt-3 space-y-4">
+                <div>
+                  <h4 className={`text-sm font-semibold ${config.textMuted} mb-2`}>カテゴリ</h4>
+                  <Badge className={`${config.badgeBg} border`}>{selectedCareer.category}</Badge>
                 </div>
-              </>
-            )}
+
+                <div>
+                  <h4 className={`text-sm font-semibold ${config.textMuted} mb-2`}>詳細</h4>
+                  <MarkdownContent
+                    content={selectedCareer.detailMarkdown ?? selectedCareer.details.join('\n\n')}
+                    config={config}
+                  />
+                </div>
+
+                <div>
+                  <h4 className={`text-sm font-semibold ${config.textMuted} mb-2`}>使用技術</h4>
+                  <div className="flex flex-wrap gap-2">
+                    {selectedCareer.tech.map((tech, index) => (
+                      <Badge key={index} variant="static" className={`${config.badgeBg} border pointer-events-none`}>
+                        {tech}
+                      </Badge>
+                    ))}
+                  </div>
+                </div>
+
+                {selectedCareer.url && (
+                  <div className="pt-4">
+                    <Button
+                      className={`${config.buttonBg} text-white w-full`}
+                      onClick={() => window.open(selectedCareer.url, '_blank')}
+                    >
+                      <ExternalLink className="w-4 h-4 mr-2" />
+                      詳細を見る
+                    </Button>
+                  </div>
+                )}
+                </div>
+              )}
+            </div>
           </DialogContent>
         </Dialog>
       </div>
