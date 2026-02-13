@@ -26,6 +26,7 @@ type TimelineCareerItem = {
   startDate: Date;
   endDate: Date;
   repDate: Date;
+  isActive: boolean;
   detailMarkdown?: string;
   details: string[];
   category: string;
@@ -64,12 +65,14 @@ export default function CareerSection({ config, isDark }: CareerSectionProps) {
     const endDate = career.endDate ? parseDate(career.endDate) : new Date(Date.now());
     const repDate = parseDate(career.representativeDate);
     const period = career.period;
+    const isActive = career.endDate === null || endDate.getTime() >= Date.now();
     const base = {
       period,
       company: career.company,
       startDate,
       endDate,
       repDate,
+      isActive,
       details: career.details,
       category: career.category,
       tech: career.tech ?? [],

@@ -10,6 +10,7 @@ import FeaturedSection from '@/app/components/sections/FeaturedSection';
 import HobbySection from '@/app/components/sections/HobbySection';
 import HomeSection from '@/app/components/sections/HomeSection';
 import NotFoundSection from '@/app/components/sections/NotFoundSection';
+import RecentArticlesSection from '@/app/components/sections/RecentArticlesSection';
 import SkillsSection from '@/app/components/sections/SkillsSection';
 import WorksSection from '@/app/components/sections/WorksSection';
 import { ABOUT_NAV_SECTIONS, PROJECTS, PROFILE, type ProjectItem } from '@/data/content';
@@ -165,6 +166,14 @@ export default function App({ ogpData, articlesOgpData = {}, mode = 'home' }: Ap
               ogpData={ogpData}
               worksPageUrl={worksPageUrl}
               featuredProjects={featuredProjects}
+            />
+          )}
+
+          {isAboutPage && (
+            <RecentArticlesSection
+              config={config}
+              ogpData={ogpData}
+              articlesPageUrl={articlesPageUrl}
             />
           )}
 

@@ -2,7 +2,7 @@
 import App from '../app/App';
 import '@/styles/index.css';
 import { ViewTransitions } from 'astro:transitions';
-import { HOBBIES, PROJECTS } from '@/data/content';
+import { ARTICLES, HOBBIES, PROJECTS } from '@/data/content';
 import { fetchOgp, type OgpData } from '@/lib/ogp';
 
 const urlSet = new Set<string>();
@@ -24,6 +24,10 @@ HOBBIES.forEach((hobby: (typeof HOBBIES)[number]) => {
     (favorite: NonNullable<(typeof HOBBIES)[number]['favorites']>[number]) =>
       urlSet.add(favorite.url),
   );
+});
+
+ARTICLES.forEach((article: (typeof ARTICLES)[number]) => {
+  urlSet.add(article.url);
 });
 
 const ogpEntries = await Promise.all(

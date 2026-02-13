@@ -86,6 +86,19 @@ export type ArticleItem = {
   url: string;
 }
 
+export type AboutSocialLink = {
+  label: string;
+  handle: string;
+  url: string;
+  icon: 'x' | 'github';
+};
+
+export type AboutSection = {
+  title: string;
+  paragraphs?: string[];
+  email?: string;
+};
+
 export const LABELS = {
   play: 'プレイリンク',
   related: '関連記事',
@@ -136,6 +149,8 @@ export const PROFILE = {
     abaoutMeTitle: 'About Me',
     featuredTitle: 'Highlighted Works',
     featuredLead: '力を入れた作品',
+    recentArticlesTitle: 'Recent Articles',
+    recentArticlesLead: '直近の記事',
     worksTitle: 'Works',
     worksLead: 'これまでに制作したもの',
     skillsTitle: 'Skills',
@@ -149,11 +164,65 @@ export const PROFILE = {
   iconAlt: 'どぐえぐのアイコン',
 } as const;
 
+export const SOCIAL_LINKS = {
+  x: {
+    label: 'Twitter (X)',
+    handle: '@dogegg314',
+    url: 'https://x.com/dogegg314',
+    icon: 'x',
+  },
+  github: {
+    label: 'GitHub',
+    handle: '@inutamago-dogegg',
+    url: 'https://github.com/inutamago-dogegg',
+    icon: 'github',
+  },
+} as const satisfies Record<'x' | 'github', AboutSocialLink>;
+
+export const ABOUT_CONTENT = {
+  subtitle: 'プロフィール',
+  favoriteTechLabel: '好きな技術',
+  favoriteTechText: 'ゲームクライアント全般',
+  hobbyLabel: '趣味',
+  hobbyText: 'ゲーム / 謎解き / 漫画',
+  contactDisplayName: 'Ryuuei Nitto ( どぐえぐ )',
+  socials: [
+    SOCIAL_LINKS.x,
+    SOCIAL_LINKS.github,
+  ] satisfies AboutSocialLink[],
+  sections: [
+    {
+      title: '考え方',
+      paragraphs: [
+        'ゲームの面白さは、単にプログラムが正しく動くことだけでは生まれないと考えています。' +
+        'どれほど技術的に優れていても、企画の意図や体験の核を理解していなければ、本質的な価値にはつながりません。' +
+        'そのため、プログラマであってもそれらを深く理解し、「どのような論理でこの要素を実装することになったのか」を常に意識することが重要だと考えています。' +
+        '仕様をそのまま形にするのではなく、企画の持つ面白さの芯を捉え、それを最大限に引き出す形で実装することが、エンジニアの役割だと考えています。' +
+        'また、企画の魅力を損なうことなく、かつ実装面での課題を解決しながら、スムーズに実現へ導くことこそが、エンジニアとして最も価値のある貢献だと考えています。',
+      ],
+    },
+    {
+      title: '目指すキャリア',
+      paragraphs: [
+        '将来的には、単に実装を担当するだけではなく、企画の実現に根本から関われるエンジニアを目指しています。' +
+        '技術力を軸にしながらも、企画意図・チーム状況・開発リソースなどを総合的に捉え、最適な形でプロダクトを実現できる存在になりたいと考えています。' +
+        'また、自身の技術だけに閉じるのではなく、チーム全体の強みやリソースを引き出し、それらを組み合わせて価値を生み出すことも重要だと考えています。' +
+        '最終的には、技術と企画の両方を理解し、実現の責任を担う、プロダクトマネージャーに近い立ち位置で貢献できるエンジニアになることを目標としています。',
+      ],
+    },
+    {
+      title: 'コンタクト',
+      email: 'inutamago.dogegg@gmail.com',
+    },
+  ] satisfies AboutSection[],
+} as const;
+
 export const ABOUT_NAV_SECTIONS = [
   { id: 'top', label: PROFILE.sections.abaoutMeTitle },
   { id: 'skills', label: PROFILE.sections.skillsTitle },
   { id: 'career', label: PROFILE.sections.careerTitle },
   { id: 'featured', label: PROFILE.sections.featuredTitle },
+  { id: 'recent-articles', label: PROFILE.sections.recentArticlesTitle },
   { id: 'hobby', label: PROFILE.sections.hobbyTitle },
 ] as const;
 

@@ -11,6 +11,7 @@ interface CareerItem {
   startDate: Date;
   endDate: Date;
   repDate: Date;
+  isActive: boolean;
   detailMarkdown?: string;
   details: string[];
   category: string;
@@ -297,7 +298,6 @@ export function CareerTimeline({ careers, isDark, config, onCareerClick }: Caree
       {/* Event cards */}
       <div className="absolute left-0 top-0 right-0" style={{ height: `${timelineHeight}px` }}>
         {cardPositions.map(({ career, topY }, index) => {
-          const isCurrent = career.endDate.getTime() >= Date.now();
           const careerId = getCareerId(career);
           const hasDetail = Boolean(career.detailMarkdown || career.details.length > 0);
           
@@ -344,9 +344,9 @@ export function CareerTimeline({ careers, isDark, config, onCareerClick }: Caree
                         <Badge className={`${config.badgeBg} border text-xs`}>
                           {career.category}
                         </Badge>
-                        {isCurrent && (
+                        {career.isActive && (
                           <Badge className="bg-green-100 border-green-300 text-green-700 text-xs">
-                            現在
+                            参加中
                           </Badge>
                         )}
                       </div>

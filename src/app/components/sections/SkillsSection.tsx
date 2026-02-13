@@ -38,7 +38,7 @@ export default function SkillsSection({ config }: SkillsSectionProps) {
                   <div className="flex items-center justify-between gap-4">
                     <div className="flex items-center gap-2">
                       <img
-                        src={skill.icon?.src}
+                        src={skill.icon.src}
                         alt={`${skill.name} のアイコン`}
                         className="h-8 w-8 rounded-md object-contain"
                         loading="lazy"
