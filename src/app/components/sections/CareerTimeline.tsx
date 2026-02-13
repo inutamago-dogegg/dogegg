@@ -1,4 +1,4 @@
-import { useLayoutEffect, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { motion } from 'motion/react';
 import { Info } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/app/components/ui/card';
@@ -36,6 +36,7 @@ export function CareerTimeline({ careers, isDark, config, onCareerClick }: Caree
   const cardRefs = useRef<Record<string, HTMLDivElement | null>>({});
   const [cardHeights, setCardHeights] = useState<Record<string, number>>({});
   const [hoveredId, setHoveredId] = useState<string | null>(null);
+  const [isMobile, setIsMobile] = useState(false);
 
   const getCareerId = (career: CareerItem) => `${career.company}-${career.period}`;
   const getCardHeight = (career: CareerItem) => cardHeights[getCareerId(career)] ?? DEFAULT_CARD_HEIGHT;
@@ -166,6 +167,54 @@ export function CareerTimeline({ careers, isDark, config, onCareerClick }: Caree
     }
   }, [cardHeights, careers]);
 
+  useEffect(() => {
+    const updateIsMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    updateIsMobile();
+    window.addEventListener('resize', updateIsMobile);
+    return () => window.removeEventListener('resize', updateIsMobile);
+  }, []);
+
+  useEffect(() => {
+    if (!isMobile) {
+      setHoveredId(null);
+      return;
+    }
+
+    let rafId = 0;
+    const updateHovered = () => {
+      rafId = window.requestAnimationFrame(() => {
+        const centerY = window.innerHeight / 2;
+        let closestId: string | null = null;
+        let closestDistance = Number.POSITIVE_INFINITY;
+
+        Object.entries(cardRefs.current).forEach(([id, el]) => {
+          if (!el) return;
+          const rect = el.getBoundingClientRect();
+          const mid = rect.top + rect.height / 2;
+          const distance = Math.abs(mid - centerY);
+          if (distance < closestDistance) {
+            closestDistance = distance;
+            closestId = id;
+          }
+        });
+
+        setHoveredId(closestId);
+      });
+    };
+
+    updateHovered();
+    window.addEventListener('scroll', updateHovered, { passive: true });
+    window.addEventListener('resize', updateHovered);
+
+    return () => {
+      window.removeEventListener('scroll', updateHovered);
+      window.removeEventListener('resize', updateHovered);
+      if (rafId) window.cancelAnimationFrame(rafId);
+    };
+  }, [isMobile, cardPositions.length]);
+
   const yearLinePositions: Record<number, number> = {};
   years.forEach(year => {
     yearLinePositions[year] = yearPositions[year]?.topY ?? 0;
@@ -198,11 +247,11 @@ export function CareerTimeline({ careers, isDark, config, onCareerClick }: Caree
       {monthTicks.map((tick) => (
         <div
           key={tick.key}
-          className={`absolute h-px ${isDark ? 'bg-gray-600' : 'bg-gray-400'}`}
+            className={`absolute h-px ${isDark ? 'bg-gray-600' : 'bg-gray-400'}`}
           style={{
             left: `${TIMELINE_LEFT}px`,
             top: `${tick.y}px`,
-            width: tick.month === 7 ? '24px' : '10px',
+              width: tick.month === 7 ? '24px' : '10px',
             transform: 'translateX(-50%)',
             zIndex: 11,
           }}
@@ -235,11 +284,18 @@ export function CareerTimeline({ careers, isDark, config, onCareerClick }: Caree
             <motion.div 
             key={year} 
             initial={{ opacity: 0, x: 0 }}
-            whileInView={{ opacity: 1, x: -30 }}
+            whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
-            className="absolute left-0"
-            style={{ top: `${((yearPos?.topY ?? 0) + (yearPos?.bottomY ?? 0)) / 2 - 10}px`, zIndex: 15 }}
+            className="absolute"
+            style={{
+              top: `${((yearPos?.topY ?? 0) + (yearPos?.bottomY ?? 0)) / 2 - 10}px`,
+              left: `${TIMELINE_LEFT - 60}px`,
+              transform: 'translateX(-100%)',
+              writingMode: 'vertical-rl',
+              textOrientation: 'mixed',
+              zIndex: 15,
+            }}
             >
               <div className="text-xl font-medium text-gray-500">
                 {year}
@@ -364,6 +420,7 @@ export function CareerTimeline({ careers, isDark, config, onCareerClick }: Caree
         {cardPositions.map(({ career, topY }, index) => {
           const careerId = getCareerId(career);
           const hasDetail = Boolean(career.detailMarkdown || career.details.length > 0);
+          const isActiveCard = isMobile && hoveredId === careerId;
           
           return (
             <motion.div
@@ -388,13 +445,15 @@ export function CareerTimeline({ careers, isDark, config, onCareerClick }: Caree
                 <Card 
                   className={`border-2 ${config.cardBorder} ${config.surfaceBg} backdrop-blur cursor-pointer max-w-xl relative ${
                     hasDetail ? 'group transition-transform duration-300 hover:-translate-y-1 hover:shadow-xl' : 'transition-all duration-300'
-                  }`}
+                  } ${isActiveCard ? '-translate-y-1 shadow-xl' : ''}`}
                   style={{ zIndex: 45 }}
                   onClick={() => onCareerClick(career)}
                 >
                 {(
                   <span
-                    className={`absolute right-3 top-3 inline-flex items-center justify-center rounded-full border ${config.surfaceBorder} ${config.surfaceBg} text-xs ${config.textMuted} h-7 w-7 opacity-0 transition-opacity duration-200 group-hover:opacity-100`}
+                    className={`absolute right-3 top-3 inline-flex items-center justify-center rounded-full border ${config.surfaceBorder} ${config.surfaceBg} text-xs ${config.textMuted} h-7 w-7 opacity-0 transition-opacity duration-200 group-hover:opacity-100 ${
+                      isActiveCard ? 'opacity-100' : ''
+                    }`}
                     aria-label="詳細あり"
                     title="詳細あり"
                   >

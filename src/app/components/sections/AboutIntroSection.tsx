@@ -18,7 +18,7 @@ export default function AboutIntroSection({ config, theme }: AboutIntroSectionPr
     .join(' ');
   const collapsibleTitles = ['考え方', '目指すキャリア'] as const;
   const [openSections, setOpenSections] = useState<Record<string, boolean>>(() =>
-    Object.fromEntries(collapsibleTitles.map((title) => [title, true])),
+    Object.fromEntries(collapsibleTitles.map((title) => [title, false])),
   );
 
   return (

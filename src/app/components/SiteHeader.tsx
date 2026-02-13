@@ -66,7 +66,7 @@ export default function SiteHeader({
             </span>
           </a>
           <div className="flex items-center gap-3 min-w-0">
-            <div className="flex items-center gap-0 overflow-x-auto whitespace-nowrap max-w-full [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+            <div className="flex items-center gap-0 overflow-x-auto whitespace-nowrap max-w-[52vw] sm:max-w-full [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
               <Button
                 asChild
                 variant={isHomePage ? 'default' : 'ghost'}
