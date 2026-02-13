@@ -35,7 +35,7 @@ export default function SiteFooter({
                 <Button
                   size="icon"
                   variant="ghost"
-                  className={`${config.textMuted} border ${config.surfaceBorder} ${isDark ? 'hover:bg-slate-800' : 'hover:bg-gray-100'}`}
+                  className={`${config.textMuted} border ${config.surfaceBorder} cursor-pointer ${isDark ? 'hover:bg-slate-800' : 'hover:bg-gray-100'}`}
                   onClick={() => window.open('https://x.com/dogegg314', '_blank')}
                   aria-label={LABELS.twitter}
                   title="https://x.com/dogegg314"
@@ -47,7 +47,7 @@ export default function SiteFooter({
                 <Button
                   size="icon"
                   variant="ghost"
-                  className={`${config.textMuted} border ${config.surfaceBorder} ${isDark ? 'hover:bg-slate-800' : 'hover:bg-gray-100'}`}
+                  className={`${config.textMuted} border ${config.surfaceBorder} cursor-pointer ${isDark ? 'hover:bg-slate-800' : 'hover:bg-gray-100'}`}
                   onClick={() => window.open('https://github.com/inutamago-dogegg', '_blank')}
                   aria-label={LABELS.github}
                   title="https://github.com/inutamago-dogegg"

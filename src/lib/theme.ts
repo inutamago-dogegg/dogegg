@@ -17,8 +17,8 @@ export type PaletteConfig = {
   cardBorder: string;
   cardBorderStatic: string;
   badgeBg: string;
-  decorativeColors: string[];
-}
+  decorativeColors: readonly string[];
+};
 
 export const themeConfig = {
   spring: {

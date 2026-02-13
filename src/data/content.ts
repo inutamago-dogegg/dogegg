@@ -21,6 +21,10 @@ import DogeggIcon from '@/images/dogegg_icon.png';
 export type CareerItem = {
   company: string;
   period: string;
+  startDate: string;
+  endDate: string | null;
+  representativeDate: string;
+  detailMarkdown?: string;
   details: string[];
   category: 'サークル' | 'インターン' | 'イベント';
   tech?: string[];
@@ -39,11 +43,11 @@ export type HobbyItem = {
   details: string[];
   favoritesLabel?: string;
   favorites?: HobbyLink[];
-};
+};      
 
 export type SkillItem = {
   name: string;
-  icon: ImageMetadata;
+  icon: ImageMetadata; 
   level: number;
   description: string;
 };
@@ -61,6 +65,7 @@ export type ProjectItem = {
   outline: string;
   appeal: string;
   genre: string;
+  detailMarkdown?: string;
   xUrl?: string;
   githubUrl?: string;
   steamUrl?: string;
@@ -74,6 +79,12 @@ export type ProjectYearGroup = {
   year: string;
   items: ProjectItem[];
 };
+
+export type ArticleItem = {
+  title?: string;
+  date: string;
+  url: string;
+}
 
 export const LABELS = {
   play: 'プレイリンク',
@@ -106,6 +117,7 @@ const TECH = {
   react: 'React',
   typescript: 'TypeScript',
   makeRiddle: '謎制作',
+  shader: 'Shader',
 } as const;
 
 const GENRE = {
@@ -119,7 +131,7 @@ export const PROFILE = {
   title: 'どぐえぐ',
   tagline: 'ゲームを作るのが好きです',
   affiliation: '東京科学大学 情報理工学院 数理・計算科学系 学士3年',
-  clubs: '東京科学大学デジタル創作同好会traP / C-lock-row',
+  clubs: ['東京科学大学デジタル創作同好会traP', 'C-lock-row'],
   sections: {
     abaoutMeTitle: 'About Me',
     featuredTitle: 'Highlighted Works',
@@ -153,6 +165,9 @@ export const CAREERS: CareerItem[] = [
   {
     company: 'C-lock-row',
     period: '2025年7月~現在',
+    startDate: '2025-07-01',
+    endDate: null,
+    representativeDate: '2025-07-01',
     details: [
       '科学大の謎解き制作サークルです。',
     ],
@@ -162,7 +177,10 @@ export const CAREERS: CareerItem[] = [
   },
   {
     company: 'GREE Jobs',
-    period: '2025年2月~3月',
+    period: '2025年2月下旬~3月下旬',
+    startDate: '2025-02-20',
+    endDate: '2025-03-31',
+    representativeDate: '2025-02-20',
     details: [
       'グリーさんに1ヶ月間インターンでお邪魔しました。ソーシャルゲームの新機能実装について、プランナーとの仕様決定から実装、QAとのやり取りまでの一通りの業務を行いました。',
       '新規実装タスク終了後は業務効率化ツールの機能改善の提案を自主的に行い実装をしました。'
@@ -174,6 +192,9 @@ export const CAREERS: CareerItem[] = [
   {
     company: 'CAPCOM GAMES COMPETITION',
     period: '準備期間: 2024年12月~2025年3月, 制作期間: 2025年4月~9月',
+    startDate: '2024-12-01',
+    endDate: '2025-09-30',
+    representativeDate: '2025-04-01',
     details: [
       'サークルのメンバー20人でCAPCOM GAMES COMPETITIONというイベントに参加しました。',
       'ディレクター兼マネージャーとして経験者のメンバー19人をまとめ、企画~完成までを担当しました。'
@@ -184,7 +205,10 @@ export const CAREERS: CareerItem[] = [
   },
   {
     company: 'Game Speed Hackathon Autumn 2024',
-    period: '2024年9月',
+    period: '2024年9月22日',
+    startDate: '2024-09-22',
+    endDate: '2024-09-22',
+    representativeDate: '2024-09-22',
     details: ['CyberAgentさん主催のゲームの実装速度を競うイベントです。優勝することができました。'],
     category: 'イベント',
     url: 'https://cyberagent.snar.jp/jobboard/detail.aspx?id=ohkV1eN5MKVBUTT67mLh3g',
@@ -193,6 +217,9 @@ export const CAREERS: CareerItem[] = [
   {
     company: 'CA Tech Job',
     period: '2024年9月',
+    startDate: '2024-09-01',
+    endDate: '2024-09-30',
+    representativeDate: '2024-09-01',
     details: [
       'CyberAgentさんに1ヶ月インターンでお邪魔しました。ソーシャルゲームのゲームクライアントのパフォーマンスチューニングに取り組みました。',
       '渡されたタスクの終了後はパフォーマンス改善箇所を自ら調べPRを出しました。'
@@ -203,7 +230,10 @@ export const CAREERS: CareerItem[] = [
   },
   {
     company: 'コーエーテクモゲームエンジン開発インターンシップ',
-    period: '2024年8月~9月',
+    period: '2024年8月下旬~9月上旬',
+    startDate: '2024-08-20',
+    endDate: '2024-09-30',
+    representativeDate: '2024-08-20',
     details: ['2週間でゲームエンジンの一機能について実装しました。'],
     category: 'インターン',
     url: 'https://job.tracks.run/internship/koeitecmoholdings-26-01',
@@ -211,7 +241,10 @@ export const CAREERS: CareerItem[] = [
   },
   {
     company: 'BitSummit Game Jam 2023',
-    period: '2023年4月~7月',
+    period: '2023年4月下旬~7月中旬',
+    startDate: '2023-04-01',
+    endDate: '2023-07-31',
+    representativeDate: '2023-04-01',
     details: [
       'BitSummit Game Jamというイベントでリードプログラマとして制作しました。',
       '初対面のメンバー9人での制作でした。'
@@ -223,6 +256,9 @@ export const CAREERS: CareerItem[] = [
   {
     company: '東京科学大学デジタル創作同好会traP',
     period: '2022年4月~現在',
+    startDate: '2022-04-01',
+    endDate: null,
+    representativeDate: '2022-04-01',
     details: [
       '大学入学当初から加入しています。',
       '普段はここでゲーム制作をしています。',
@@ -288,6 +324,10 @@ export const HOBBIES: HobbyItem[] = [
       { label: '僕のヒーローアカデミア', url: 'https://shonenjumpplus.com/episode/10833519556325021790',
         note: '面白いです。'
       },
+      {
+        label: 'メダリスト', url: 'https://pocket.shonenmagazine.com/title/01561/episode/331117',
+        note: '面白いです。'
+      }
     ],
   },
   {
@@ -364,7 +404,7 @@ export const SKILLS: SkillItem[] = [
   {
     name: TECH.vcontainer,
     icon: VContainerIcon,
-    level: 2,
+    level: 3,
     description: 'DIコンテナとして普段から使っています。',
   },
   {
@@ -378,6 +418,12 @@ export const SKILLS: SkillItem[] = [
     icon: PythonIcon,
     level: 2,
     description: '競プロで使っていました。軽いアプリ作成で使います。',
+  },
+  {
+    name: TECH.shader,
+    icon: UnityIcon,
+    level: 2,
+    description: 'UnityでShaderを書くことがあります。'
   },
   {
     name: TECH.cocos2dx,
@@ -410,7 +456,7 @@ export const PROJECTS: ProjectYearGroup[] = [
         member: '1人',
         outline: 'ポートフォリオサイトも兼ねて自分のホームページをつくりました',
         genre: GENRE.web,
-        playLink: { label: '', url: 'https://inutamago-dogegg.github.io/dogegg/'},
+        playLink: { label: 'このページ', url: 'https://inutamago-dogegg.github.io/dogegg/'},
         appeal: 'Web制作は初めてでしたが、デザインはFigma AI、コーディングはCursorに手伝ってもらい公開まで何とかできました。',
         headerImage: DogeggIcon,
         githubUrl: 'https://github.com/inutamago-dogegg/dogegg',
@@ -596,4 +642,75 @@ export const PROJECTS: ProjectYearGroup[] = [
       },
     ],
   },
+];
+
+export const ARTICLES: ArticleItem[] = [
+  {
+    date: '2026-02-01',
+    url: 'https://trap.jp/post/2799/',
+  },
+  {
+    date: '2026-01-15',
+    url: 'https://trap.jp/post/2798/',
+  },
+  {
+    date: '2025-02-04',
+    url: 'https://trap.jp/post/2483/',
+  },
+  {
+    date: '2024-10-22',
+    url: 'https://trap.jp/post/2394/',
+  },
+  {
+    date: '2024-10-05',
+    url: 'https://trap.jp/post/2392/',
+  },
+  {
+    date: '2024-09-20',
+    url: 'https://trap.jp/post/2377/'
+  },
+  {
+    date: '2024-05-08',
+    url: 'https://trap.jp/post/1911/',
+  },
+  {
+    date: '2024-04-14',
+    url: 'https://trap.jp/post/2200/'
+  },
+  {
+    date: '2024-03-14',
+    url: 'https://trap.jp/post/2144/'
+  },
+  {
+    date: '2024-03-08',
+    url: 'https://trap.jp/post/2142/'
+  },
+  {
+    date: '2024-01-16',
+    url: 'https://trap.jp/post/2106/'
+  },
+  {
+    date: '2023-11-21',
+    url: 'https://trap.jp/post/2026/'
+  },
+  {
+    date: '2023-11-14',
+    url: 'https://trap.jp/post/2037/'
+  },
+  {
+    date: '2023-03-27',
+    url: 'https://trap.jp/post/1818/'
+  },
+  {
+    date: '2022-12-30',
+    url: 'https://trap.jp/post/1746/'
+  },
+  {
+    date: '2022-10-21',
+    url: 'https://trap.jp/post/1696/'
+  },
+  {
+    date: '2022-06-27',
+    url: 'https://trap.jp/post/1607/'
+  }
 ];

@@ -4,6 +4,7 @@ import SectionNav from '@/app/components/SectionNav';
 import SiteFooter from '@/app/components/SiteFooter';
 import SiteHeader from '@/app/components/SiteHeader';
 import AboutIntroSection from '@/app/components/sections/AboutIntroSection';
+import ArticlesSection from '@/app/components/sections/ArticlesSection';
 import CareerSection from '@/app/components/sections/CareerSection';
 import FeaturedSection from '@/app/components/sections/FeaturedSection';
 import HobbySection from '@/app/components/sections/HobbySection';
@@ -17,13 +18,15 @@ import { themeConfig, type ThemeKey, getInitialThemeKey } from '@/lib/theme';
 
 export type AppProps = {
   ogpData: OgpMap;
-  mode?: 'home' | 'about' | 'works' | 'notFound';
+  articlesOgpData?: OgpMap;
+  mode?: 'home' | 'about' | 'works' | 'articles' | 'notFound';
 }
 
-export default function App({ ogpData, mode = 'home' }: AppProps) {
+export default function App({ ogpData, articlesOgpData = {}, mode = 'home' }: AppProps) {
   const isHomePage = mode === 'home';
   const isAboutPage = mode === 'about';
   const isWorksPage = mode === 'works';
+  const isArticlesPage = mode === 'articles';
   const isNotFoundPage = mode === 'notFound';
   const [theme, setTheme] = useState<ThemeKey>(getInitialThemeKey());
   const [isDark, setIsDark] = useState(false);
@@ -106,12 +109,9 @@ export default function App({ ogpData, mode = 'home' }: AppProps) {
   const homeUrl = baseUrl;
   const aboutUrl = `${baseUrl}about/`;
   const worksPageUrl = `${baseUrl}works/`;
+  const articlesPageUrl = `${baseUrl}articles/`;
   const diceBase = `${baseUrl}dice/`;
   const showDebugPinzoro = false;
-  const staticButtonBg = config.buttonBg
-    .split(' ')
-    .filter((item: string) => !item.startsWith('hover:'))
-    .join(' ');
 
   return (
     <div className="min-h-screen relative overflow-x-hidden">
@@ -134,10 +134,11 @@ export default function App({ ogpData, mode = 'home' }: AppProps) {
             homeUrl={homeUrl}
             aboutUrl={aboutUrl}
             worksUrl={worksPageUrl}
+            articlesUrl={articlesPageUrl}
             titleText={PROFILE.title}
             titleHref={isWorksPage ? '#works' : '#top'}
             titleTitle={isWorksPage ? '#works' : '#top'}
-            activePage={isHomePage ? 'home' : isAboutPage ? 'about' : 'works'}
+            activePage={isHomePage ? 'home' : isAboutPage ? 'about' : isArticlesPage ? 'articles' : 'works'}
           />
 
           <SectionNav
@@ -155,7 +156,7 @@ export default function App({ ogpData, mode = 'home' }: AppProps) {
 
           {isAboutPage && <SkillsSection config={config} />}
 
-          {isAboutPage && <CareerSection config={config} staticButtonBg={staticButtonBg} />}
+          {isAboutPage && <CareerSection config={config} isDark={isDark} />}
 
           {isAboutPage && (
             <FeaturedSection
@@ -177,6 +178,8 @@ export default function App({ ogpData, mode = 'home' }: AppProps) {
               setOpenYears={setOpenYears}
             />
           )}
+
+          {isArticlesPage && <ArticlesSection config={config} ogpData={articlesOgpData} />}
 
           {isAboutPage && <HobbySection config={config} ogpData={ogpData} isDark={isDark} />}
 

@@ -1,4 +1,4 @@
-import { Home, FolderOpen, User } from 'lucide-react';
+import { Home, FolderOpen, User, FileText } from 'lucide-react';
 import { Button } from '@/app/components/ui/button';
 
 type HeaderConfig = {
@@ -15,10 +15,11 @@ type HeaderProps = {
   homeUrl: string;
   aboutUrl: string;
   worksUrl: string;
+  articlesUrl: string;
   titleText: string;
   titleHref: string;
   titleTitle: string;
-  activePage?: 'home' | 'about' | 'works';
+  activePage?: 'home' | 'about' | 'works' | 'articles';
 };
 
 export default function SiteHeader({
@@ -27,6 +28,7 @@ export default function SiteHeader({
   homeUrl,
   aboutUrl,
   worksUrl,
+  articlesUrl,
   titleText,
   titleHref,
   titleTitle,
@@ -36,6 +38,7 @@ export default function SiteHeader({
   const isHomePage = activePage === 'home';
   const isAboutPage = activePage === 'about';
   const isWorksPage = activePage === 'works';
+  const isArticlesPage = activePage === 'articles';
 
   return (
     <nav className={`fixed top-0 left-0 right-0 z-50 ${config.navBg} backdrop-blur-md border-b ${config.navBorder} shadow-sm`}>
@@ -49,7 +52,7 @@ export default function SiteHeader({
             {titleText}
           </a>
           <div className="flex items-center gap-3 min-w-0">
-            <div className="flex items-center gap-0">
+            <div className="flex items-center gap-0 overflow-x-auto whitespace-nowrap max-w-full [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
               <Button
                 asChild
                 variant={isHomePage ? 'default' : 'ghost'}
@@ -81,6 +84,17 @@ export default function SiteHeader({
                 <a href={worksUrl}>
                   <FolderOpen className="w-4 h-4 mr-0" />
                   Works
+                </a>
+              </Button>
+              <Button
+                asChild
+                variant={isArticlesPage ? 'default' : 'ghost'}
+                size="sm"
+                className={`${isArticlesPage ? config.buttonBg : navGhostClass} gap-1 px-2`}
+              >
+                <a href={articlesUrl}>
+                  <FileText className="w-4 h-4 mr-0" />
+                  Articles
                 </a>
               </Button>
             </div>

@@ -1,5 +1,7 @@
+import { useState } from 'react';
+import type { MouseEvent } from 'react';
 import { motion } from 'motion/react';
-import { Award, Github } from 'lucide-react';
+import { Award, Github, Info } from 'lucide-react';
 import { Badge } from '@/app/components/ui/badge';
 import { Button } from '@/app/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/app/components/ui/card';
@@ -15,13 +17,24 @@ type ProjectCardProps = {
   config: PaletteConfig;
   isDark: boolean;
   ogpData: OgpMap;
+  onSelect?: (project: ProjectItem) => void;
 };
 
-export default function ProjectCard({ project, index, config, isDark, ogpData }: ProjectCardProps) {
+export default function ProjectCard({
+  project,
+  index,
+  config,
+  isDark,
+  ogpData,
+  onSelect,
+}: ProjectCardProps) {
   const primaryLink = project.playLink?.url;
   const xUrl = project.xUrl;
   const githubUrl = project.githubUrl;
   const steamUrl = project.steamUrl;
+  const handleStop = (event: MouseEvent) => event.stopPropagation();
+  const hasDetail = Boolean(project.detailMarkdown || project.outline || project.appeal || project.member);
+  const [isInnerHover, setIsInnerHover] = useState(false);
 
   return (
     <motion.div
@@ -32,9 +45,30 @@ export default function ProjectCard({ project, index, config, isDark, ogpData }:
       className="min-w-0"
     >
       <Card
-        className={`border-2 ${config.cardBorderStatic} transition-all duration-300 ${config.surfaceBg} backdrop-blur h-full min-w-0`}
+        className={`border-2 ${config.cardBorder} ${config.surfaceBg} backdrop-blur h-full min-w-0 relative cursor-pointer ${
+          hasDetail && !isInnerHover
+            ? 'group transition-transform duration-300 hover:-translate-y-1 hover:shadow-xl'
+            : 'transition-all duration-300'
+        }`}
+        onClick={() => onSelect?.(project)}
       >
-        <CardHeader>
+        {hasDetail && (
+          <span
+            className={`absolute right-3 top-3 inline-flex items-center justify-center rounded-full border ${config.surfaceBorder} ${config.surfaceBg} text-xs ${config.textMuted} h-7 w-7 opacity-0 transition-opacity duration-200 group-hover:opacity-100`}
+            aria-label="詳細あり"
+            title="詳細あり"
+          >
+            <Info className="h-4 w-4" />
+          </span>
+        )}
+        <CardHeader
+          onClick={(event) => {
+            event.stopPropagation();
+            onSelect?.(project);
+          }}
+          className="cursor-pointer"
+          aria-label="詳細を開く"
+        >
           <div className="mb-2">
             <span
               className={`inline-flex items-center rounded-md border ${config.surfaceBorder} ${config.chipBg} px-2 py-0.5 text-xs font-medium ${config.chipText}`}
@@ -50,30 +84,23 @@ export default function ProjectCard({ project, index, config, isDark, ogpData }:
         <CardContent className="min-w-0">
           {project.headerImage && (
             <div className="relative mb-4">
-              {primaryLink ? (
-                <a
-                  href={primaryLink}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="block transition-transform hover:-translate-y-0.5"
-                  aria-label={`${project.title} の${LABELS.play}へ移動`}
-                  title={primaryLink}
-                >
-                  <img
-                    src={project.headerImage.src}
-                    alt={`${project.title} のヘッダー画像`}
-                    className={`h-44 w-full rounded-lg object-contain border ${config.surfaceBorder} ${config.surfaceBg}`}
-                    loading="lazy"
-                  />
-                </a>
-              ) : (
+              <button
+                type="button"
+                className="block w-full text-left transition-transform hover:-translate-y-0.5 cursor-pointer"
+                aria-label={`${project.title} の詳細を開く`}
+                title={primaryLink ?? project.title}
+                onClick={(event) => {
+                  event.stopPropagation();
+                  onSelect?.(project);
+                }}
+              >
                 <img
                   src={project.headerImage.src}
                   alt={`${project.title} のヘッダー画像`}
                   className={`h-44 w-full rounded-lg object-contain border ${config.surfaceBorder} ${config.surfaceBg}`}
                   loading="lazy"
                 />
-              )}
+              </button>
               {(xUrl || githubUrl || steamUrl) && (
                 <div className="absolute left-2 bottom-2 flex items-center gap-1">
                   {xUrl && (
@@ -83,7 +110,10 @@ export default function ProjectCard({ project, index, config, isDark, ogpData }:
                       className={`${config.surfaceBg} ${config.surfaceBorder} border shadow-sm ${
                         isDark ? 'hover:bg-slate-800' : 'hover:bg-gray-100'
                       }`}
-                      onClick={() => window.open(xUrl, '_blank')}
+                        onClick={(event) => {
+                          event.stopPropagation();
+                          window.open(xUrl, '_blank');
+                        }}
                       aria-label="X"
                       title={xUrl}
                     >
@@ -99,7 +129,10 @@ export default function ProjectCard({ project, index, config, isDark, ogpData }:
                       className={`${config.surfaceBg} ${config.surfaceBorder} border shadow-sm ${
                         isDark ? 'hover:bg-slate-800' : 'hover:bg-gray-100'
                       }`}
-                      onClick={() => window.open(githubUrl, '_blank')}
+                        onClick={(event) => {
+                          event.stopPropagation();
+                          window.open(githubUrl, '_blank');
+                        }}
                       aria-label={LABELS.github}
                       title={githubUrl}
                     >
@@ -113,7 +146,10 @@ export default function ProjectCard({ project, index, config, isDark, ogpData }:
                       className={`${config.surfaceBg} ${config.surfaceBorder} border shadow-sm ${
                         isDark ? 'hover:bg-slate-800' : 'hover:bg-gray-100'
                       }`}
-                      onClick={() => window.open(steamUrl, '_blank')}
+                        onClick={(event) => {
+                          event.stopPropagation();
+                          window.open(steamUrl, '_blank');
+                        }}
                       aria-label="Steam"
                       title={steamUrl}
                     >
@@ -134,7 +170,10 @@ export default function ProjectCard({ project, index, config, isDark, ogpData }:
                   size="icon"
                   variant="ghost"
                   className={isDark ? 'hover:bg-slate-800' : 'hover:bg-gray-100'}
-                  onClick={() => window.open(xUrl, '_blank')}
+                  onClick={(event) => {
+                    event.stopPropagation();
+                    window.open(xUrl, '_blank');
+                  }}
                   aria-label="X"
                   title={xUrl}
                 >
@@ -148,7 +187,10 @@ export default function ProjectCard({ project, index, config, isDark, ogpData }:
                   size="icon"
                   variant="ghost"
                   className={isDark ? 'hover:bg-slate-800' : 'hover:bg-gray-100'}
-                  onClick={() => window.open(githubUrl, '_blank')}
+                  onClick={(event) => {
+                    event.stopPropagation();
+                    window.open(githubUrl, '_blank');
+                  }}
                   aria-label={LABELS.github}
                   title={githubUrl}
                 >
@@ -160,7 +202,10 @@ export default function ProjectCard({ project, index, config, isDark, ogpData }:
                   size="icon"
                   variant="ghost"
                   className={isDark ? 'hover:bg-slate-800' : 'hover:bg-gray-100'}
-                  onClick={() => window.open(steamUrl, '_blank')}
+                  onClick={(event) => {
+                    event.stopPropagation();
+                    window.open(steamUrl, '_blank');
+                  }}
                   aria-label="Steam"
                   title={steamUrl}
                 >
@@ -201,8 +246,11 @@ export default function ProjectCard({ project, index, config, isDark, ogpData }:
             ))}
           </div>
 
-          {project.playLink && (
-            <div className="mb-4">
+            {project.playLink && (
+            <div
+              className="mb-4"
+              onClick={handleStop}
+            >
               <OgpCard
                 label={project.playLink.label}
                 url={project.playLink.url}
@@ -215,7 +263,12 @@ export default function ProjectCard({ project, index, config, isDark, ogpData }:
           )}
 
           {project.relatedLinks && project.relatedLinks.length > 0 && (
-            <div className="space-y-2 mb-6">
+            <div
+              className="space-y-2 mb-6"
+              onClick={handleStop}
+              onMouseEnter={() => setIsInnerHover(true)}
+              onMouseLeave={() => setIsInnerHover(false)}
+            >
               {project.relatedLinks.map((link) => {
                 const ogp = ogpData[link.url];
                 return (
