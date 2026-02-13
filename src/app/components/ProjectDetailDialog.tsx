@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import { ExternalLink, Github } from 'lucide-react';
+import { ExternalLink, Github, X } from 'lucide-react';
 import { Button } from '@/app/components/ui/button';
 import { Badge } from '@/app/components/ui/badge';
 import {
@@ -72,12 +72,35 @@ export default function ProjectDetailDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className={`${isDark ? 'bg-gray-900 border-gray-700' : 'bg-white'} max-w-2xl`}>
+      <DialogContent
+        className={`${isDark ? 'bg-gray-900 border-gray-700' : 'bg-white'} max-w-2xl relative max-h-[85vh] overflow-y-auto`}
+      >
+        <Button
+          type="button"
+          size="icon"
+          variant="ghost"
+          className="absolute right-3 top-3"
+          onClick={() => onOpenChange(false)}
+          aria-label="閉じる"
+        >
+          <X className="h-4 w-4" />
+        </Button>
         <DialogHeader>
           <div className="flex items-center gap-3 mb-2">
-            <div className={`p-3 ${config.buttonBg} rounded-lg`}>
-              <ExternalLink className="w-6 h-6 text-white" />
-            </div>
+            {project.playLink ? (
+              <button
+                type="button"
+                onClick={() => window.open(project.playLink?.url, '_blank')}
+                className={`p-3 ${config.buttonBg} rounded-lg`}
+                aria-label={project.playLink.label}
+              >
+                <ExternalLink className="w-6 h-6 text-white" />
+              </button>
+            ) : (
+              <div className={`p-3 ${config.buttonBg} rounded-lg`}>
+                <ExternalLink className="w-6 h-6 text-white" />
+              </div>
+            )}
             <div>
               <DialogTitle className={`text-2xl ${config.textPrimary}`}>{project.title}</DialogTitle>
               <DialogDescription className={`text-base ${config.textMuted} mt-1`}>

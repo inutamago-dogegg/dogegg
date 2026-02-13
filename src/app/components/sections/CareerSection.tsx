@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { motion } from 'motion/react';
-import { Briefcase, ExternalLink } from 'lucide-react';
+import { Briefcase, ExternalLink, X } from 'lucide-react';
 import { CAREERS, PROFILE } from '@/data/content';
 import MarkdownContent from '@/app/components/MarkdownContent';
 import { CareerTimeline } from '@/app/components/sections/CareerTimeline';
@@ -131,15 +131,36 @@ export default function CareerSection({ config, isDark }: CareerSectionProps) {
           onOpenChange={(open) => !open && closeCareerDetail()}
         >
           <DialogContent
-            className={`${isDark ? 'bg-gray-900 border-gray-700' : 'bg-white'} max-w-2xl`}
+            className={`${isDark ? 'bg-gray-900 border-gray-700' : 'bg-white'} max-w-2xl relative max-h-[85vh] overflow-y-auto`}
           >
+            <Button
+              type="button"
+              size="icon"
+              variant="ghost"
+              className="absolute right-3 top-3"
+              onClick={() => closeCareerDetail()}
+              aria-label="閉じる"
+            >
+              <X className="h-4 w-4" />
+            </Button>
             {selectedCareer && (
               <>
                 <DialogHeader>
                   <div className="flex items-center gap-3 mb-2">
-                    <div className={`p-3 ${config.buttonBg} rounded-lg`}>
-                      <Briefcase className="w-6 h-6 text-white" />
-                    </div>
+                    {selectedCareer.url ? (
+                      <button
+                        type="button"
+                        onClick={() => window.open(selectedCareer.url, '_blank')}
+                        className={`p-3 ${config.buttonBg} rounded-lg`}
+                        aria-label="関連リンクを開く"
+                      >
+                        <Briefcase className="w-6 h-6 text-white" />
+                      </button>
+                    ) : (
+                      <div className={`p-3 ${config.buttonBg} rounded-lg`}>
+                        <Briefcase className="w-6 h-6 text-white" />
+                      </div>
+                    )}
                     <div>
                       <DialogTitle className={`text-2xl ${config.textPrimary}`}>
                         {selectedCareer.company}

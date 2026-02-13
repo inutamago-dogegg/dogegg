@@ -150,7 +150,13 @@ export default function App({ ogpData, articlesOgpData = {}, mode = 'home' }: Ap
           />
 
           {isHomePage && (
-            <HomeSection config={config} theme={theme} aboutUrl={aboutUrl} worksPageUrl={worksPageUrl} />
+            <HomeSection
+              config={config}
+              theme={theme}
+              aboutUrl={aboutUrl}
+              worksPageUrl={worksPageUrl}
+              articlesPageUrl={articlesPageUrl}
+            />
           )}
 
           {isAboutPage && <AboutIntroSection config={config} theme={theme} />}

@@ -9,9 +9,16 @@ type HomeSectionProps = {
   theme: ThemeKey;
   aboutUrl: string;
   worksPageUrl: string;
+  articlesPageUrl: string;
 };
 
-export default function HomeSection({ config, theme, aboutUrl, worksPageUrl }: HomeSectionProps) {
+export default function HomeSection({
+  config,
+  theme,
+  aboutUrl,
+  worksPageUrl,
+  articlesPageUrl,
+}: HomeSectionProps) {
   return (
     <section className="min-h-screen flex items-center justify-center px-4 relative">
       <div className="container mx-auto max-w-4xl">
@@ -43,6 +50,9 @@ export default function HomeSection({ config, theme, aboutUrl, worksPageUrl }: H
             </Button>
             <Button asChild size="lg" className={`${config.buttonBg} text-white shadow-lg text-lg py-6`}>
               <a href={worksPageUrl}>Works</a>
+            </Button>
+            <Button asChild size="lg" className={`${config.buttonBg} text-white shadow-lg text-lg py-6`}>
+              <a href={articlesPageUrl}>Articles</a>
             </Button>
           </div>
         </motion.div>
