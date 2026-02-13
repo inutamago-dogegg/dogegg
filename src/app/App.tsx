@@ -1,21 +1,22 @@
-import { useEffect, useMemo, useState } from 'react';
+import { Suspense, lazy, useEffect, useMemo, useState } from 'react';
 import FloatingOrbs from '@/app/components/FloatingOrbs';
 import SectionNav from '@/app/components/SectionNav';
 import SiteFooter from '@/app/components/SiteFooter';
 import SiteHeader from '@/app/components/SiteHeader';
-import AboutIntroSection from '@/app/components/sections/AboutIntroSection';
-import ArticlesSection from '@/app/components/sections/ArticlesSection';
-import CareerSection from '@/app/components/sections/CareerSection';
-import FeaturedSection from '@/app/components/sections/FeaturedSection';
-import HobbySection from '@/app/components/sections/HobbySection';
-import HomeSection from '@/app/components/sections/HomeSection';
-import NotFoundSection from '@/app/components/sections/NotFoundSection';
-import RecentArticlesSection from '@/app/components/sections/RecentArticlesSection';
-import SkillsSection from '@/app/components/sections/SkillsSection';
-import WorksSection from '@/app/components/sections/WorksSection';
 import { ABOUT_NAV_SECTIONS, PROJECTS, PROFILE, type ProjectItem } from '@/data/content';
 import type { OgpMap } from '@/app/types';
 import { themeConfig, type ThemeKey, getInitialThemeKey } from '@/lib/theme';
+
+const AboutIntroSection = lazy(() => import('@/app/components/sections/AboutIntroSection'));
+const ArticlesSection = lazy(() => import('@/app/components/sections/ArticlesSection'));
+const CareerSection = lazy(() => import('@/app/components/sections/CareerSection'));
+const FeaturedSection = lazy(() => import('@/app/components/sections/FeaturedSection'));
+const HobbySection = lazy(() => import('@/app/components/sections/HobbySection'));
+const HomeSection = lazy(() => import('@/app/components/sections/HomeSection'));
+const NotFoundSection = lazy(() => import('@/app/components/sections/NotFoundSection'));
+const RecentArticlesSection = lazy(() => import('@/app/components/sections/RecentArticlesSection'));
+const SkillsSection = lazy(() => import('@/app/components/sections/SkillsSection'));
+const WorksSection = lazy(() => import('@/app/components/sections/WorksSection'));
 
 export type AppProps = {
   ogpData: OgpMap;
@@ -57,6 +58,13 @@ export default function App({ ogpData, articlesOgpData = {}, mode = 'home' }: Ap
       PROJECTS.map((group) => [group.year, Number(group.year) === latestYear]),
     );
   });
+  const [visibleSections, setVisibleSections] = useState<Record<string, boolean>>({});
+
+  const sectionFallback = (
+    <div className={`py-16 text-center ${config.textMuted}`}>
+      <p>Loading...</p>
+    </div>
+  );
 
   useEffect(() => {
     document.documentElement.style.scrollBehavior = 'smooth';
@@ -66,11 +74,14 @@ export default function App({ ogpData, articlesOgpData = {}, mode = 'home' }: Ap
       return;
     }
 
-    const sections = navSections.map((section) => document.getElementById(section.id)).filter(
-      (section): section is HTMLElement => Boolean(section),
-    );
-
     const updateActiveByCenter = () => {
+      const sections = navSections.map((section) => document.getElementById(section.id)).filter(
+        (section): section is HTMLElement => Boolean(section),
+      );
+      if (sections.length === 0) {
+        setActiveSection(isWorksPage ? worksNavSections[0]?.id ?? 'works' : 'home');
+        return;
+      }
       const centerY = window.innerHeight / 2;
       let closestId = sections[0]?.id ?? 'top';
       let closestDistance = Number.POSITIVE_INFINITY;
@@ -96,7 +107,52 @@ export default function App({ ogpData, articlesOgpData = {}, mode = 'home' }: Ap
       window.removeEventListener('scroll', updateActiveByCenter);
       window.removeEventListener('resize', updateActiveByCenter);
     };
-  }, [isWorksPage, navSections, worksNavSections]);
+  }, [isWorksPage, navSections, worksNavSections, visibleSections]);
+
+  useEffect(() => {
+    const sequence = isAboutPage
+      ? ['aboutIntro', 'skills', 'career', 'featured', 'recentArticles', 'hobby']
+      : isWorksPage
+          ? ['works']
+          : isArticlesPage
+              ? ['articles']
+              : isHomePage
+                  ? ['home']
+                  : isNotFoundPage
+                      ? ['notFound']
+                      : [];
+    let cancelled = false;
+    let index = 0;
+
+    setVisibleSections({});
+
+    function scheduleNext() {
+      if (index >= sequence.length || cancelled) return;
+      const requestIdle = (window as Window & {
+        requestIdleCallback?: (cb: () => void, opts?: { timeout: number }) => number;
+      }).requestIdleCallback;
+      if (requestIdle) {
+        requestIdle(showNext, { timeout: 300 });
+      } else {
+        window.setTimeout(showNext, 120);
+      }
+    }
+
+    function showNext() {
+      if (cancelled || index >= sequence.length) return;
+      const key = sequence[index];
+      if (!key) return;
+      index += 1;
+      setVisibleSections((prev) => ({ ...prev, [key]: true }));
+      scheduleNext();
+    }
+
+    showNext();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [isAboutPage, isArticlesPage, isHomePage, isNotFoundPage, isWorksPage]);
 
   const projects = PROJECTS;
   const allProjects = PROJECTS.flatMap((group) => group.items);
@@ -149,57 +205,87 @@ export default function App({ ogpData, articlesOgpData = {}, mode = 'home' }: Ap
             config={config}
           />
 
-          {isHomePage && (
-            <HomeSection
-              config={config}
-              theme={theme}
-              aboutUrl={aboutUrl}
-              worksPageUrl={worksPageUrl}
-              articlesPageUrl={articlesPageUrl}
-            />
+          {isHomePage && visibleSections.home && (
+            <Suspense fallback={sectionFallback}>
+              <HomeSection
+                config={config}
+                theme={theme}
+                aboutUrl={aboutUrl}
+                worksPageUrl={worksPageUrl}
+                articlesPageUrl={articlesPageUrl}
+              />
+            </Suspense>
           )}
 
-          {isAboutPage && <AboutIntroSection config={config} theme={theme} />}
-
-          {isAboutPage && <SkillsSection config={config} />}
-
-          {isAboutPage && <CareerSection config={config} isDark={isDark} />}
-
-          {isAboutPage && (
-            <FeaturedSection
-              config={config}
-              isDark={isDark}
-              ogpData={ogpData}
-              worksPageUrl={worksPageUrl}
-              featuredProjects={featuredProjects}
-            />
+          {isAboutPage && visibleSections.aboutIntro && (
+            <Suspense fallback={sectionFallback}>
+              <AboutIntroSection config={config} theme={theme} />
+            </Suspense>
           )}
 
-          {isAboutPage && (
-            <RecentArticlesSection
-              config={config}
-              ogpData={ogpData}
-              articlesPageUrl={articlesPageUrl}
-            />
+          {isAboutPage && visibleSections.skills && (
+            <Suspense fallback={sectionFallback}>
+              <SkillsSection config={config} />
+            </Suspense>
           )}
 
-          {isWorksPage && (
-            <WorksSection
-              config={config}
-              isDark={isDark}
-              ogpData={ogpData}
-              projects={projects}
-              openYears={openYears}
-              setOpenYears={setOpenYears}
-            />
+          {isAboutPage && visibleSections.career && (
+            <Suspense fallback={sectionFallback}>
+              <CareerSection config={config} isDark={isDark} />
+            </Suspense>
           )}
 
-          {isArticlesPage && <ArticlesSection config={config} ogpData={articlesOgpData} />}
+          {isAboutPage && visibleSections.featured && (
+            <Suspense fallback={sectionFallback}>
+              <FeaturedSection
+                config={config}
+                isDark={isDark}
+                ogpData={ogpData}
+                worksPageUrl={worksPageUrl}
+                featuredProjects={featuredProjects}
+              />
+            </Suspense>
+          )}
 
-          {isAboutPage && <HobbySection config={config} ogpData={ogpData} isDark={isDark} />}
+          {isAboutPage && visibleSections.recentArticles && (
+            <Suspense fallback={sectionFallback}>
+              <RecentArticlesSection
+                config={config}
+                ogpData={ogpData}
+                articlesPageUrl={articlesPageUrl}
+              />
+            </Suspense>
+          )}
 
-          {isNotFoundPage && (
-            <NotFoundSection diceBase={diceBase} showDebugPinzoro={showDebugPinzoro} />
+          {isWorksPage && visibleSections.works && (
+            <Suspense fallback={sectionFallback}>
+              <WorksSection
+                config={config}
+                isDark={isDark}
+                ogpData={ogpData}
+                projects={projects}
+                openYears={openYears}
+                setOpenYears={setOpenYears}
+              />
+            </Suspense>
+          )}
+
+          {isArticlesPage && visibleSections.articles && (
+            <Suspense fallback={sectionFallback}>
+              <ArticlesSection config={config} ogpData={articlesOgpData} />
+            </Suspense>
+          )}
+
+          {isAboutPage && visibleSections.hobby && (
+            <Suspense fallback={sectionFallback}>
+              <HobbySection config={config} ogpData={ogpData} isDark={isDark} />
+            </Suspense>
+          )}
+
+          {isNotFoundPage && visibleSections.notFound && (
+            <Suspense fallback={sectionFallback}>
+              <NotFoundSection diceBase={diceBase} showDebugPinzoro={showDebugPinzoro} />
+            </Suspense>
           )}
 
           <SiteFooter config={config} isDark={isDark} theme={theme} setTheme={setTheme} setIsDark={setIsDark} />
