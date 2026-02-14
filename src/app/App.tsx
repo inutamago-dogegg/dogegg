@@ -153,7 +153,7 @@ export default function App({ ogpData, articlesOgpData = {}, mode = 'home' }: Ap
 
     preload(firstKey).then(() => {
       if (!cancelled && firstKey) {
-        setVisibleSections({ [firstKey]: true });
+        setVisibleSections((prev) => ({ ...prev, [firstKey]: true }));
       }
     });
 
