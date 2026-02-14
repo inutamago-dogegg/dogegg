@@ -40,15 +40,7 @@ export default function ProjectDetailDialog({
 
   if (!project) return null;
 
-  const detailMarkdown =
-    project.detailMarkdown ??
-    [
-      project.outline ? `### 概要\n${project.outline}` : '',
-      project.appeal ? `### やったこと\n${project.appeal}` : '',
-      project.member ? `### メンバー\n${project.member}` : '',
-    ]
-      .filter(Boolean)
-      .join('\n\n');
+  const detailMarkdown = project.detailMarkdown?.trim() ?? '';
 
   const linkButtons: Array<{ label: string; url: string; icon?: ReactNode }> = [];
   if (project.playLink) {
@@ -128,42 +120,53 @@ export default function ProjectDetailDialog({
           </div>
 
           <div className="px-6 pb-6 pt-3 space-y-4">
-          <div>
-            <h4 className={`text-sm font-semibold ${config.textMuted} mb-2`}>ジャンル</h4>
-            <Badge className={`${config.badgeBg} border`}>{project.genre}</Badge>
-          </div>
-
-          {detailMarkdown && (
-            <div className="space-y-2">
-              <MarkdownContent content={detailMarkdown} config={config} />
+            <div>
+              <h4 className={`text-sm font-semibold ${config.textMuted} mb-2`}>ジャンル</h4>
+              <Badge className={`${config.badgeBg} border`}>{project.genre}</Badge>
             </div>
-          )}
 
-          <div>
-            <h4 className={`text-sm font-semibold ${config.textMuted} mb-2`}>使用技術</h4>
-            <div className="flex flex-wrap gap-2">
-              {project.tech.map((tech, index) => (
-                <Badge key={index} className={`${config.badgeBg} border`}>
-                  {tech}
-                </Badge>
-              ))}
+            <div>
+              <h4 className={`text-sm font-semibold ${config.textMuted} mb-2`}>メンバー</h4>
+              <p className={`text-sm ${config.textSecondary}`}>{project.member}</p>
             </div>
-          </div>
 
-          {linkButtons.length > 0 && (
-            <div className="pt-4 space-y-2">
-              {linkButtons.map((link) => (
-                <Button
-                  key={link.url}
-                  className={`${config.buttonBg} text-white w-full`}
-                  onClick={() => window.open(link.url, '_blank')}
-                >
-                  {link.icon}
-                  {link.label}
-                </Button>
-              ))}
+            <div>
+              <h4 className={`text-sm font-semibold ${config.textMuted} mb-2`}>作品概要</h4>
+              <p className={`text-sm ${config.textSecondary}`}>{project.outline}</p>
             </div>
-          )}
+
+            {detailMarkdown && (
+              <div className="space-y-2">
+                <h4 className={`text-sm font-semibold ${config.textMuted}`}>詳細</h4>
+                <MarkdownContent content={detailMarkdown} config={config} />
+              </div>
+            )}
+
+            <div>
+              <h4 className={`text-sm font-semibold ${config.textMuted} mb-2`}>使用技術</h4>
+              <div className="flex flex-wrap gap-2">
+                {project.tech.map((tech, index) => (
+                  <Badge key={index} className={`${config.badgeBg} border`}>
+                    {tech}
+                  </Badge>
+                ))}
+              </div>
+            </div>
+
+            {linkButtons.length > 0 && (
+              <div className="pt-4 space-y-2">
+                {linkButtons.map((link) => (
+                  <Button
+                    key={link.url}
+                    className={`${config.buttonBg} text-white w-full`}
+                    onClick={() => window.open(link.url, '_blank')}
+                  >
+                    {link.icon}
+                    {link.label}
+                  </Button>
+                ))}
+              </div>
+            )}
           </div>
         </div>
       </DialogContent>

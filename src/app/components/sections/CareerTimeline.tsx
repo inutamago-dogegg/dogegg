@@ -34,7 +34,9 @@ export function CareerTimeline({ careers, isDark, config, onCareerClick }: Caree
   const BAR_WIDTH = 4;
   const CARD_LEFT_PADDING = 100;
   const cardRefs = useRef<Record<string, HTMLDivElement | null>>({});
+  const detailRefs = useRef<Record<string, HTMLParagraphElement | null>>({});
   const [cardHeights, setCardHeights] = useState<Record<string, number>>({});
+  const [detailOverflows, setDetailOverflows] = useState<Record<string, boolean>>({});
   const [hoveredId, setHoveredId] = useState<string | null>(null);
   const [isMobile, setIsMobile] = useState(false);
 
@@ -189,6 +191,64 @@ export function CareerTimeline({ careers, isDark, config, onCareerClick }: Caree
     }
   }, [cardHeights, careers]);
 
+  useLayoutEffect(() => {
+    let rafId = 0;
+    const measureOverflows = () => {
+      const nextOverflows: Record<string, boolean> = {};
+      let overflowChanged = false;
+
+      Object.entries(detailRefs.current).forEach(([id, el]) => {
+        if (!el) return;
+        const clone = el.cloneNode(true) as HTMLElement;
+        clone.classList.remove('line-clamp-2');
+        clone.style.position = 'absolute';
+        clone.style.visibility = 'hidden';
+        clone.style.pointerEvents = 'none';
+        clone.style.height = 'auto';
+        clone.style.maxHeight = 'none';
+        clone.style.overflow = 'visible';
+        clone.style.display = 'block';
+        clone.style.width = `${el.clientWidth}px`;
+        clone.style.WebkitLineClamp = 'unset';
+        clone.style.webkitLineClamp = 'unset';
+        clone.style.WebkitBoxOrient = 'unset';
+        clone.style.webkitBoxOrient = 'unset';
+        document.body.appendChild(clone);
+        const naturalHeight = clone.scrollHeight;
+        document.body.removeChild(clone);
+
+        const clampedHeight = el.clientHeight;
+        const isOverflowing = naturalHeight > clampedHeight + 1;
+        nextOverflows[id] = isOverflowing;
+        if (detailOverflows[id] !== isOverflowing) {
+          overflowChanged = true;
+        }
+      });
+
+      if (overflowChanged) {
+        setDetailOverflows((prev) => ({ ...prev, ...nextOverflows }));
+      }
+    };
+
+    rafId = window.requestAnimationFrame(measureOverflows);
+
+    const resizeObserver = new ResizeObserver(() => {
+      measureOverflows();
+    });
+
+    Object.values(detailRefs.current).forEach((el) => {
+      if (!el) return;
+      resizeObserver.observe(el);
+    });
+
+    window.addEventListener('resize', measureOverflows);
+    return () => {
+      window.removeEventListener('resize', measureOverflows);
+      resizeObserver.disconnect();
+      if (rafId) window.cancelAnimationFrame(rafId);
+    };
+  }, [detailOverflows, careers]);
+
   useEffect(() => {
     const updateIsMobile = () => {
       setIsMobile(window.innerWidth < 768);
@@ -237,8 +297,6 @@ export function CareerTimeline({ careers, isDark, config, onCareerClick }: Caree
     };
   }, [isMobile, cardPositions.length]);
 
-  const latestYearTop = latestYear !== undefined ? (yearPositions[latestYear]?.topY ?? 0) : 0;
-  const latestYearCutoff = latestYearTop;
 
   const oldestYear = years[years.length - 1];
   const yearBoundaries: Array<{ key: string; y: number; thick?: boolean }> = years.map((year) => ({
@@ -268,32 +326,12 @@ export function CareerTimeline({ careers, isDark, config, onCareerClick }: Caree
     }),
   );
 
-  const latestYearTickCounts = monthTicks.reduce(
-    (acc, tick) => {
-      if (tick.year !== latestYear) return acc;
-      acc.total += 1;
-      if (latestYear !== now.getFullYear()) {
-        acc.kept += 1;
-        return acc;
-      }
-      if (tick.month <= now.getMonth() + 1) acc.kept += 1;
-      return acc;
-    },
-    { total: 0, kept: 0 },
-  );
-
 
   const filteredMonthTicks = monthTicks.filter((tick) => {
     if (latestYear !== now.getFullYear()) return true;
     if (tick.year !== latestYear) return true;
     return tick.month <= now.getMonth() + 1;
   });
-  const visibleBoundaryCount = yearBoundaries.filter(
-    (boundary) => boundary.y >= 0 && boundary.y <= timelineHeight,
-  ).length;
-  const filteredTickPositions = filteredMonthTicks.map((tick) => tick.y);
-  const minTick = filteredTickPositions.length > 0 ? Math.min(...filteredTickPositions) : null;
-  const maxTick = filteredTickPositions.length > 0 ? Math.max(...filteredTickPositions) : null;
 
 
   return (
@@ -492,6 +530,9 @@ export function CareerTimeline({ careers, isDark, config, onCareerClick }: Caree
           const careerId = getCareerId(career);
           const hasDetail = Boolean(career.detailMarkdown || career.details.length > 0);
           const isActiveCard = isMobile && hoveredId === careerId;
+          const detailPreview = career.details[0] ?? '';
+          const hasMoreDetails = career.details.length > 1;
+          const showEllipsis = (detailOverflows[careerId] ?? false) || hasMoreDetails;
           
           return (
             <motion.div
@@ -554,8 +595,14 @@ export function CareerTimeline({ careers, isDark, config, onCareerClick }: Caree
                   </div>
                 </CardHeader>
                 <CardContent className="py-2 px-4">
-                  <p className={`text-sm ${config.textSecondary} line-clamp-2 mb-2`}>
-                    {career.details[0]}
+                  <p
+                    ref={(el) => {
+                      detailRefs.current[careerId] = el;
+                    }}
+                    className={`text-sm ${config.textSecondary} line-clamp-2 mb-2`}
+                  >
+                    {detailPreview}
+                    {showEllipsis ? '...' : ''}
                   </p>
                   <div className="flex flex-wrap gap-1">
                     {career.tech.map((tech, techIndex) => (

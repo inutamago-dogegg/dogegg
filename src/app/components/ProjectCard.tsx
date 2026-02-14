@@ -28,12 +28,20 @@ export default function ProjectCard({
   ogpData,
   onSelect,
 }: ProjectCardProps) {
-  const primaryLink = project.playLink?.url;
   const xUrl = project.xUrl;
   const githubUrl = project.githubUrl;
   const steamUrl = project.steamUrl;
   const handleStop = (event: MouseEvent) => event.stopPropagation();
-  const hasDetail = Boolean(project.detailMarkdown || project.outline || project.appeal || project.member);
+  const hasDetail = Boolean(project.detailMarkdown || project.outline || project.member);
+  const detailSummary = (() => {
+    const raw = (project.detailMarkdown ?? '').replace(/\r\n/g, '\n');
+    const lines = raw
+      .split('\n')
+      .map((line) => line.trim())
+      .filter((line) => line.length > 0 && !line.startsWith('#'));
+    const first = lines[0] ?? '';
+    return first.replace(/^[-*]\s+/, '').trim();
+  })();
   const [isInnerHover, setIsInnerHover] = useState(false);
 
   return (
@@ -88,7 +96,6 @@ export default function ProjectCard({
                 type="button"
                 className="block w-full text-left transition-transform hover:-translate-y-0.5 cursor-pointer"
                 aria-label={`${project.title} の詳細を開く`}
-                title={primaryLink ?? project.title}
                 onClick={(event) => {
                   event.stopPropagation();
                   onSelect?.(project);
@@ -226,14 +233,14 @@ export default function ProjectCard({
             )}
             {project.outline && (
               <div>
-                <p className={`text-xs font-semibold ${config.textMuted}`}>概要</p>
+                <p className={`text-xs font-semibold ${config.textMuted}`}>作品概要</p>
                 <p className={`text-sm ${config.textSecondary} break-words`}>{project.outline}</p>
               </div>
             )}
-            {project.appeal && (
+            {detailSummary && (
               <div>
-                <p className={`text-xs font-semibold ${config.textMuted}`}>やったこと</p>
-                <p className={`text-sm ${config.textSecondary} break-words`}>{project.appeal}</p>
+                <p className={`text-xs font-semibold ${config.textMuted}`}>詳細</p>
+                <p className={`text-sm ${config.textSecondary} break-words line-clamp-1`}>{detailSummary}</p>
               </div>
             )}
           </div>
