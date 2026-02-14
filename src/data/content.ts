@@ -310,9 +310,9 @@ export const CAREERS: CareerItem[] = [
   },
   {
     company: 'BitSummit Game Jam 2023',
-    period: '2023年4月下旬~7月中旬',
-    startDate: '2023-04-01',
-    endDate: '2023-07-31',
+    period: '2023年5月上旬~7月中旬',
+    startDate: '2023-05-13',
+    endDate: '2023-07-13',
     representativeDate: '2023-04-01',
     details: [
       'BitSummit Game Jamというイベントでリードプログラマとして制作しました。',
