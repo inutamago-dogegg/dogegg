@@ -313,7 +313,7 @@ export const CAREERS: CareerItem[] = [
     period: '2023年5月上旬~7月中旬',
     startDate: '2023-05-13',
     endDate: '2023-07-13',
-    representativeDate: '2023-04-01',
+    representativeDate: '2023-05-13',
     details: [
       'BitSummit Game Jamというイベントでリードプログラマとして制作しました。',
       '初対面のメンバー9人での制作でした。'
