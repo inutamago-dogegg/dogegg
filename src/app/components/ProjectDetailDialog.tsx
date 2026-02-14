@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import type { ReactNode } from 'react';
 import { ExternalLink, Github, X } from 'lucide-react';
 import { Button } from '@/app/components/ui/button';
@@ -28,6 +29,15 @@ export default function ProjectDetailDialog({
   config,
   isDark,
 }: ProjectDetailDialogProps) {
+  useEffect(() => {
+    if (!open) return;
+    const originalOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.body.style.overflow = originalOverflow;
+    };
+  }, [open]);
+
   if (!project) return null;
 
   const detailMarkdown =

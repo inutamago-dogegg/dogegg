@@ -102,6 +102,15 @@ export default function CareerSection({ config, isDark }: CareerSectionProps) {
     return () => window.removeEventListener('hashchange', openFromHash);
   }, [baseUrl, timelineCareers]);
 
+  useEffect(() => {
+    if (!selectedCareer) return;
+    const originalOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.body.style.overflow = originalOverflow;
+    };
+  }, [selectedCareer]);
+
   return (
     <section id="career" className="py-20 px-4 relative">
       <div className="container mx-auto max-w-4xl">
