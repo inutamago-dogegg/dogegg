@@ -30,11 +30,7 @@ export default function SectionNav({ navSections, activeSection, isDark, config 
             title={`#${section.id}`}
           >
             <span
-              className={`rounded-full border ${config.surfaceBorder} ${config.surfaceBg} px-3 py-1 text-xs font-medium ${config.textSecondary} shadow-md backdrop-blur-md transition-all duration-200 ${
-                isActive
-                  ? 'opacity-100 translate-x-0'
-                  : 'opacity-0 translate-x-2 group-hover:opacity-100 group-hover:translate-x-0'
-              }`}
+              className={`rounded-full border ${config.surfaceBorder} ${config.surfaceBg} px-3 py-1 text-xs font-medium ${config.textSecondary} shadow-md backdrop-blur-md transition-all duration-200 opacity-0 translate-x-2 group-hover:opacity-100 group-hover:translate-x-0`}
             >
               {section.label}
             </span>
