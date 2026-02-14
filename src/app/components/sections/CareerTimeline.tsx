@@ -53,16 +53,20 @@ export function CareerTimeline({ careers, isDark, config, onCareerClick }: Caree
   // Count events per year
   const eventCountByYear: Record<number, number> = {};
   const eventsByYear: Record<number, CareerItem[]> = {};
+  const allYears = new Set<number>();
   eventsWithReppoint.forEach(({ year, career }) => {
     eventCountByYear[year] = (eventCountByYear[year] || 0) + 1;
     if (!eventsByYear[year]) {
       eventsByYear[year] = [];
     }
     eventsByYear[year]?.push(career);
+    allYears.add(year);
+    allYears.add(career.startDate.getFullYear());
+    allYears.add(career.endDate.getFullYear());
   });
 
   // Get all years and sort (newest first)
-  const years = Object.keys(eventCountByYear).map(Number).sort((a, b) => b - a);
+  const years = Array.from(allYears).sort((a, b) => b - a);
 
   // Calculate year heights based on event count (more events = more height)
   const BASE_YEAR_HEIGHT = 200; // Base height per year
@@ -76,6 +80,24 @@ export function CareerTimeline({ careers, isDark, config, onCareerClick }: Caree
     const fallbackHeight = (eventCount ?? 0) * (DEFAULT_CARD_HEIGHT + CARD_GAP * 2);
     yearHeights[year] = Math.max(BASE_YEAR_HEIGHT, cardsHeight + gapsHeight + CARD_GAP * 2, fallbackHeight);
   });
+
+  const now = new Date();
+  const latestYear = years[0];
+  const latestYearEndDate =
+    latestYear === now.getFullYear()
+      ? new Date(now.getFullYear(), now.getMonth() + 1, 0)
+      : latestYear !== undefined
+        ? new Date(latestYear, 11, 31)
+        : new Date(now.getFullYear(), 11, 31);
+  if (latestYear !== undefined && latestYear === now.getFullYear()) {
+    const yearStart = new Date(latestYear, 0, 1);
+    const yearEnd = new Date(latestYear, 11, 31);
+    const yearDuration = yearEnd.getTime() - yearStart.getTime();
+    const elapsed = latestYearEndDate.getTime() - yearStart.getTime();
+    const fraction = yearDuration > 0 ? Math.min(1, Math.max(0, elapsed / yearDuration)) : 1;
+    const baseHeight = yearHeights[latestYear] ?? BASE_YEAR_HEIGHT;
+    yearHeights[latestYear] = Math.max(baseHeight * fraction, baseHeight * 0.1);
+  }
 
   // Calculate cumulative positions for years
   const yearPositions: Record<number, { topY: number; bottomY: number }> = {};
@@ -99,7 +121,7 @@ export function CareerTimeline({ careers, isDark, config, onCareerClick }: Caree
 
     // Calculate position within the year
     const yearStart = new Date(year, 0, 1);
-    const yearEnd = new Date(year, 11, 31);
+    const yearEnd = year === latestYear ? latestYearEndDate : new Date(year, 11, 31);
     const yearDuration = yearEnd.getTime() - yearStart.getTime();
     const dateOffset = date.getTime() - yearStart.getTime();
     const ratio = dateOffset / yearDuration;
@@ -215,12 +237,23 @@ export function CareerTimeline({ careers, isDark, config, onCareerClick }: Caree
     };
   }, [isMobile, cardPositions.length]);
 
-  const yearLinePositions: Record<number, number> = {};
-  years.forEach(year => {
-    yearLinePositions[year] = yearPositions[year]?.topY ?? 0;
-  });
+  const latestYearTop = latestYear !== undefined ? (yearPositions[latestYear]?.topY ?? 0) : 0;
+  const latestYearCutoff = latestYearTop;
 
-  yearLinePositions[(years[years.length - 1] ?? 0) - 1] = timelineHeight;
+  const oldestYear = years[years.length - 1];
+  const yearBoundaries: Array<{ key: string; y: number; thick?: boolean }> = years.map((year) => ({
+    key: `${year}`,
+    y: yearPositions[year]?.topY ?? 0,
+  }));
+
+  if (oldestYear !== undefined) {
+    const oldestBottom = yearPositions[oldestYear]?.bottomY ?? 0;
+    yearBoundaries.push({
+      key: `${oldestYear}-end`,
+      y: Math.max(0, oldestBottom - 2),
+      thick: true,
+    });
+  }
 
   const monthTicks = years.flatMap((year) =>
     Array.from({ length: 12 }, (_, index) => {
@@ -235,43 +268,79 @@ export function CareerTimeline({ careers, isDark, config, onCareerClick }: Caree
     }),
   );
 
-  return (
-    <div className="relative max-w-3xl mx-auto" style={{ minHeight: `${timelineHeight}px` }}>
-      {/* Timeline line */}
-      <div 
-        className={`absolute left-8 top-0 w-0.5 ${isDark ? 'bg-gray-700' : 'bg-gray-300'}`}
-        style={{ height: `${timelineHeight}px`, zIndex: 10 }}
-      />
+  const latestYearTickCounts = monthTicks.reduce(
+    (acc, tick) => {
+      if (tick.year !== latestYear) return acc;
+      acc.total += 1;
+      if (latestYear !== now.getFullYear()) {
+        acc.kept += 1;
+        return acc;
+      }
+      if (tick.month <= now.getMonth() + 1) acc.kept += 1;
+      return acc;
+    },
+    { total: 0, kept: 0 },
+  );
 
-      {/* Month ticks */}
-      {monthTicks.map((tick) => (
+
+  const filteredMonthTicks = monthTicks.filter((tick) => {
+    if (latestYear !== now.getFullYear()) return true;
+    if (tick.year !== latestYear) return true;
+    return tick.month <= now.getMonth() + 1;
+  });
+  const visibleBoundaryCount = yearBoundaries.filter(
+    (boundary) => boundary.y >= 0 && boundary.y <= timelineHeight,
+  ).length;
+  const filteredTickPositions = filteredMonthTicks.map((tick) => tick.y);
+  const minTick = filteredTickPositions.length > 0 ? Math.min(...filteredTickPositions) : null;
+  const maxTick = filteredTickPositions.length > 0 ? Math.max(...filteredTickPositions) : null;
+
+
+  return (
+      <div className="relative max-w-3xl mx-auto" style={{ minHeight: `${timelineHeight}px` }}>
+      {/* Timeline line */}
+      {latestYear !== undefined && (
         <div
-          key={tick.key}
-            className={`absolute h-px ${isDark ? 'bg-gray-600' : 'bg-gray-400'}`}
+          className={`absolute left-8 w-0.5 ${isDark ? 'bg-gray-700' : 'bg-gray-300'}`}
           style={{
-            left: `${TIMELINE_LEFT}px`,
-            top: `${tick.y}px`,
-              width: tick.month === 7 ? '24px' : '10px',
-            transform: 'translateX(-50%)',
-            zIndex: 11,
+            top: 0,
+            height: `${timelineHeight}px`,
+            zIndex: 10,
           }}
         />
-      ))}
+      )}
+
+      {/* Month ticks */}
+      {filteredMonthTicks.map((tick) => (
+          <div
+            key={tick.key}
+            className={`absolute h-px ${isDark ? 'bg-gray-600' : 'bg-gray-400'}`}
+            style={{
+              left: `${TIMELINE_LEFT}px`,
+              top: `${tick.y}px`,
+              width: tick.month === 6 || tick.month === 7 ? '14px' : '10px',
+              transform: 'translateX(-50%)',
+              zIndex: 11,
+            }}
+          />
+        ))}
 
       {/* Year markers */}
-      {Object.entries(yearLinePositions).map(([year, yearPos]) => {
+      {yearBoundaries.map((boundary) => {
         return (
           <motion.div
-            key={year}
+            key={boundary.key}
             initial={{ opacity: 0, x: 0 }}
             whileInView={{ opacity: 1, x: 12 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
             className="absolute left-0"
-            style={{ top: `${yearPos}px`, zIndex: 15 }}
+            style={{ top: `${boundary.y}px`, zIndex: 15 }}
           >
             <div className="flex items-center gap-2">
-              <div className={`w-10 h-0.5 ${isDark ? 'bg-gray-600' : 'bg-gray-400'}`} />
+              <div
+                className={`w-10 ${boundary.thick ? 'h-1' : 'h-0.5'} ${isDark ? 'bg-gray-600' : 'bg-gray-400'}`}
+              />
             </div>
           </motion.div>
         );
@@ -374,17 +443,19 @@ export function CareerTimeline({ careers, isDark, config, onCareerClick }: Caree
         const startX = TIMELINE_LEFT + BAR_WIDTH / 2;
         const endX = Math.max(startX + 8, CARD_LEFT_PADDING - 8);
         const cardCenterY = hoveredCareer.topY + hoveredCareer.height / 2;
+        const startY = hoveredCareer.startY;
+        const endY = hoveredCareer.endY;
 
         const lineLeft = Math.min(startX, endX);
-        const lineTop = Math.min(hoveredCareer.startY, hoveredCareer.endY, cardCenterY);
+        const lineTop = Math.min(startY, endY, cardCenterY);
         const lineWidth = Math.max(1, Math.abs(endX - startX));
         const lineHeight = Math.max(
           1,
-          Math.max(hoveredCareer.startY, hoveredCareer.endY, cardCenterY) - lineTop,
+          Math.max(startY, endY, cardCenterY) - lineTop,
         );
 
-        const pointA = `${startX - lineLeft},${hoveredCareer.startY - lineTop}`;
-        const pointB = `${startX - lineLeft},${hoveredCareer.endY - lineTop}`;
+        const pointA = `${startX - lineLeft},${startY - lineTop}`;
+        const pointB = `${startX - lineLeft},${endY - lineTop}`;
         const pointC = `${endX - lineLeft},${cardCenterY - lineTop}`;
 
         return (

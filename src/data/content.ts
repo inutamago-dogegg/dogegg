@@ -310,7 +310,7 @@ export const CAREERS: CareerItem[] = [
     company: 'コーエーテクモゲームエンジン開発インターンシップ',
     period: '2024年8月下旬~9月上旬',
     startDate: '2024-08-20',
-    endDate: '2024-09-30',
+    endDate: '2024-09-02',
     representativeDate: '2024-08-20',
     details: ['2週間でゲームエンジンの一機能について実装しました。'],
     category: 'インターン',
