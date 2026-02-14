@@ -11,3 +11,4 @@ declare module '*.png' {
   const src: import('astro').ImageMetadata;
   export default src;
 }
+

@@ -16,6 +16,11 @@ import SvnIcon from '@/images/SVN_Icon.svg';
 import UnityIcon from '@/images/Unity_Icon.png';
 import VariVaRevengeHeader from '@/images/VariVaRevenge_Header.png';
 import VContainerIcon from '@/images/VContainer_Icon.png';
+import BlenderIcon from '@/images/Blender_Icon.png';
+import FigmaIcon from '@/images/Figma_Icon.png';
+import PUN2Icon from '@/images/PUN2_Icon.jpg';
+import UdonSharpIcon from '@/images/UdonSharp_Icon.png';
+import DaVinciResolveIcon from '@/images/DaVinci_Resolve_Icon.png';
 import DogeggIcon from '@/images/dogegg_icon.png';
 
 export type CareerItem = {
@@ -47,7 +52,7 @@ export type HobbyItem = {
 
 export type SkillItem = {
   name: string;
-  icon: ImageMetadata; 
+  icon?: ImageMetadata; 
   level: number;
   description: string;
 };
@@ -118,7 +123,7 @@ const TECH = {
   unirx: 'UniRx',
   r3: 'R3',
   feel: 'FEEL',
-  udon: 'Udon#',
+  udonSharp: 'Udon#',
   vrchat: 'VRChat',
   pun2: 'PUN2',
   reEngine: 'RE ENGINE',
@@ -131,6 +136,10 @@ const TECH = {
   typescript: 'TypeScript',
   makeRiddle: '謎制作',
   shader: 'Shader',
+  figma: 'Figma',
+  blender: 'Blender',
+  davinciResolve: 'DaVinci Resolve',
+  competitiveProgramming: '競技プログラミング',
 } as const;
 
 const GENRE = {
@@ -439,80 +448,130 @@ export const HOBBIES: HobbyItem[] = [
   },
 ];
 
-export const SKILLS: SkillItem[] = [
-  {
-    name: TECH.unity,
-    icon: UnityIcon,
-    level: 3,
-    description: `普段のゲーム制作は${TECH.unity}を使っています。`,
+export const SKILL_SECTIONS = {
+  gameProgram: {
+    title: 'ゲームプログラム',
+    items: [
+      {
+        name: TECH.unity,
+        icon: UnityIcon,
+        level: 3,
+        description: `普段のゲーム制作は${TECH.unity}を使っています。`,
+      },
+      {
+        name: TECH.git,
+        icon: GitIcon,
+        level: 3,
+        description: '個人制作・チーム制作で日常的に使っています。',
+      },
+      {
+        name: TECH.unitask,
+        icon: CysharpIcon,
+        level: 3,
+        description: '普段から非同期処理やゲームフロー作成に使用しています。',
+      },
+      {
+        name: TECH.r3,
+        icon: CysharpIcon,
+        level: 3,
+        description: 'View部分とModel部分の同期によく仕様しています。',
+      },
+      {
+        name: TECH.cSharp,
+        icon: CSharpIcon,
+        level: 3,
+        description: `${TECH.unity}を使う時に書いています。`,
+      },
+      {
+        name: TECH.vcontainer,
+        icon: VContainerIcon,
+        level: 3,
+        description: 'DIコンテナとして普段から使っています。',
+      },
+      {
+        name: TECH.cPlusPlus,
+        icon: CPlusPlusIcon,
+        level: 2,
+        description: `競プロで普段使っています。インターンで${TECH.cocos2dx}使用時に書いたことがあります。`,
+      },
+      {
+        name: TECH.python,
+        icon: PythonIcon,
+        level: 2,
+        description: '競プロで使っていました。軽いアプリ作成で使います。',
+      },
+      {
+        name: TECH.shader,
+        icon: UnityIcon,
+        level: 2,
+        description: 'UnityでShaderを書くことがあります。',
+      },
+      {
+        name: TECH.udonSharp,
+        icon: UdonSharpIcon,
+        level: 1,
+        description: `${TECH.vrchat}向けの制作で触れました。`,
+      },
+      {
+        name: TECH.pun2,
+        icon: PUN2Icon,
+        level: 1,
+        description: 'オンライン同期で使用しました。',
+      },
+      {
+        name: TECH.cocos2dx,
+        icon: Cocos2dxIcon,
+        level: 1,
+        description: 'インターンで1ヶ月ほど使用しました。',
+      },
+      {
+        name: TECH.perforce,
+        icon: PerforceIcon,
+        level: 1,
+        description: 'CAPCOM GAMES COMPETITIONで6ヶ月間使用しました',
+      },
+      {
+        name: TECH.subversion,
+        icon: SvnIcon,
+        level: 1,
+        description: 'CAPCOM GAMES COMPETITIONで6ヶ月間使用しました。',
+      },
+    ] satisfies SkillItem[],
   },
-  {
-    name: TECH.git,
-    icon: GitIcon,
-    level: 3,
-    description: '個人制作・チーム制作で日常的に使っています。',
+  graphic: {
+    title: 'グラフィック',
+    items: [
+      {
+        name: TECH.figma,
+        icon: FigmaIcon,
+        level: 2,
+        description: `素材作成やデザイン作成を少しだけ行えます。`,
+      },
+      {
+        name: TECH.blender,
+        icon: BlenderIcon,
+        level: 1,
+        description: `基礎的な操作ができます。`,
+      },
+      {
+        name: TECH.davinciResolve,
+        icon: DaVinciResolveIcon,
+        level: 1,
+        description: `動画編集を少しだけ行えます。`,
+      }
+    ] satisfies SkillItem[],
   },
-  {
-    name: TECH.unitask,
-    icon: CysharpIcon,
-    level: 3,
-    description: '普段から非同期処理やゲームフロー作成に使用しています。',
-  },
-  {
-    name: TECH.r3,
-    icon: CysharpIcon,
-    level: 3,
-    description: 'View部分とModel部分の同期によく仕様しています。',
-  },
-  {
-    name: TECH.cSharp,
-    icon: CSharpIcon,
-    level: 3,
-    description: `${TECH.unity}を使う時に書いています。`,
-  },
-  {
-    name: TECH.vcontainer,
-    icon: VContainerIcon,
-    level: 3,
-    description: 'DIコンテナとして普段から使っています。',
-  },
-  {
-    name: TECH.cPlusPlus,
-    icon: CPlusPlusIcon,
-    level: 2,
-    description: `競プロで普段使っています。インターンで${TECH.cocos2dx}使用時に書いたことがあります。`,
-  },
-  {
-    name: TECH.python,
-    icon: PythonIcon,
-    level: 2,
-    description: '競プロで使っていました。軽いアプリ作成で使います。',
-  },
-  {
-    name: TECH.shader,
-    icon: UnityIcon,
-    level: 2,
-    description: 'UnityでShaderを書くことがあります。'
-  },
-  {
-    name: TECH.cocos2dx,
-    icon: Cocos2dxIcon,
-    level: 1,
-    description: 'インターンで1ヶ月ほど使用しました。',
-  },
-  {
-    name: TECH.perforce,
-    icon: PerforceIcon,
-    level: 1,
-    description: 'CAPCOM GAMES COMPETITIONで6ヶ月間使用しました',
-  },
-  {
-    name: TECH.subversion,
-    icon: SvnIcon,
-    level: 1,
-    description: 'CAPCOM GAMES COMPETITIONで6ヶ月間使用しました。',
-  },
-];
+  others: {
+    title: 'その他',
+    items: [
+      {
+        name: TECH.competitiveProgramming,
+        level: 1,
+        description: `AtCoderのレートは茶色です。C++で参加しています。`,
+      }
+    ] satisfies SkillItem[],
+  }
+} as const;
 
 export const PROJECTS: ProjectYearGroup[] = [
   {
@@ -685,7 +744,7 @@ export const PROJECTS: ProjectYearGroup[] = [
       {
         title: 'School Breakin` Tag',
         period: '2022年11月~2023年11月 (1年)',
-        tech: [TECH.unity, TECH.git, TECH.udon, TECH.vrchat],
+        tech: [TECH.unity, TECH.git, TECH.udonSharp, TECH.vrchat],
         member: '約8人(プログラマー5人, 3Dデザイナー3人)',
         outline: '学校を舞台に地形を破壊できる爆弾を使って逃げ回るVRおにごっこ',
         appeal: 'プロジェクト経験のあるプログラマとして初めは参加しました。しかし途中からリーダーがキャパオーバーしてしまい、サブリーダーとして制作を進行しました。他メンバーのGit周りのサポートやタスクのマネジメントなどを行いました。',

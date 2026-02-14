@@ -20,7 +20,7 @@ export default function ArticlesSection({ config, ogpData }: ArticlesSectionProp
           transition={{ duration: 0.3 }}
           className="text-center mb-16"
         >
-          <h2 className={`text-4xl mb-4 ${config.textPrimary}`}>記事</h2>
+          <h2 className={`text-4xl mb-4 ${config.textPrimary}`}>Articles</h2>
           <p className={`text-xl ${config.textSecondary}`}>これまでに書いた記事</p>
         </motion.div>
 
