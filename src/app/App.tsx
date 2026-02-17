@@ -81,38 +81,35 @@ export default function App({ ogpData, articlesOgpData = {}, mode = 'home' }: Ap
       return;
     }
 
-    const updateActiveByCenter = () => {
-      const sections = navSections.map((section) => document.getElementById(section.id)).filter(
-        (section): section is HTMLElement => Boolean(section),
-      );
-      if (sections.length === 0) {
-        setActiveSection(isWorksPage ? worksNavSections[0]?.id ?? 'works' : 'home');
-        return;
-      }
-      const centerY = window.innerHeight / 2;
-      let closestId = sections[0]?.id ?? 'top';
-      let closestDistance = Number.POSITIVE_INFINITY;
+    const sections = navSections
+      .map((section) => document.getElementById(section.id))
+      .filter((section): section is HTMLElement => Boolean(section));
 
-      sections.forEach((section) => {
-        const rect = section.getBoundingClientRect();
-        const distance = Math.abs(rect.top + rect.height / 2 - centerY);
-        if (distance < closestDistance) {
-          closestDistance = distance;
-          closestId = section.id;
-        }
-      });
+    if (sections.length === 0) {
+      setActiveSection(isWorksPage ? worksNavSections[0]?.id ?? 'works' : 'home');
+      return;
+    }
 
-      setActiveSection(closestId);
-    };
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const intersecting = entries.filter((entry) => entry.isIntersecting);
+        if (intersecting.length === 0) return;
+        const best = intersecting.reduce((prev, current) =>
+          current.intersectionRatio > prev.intersectionRatio ? current : prev,
+        );
+        setActiveSection(best.target.id);
+      },
+      {
+        rootMargin: '-50% 0px -50% 0px',
+        threshold: [0, 0.25, 0.5, 0.75, 1],
+      },
+    );
 
-    updateActiveByCenter();
-    window.addEventListener('scroll', updateActiveByCenter, { passive: true });
-    window.addEventListener('resize', updateActiveByCenter);
+    sections.forEach((section) => observer.observe(section));
 
     return () => {
       document.documentElement.style.scrollBehavior = '';
-      window.removeEventListener('scroll', updateActiveByCenter);
-      window.removeEventListener('resize', updateActiveByCenter);
+      observer.disconnect();
     };
   }, [isWorksPage, navSections, worksNavSections, visibleSections]);
 
@@ -235,17 +232,18 @@ export default function App({ ogpData, articlesOgpData = {}, mode = 'home' }: Ap
             config={config}
           />
 
-          {isHomePage && visibleSections.home && (
-            <Suspense fallback={sectionFallback}>
-              <HomeSection
-                config={config}
-                theme={theme}
-                aboutUrl={aboutUrl}
-                worksPageUrl={worksPageUrl}
-                articlesPageUrl={articlesPageUrl}
-              />
-            </Suspense>
-          )}
+          <main id="main">
+            {isHomePage && visibleSections.home && (
+              <Suspense fallback={sectionFallback}>
+                <HomeSection
+                  config={config}
+                  theme={theme}
+                  aboutUrl={aboutUrl}
+                  worksPageUrl={worksPageUrl}
+                  articlesPageUrl={articlesPageUrl}
+                />
+              </Suspense>
+            )}
 
           {isAboutPage && visibleSections.aboutIntro && (
             <Suspense fallback={sectionFallback}>
@@ -317,6 +315,8 @@ export default function App({ ogpData, articlesOgpData = {}, mode = 'home' }: Ap
               <NotFoundSection diceBase={diceBase} showDebugPinzoro={showDebugPinzoro} />
             </Suspense>
           )}
+
+          </main>
 
           {visibleSections.footer && (
             <Suspense fallback={null}>

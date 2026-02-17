@@ -35,7 +35,7 @@ export default function SectionNav({ navSections, activeSection, isDark, config 
               {section.label}
             </span>
             <span
-              className={`h-3 w-3 rounded-full transition-all duration-200 ${
+              className={`h-3 w-3 rounded-full transition-transform duration-200 ${
                 isActive
                   ? 'bg-primary shadow-[0_0_12px_rgba(33,150,243,0.6)]'
                   : isDark

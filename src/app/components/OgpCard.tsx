@@ -54,6 +54,7 @@ export default function OgpCard({
             alt=""
             className={`h-16 w-16 rounded-lg object-cover border ${config.surfaceBorder}`}
             loading="lazy"
+            decoding="async"
           />
         ) : (
           <div className={`h-16 w-16 rounded-lg ${mediaBg} border ${config.surfaceBorder}`} />

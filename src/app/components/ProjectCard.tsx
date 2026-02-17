@@ -33,15 +33,35 @@ export default function ProjectCard({
   const steamUrl = project.steamUrl;
   const handleStop = (event: MouseEvent) => event.stopPropagation();
   const hasDetail = Boolean(project.detailMarkdown || project.outline || project.member);
-  const detailSummary = (() => {
+  const detailSummaryData = (() => {
     const raw = (project.detailMarkdown ?? '').replace(/\r\n/g, '\n');
+    const stripMarkdown = (value: string) => {
+      let text = value;
+      text = text.replace(/!\[([^\]]*)\]\([^)]+\)/g, '$1');
+      text = text.replace(/\[([^\]]+)\]\([^)]+\)/g, '$1');
+      text = text.replace(/`([^`]+)`/g, '$1');
+      text = text.replace(/\*\*([^*]+)\*\*/g, '$1');
+      text = text.replace(/__([^_]+)__/g, '$1');
+      text = text.replace(/\*([^*]+)\*/g, '$1');
+      text = text.replace(/_([^_]+)_/g, '$1');
+      text = text.replace(/^>\s?/g, '');
+      text = text.replace(/^[-*]\s+/, '');
+      return text.trim();
+    };
     const lines = raw
       .split('\n')
       .map((line) => line.trim())
-      .filter((line) => line.length > 0 && !line.startsWith('#'));
-    const first = lines[0] ?? '';
-    return first.replace(/^[-*]\s+/, '').trim();
+      .filter((line) => line.length > 0 && !line.startsWith('#'))
+      .map(stripMarkdown)
+      .filter((line) => line.length > 0);
+    return {
+      summary: lines[0] ?? '',
+      lineCount: lines.length,
+    };
   })();
+  const detailSummary = detailSummaryData.summary;
+  const hasMoreDetailLines = detailSummaryData.lineCount > 1;
+
   const [isInnerHover, setIsInnerHover] = useState(false);
 
   return (
@@ -106,6 +126,9 @@ export default function ProjectCard({
                   alt={`${project.title} のヘッダー画像`}
                   className={`h-44 w-full rounded-lg object-contain border ${config.surfaceBorder} ${config.surfaceBg}`}
                   loading="lazy"
+                  decoding="async"
+                  width={project.headerImage.width}
+                  height={project.headerImage.height}
                 />
               </button>
               {(xUrl || githubUrl || steamUrl) && (
@@ -240,7 +263,10 @@ export default function ProjectCard({
             {detailSummary && (
               <div>
                 <p className={`text-xs font-semibold ${config.textMuted}`}>詳細</p>
-                <p className={`text-sm ${config.textSecondary} break-words line-clamp-1`}>{detailSummary}</p>
+                <p className={`text-sm ${config.textSecondary} break-words line-clamp-1`}>
+                  {detailSummary}
+                  {hasMoreDetailLines ? '...' : ''}
+                </p>
               </div>
             )}
           </div>

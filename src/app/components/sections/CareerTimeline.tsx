@@ -299,7 +299,7 @@ export function CareerTimeline({ careers, isDark, config, onCareerClick }: Caree
 
 
   const oldestYear = years[years.length - 1];
-  const yearBoundaries: Array<{ key: string; y: number; thick?: boolean }> = years.map((year) => ({
+  const yearBoundaries: Array<{ key: string; y: number; }> = years.map((year) => ({
     key: `${year}`,
     y: yearPositions[year]?.topY ?? 0,
   }));
@@ -308,8 +308,7 @@ export function CareerTimeline({ careers, isDark, config, onCareerClick }: Caree
     const oldestBottom = yearPositions[oldestYear]?.bottomY ?? 0;
     yearBoundaries.push({
       key: `${oldestYear}-end`,
-      y: Math.max(0, oldestBottom - 2),
-      thick: true,
+      y: oldestBottom
     });
   }
 
@@ -377,7 +376,7 @@ export function CareerTimeline({ careers, isDark, config, onCareerClick }: Caree
           >
             <div className="flex items-center gap-2">
               <div
-                className={`w-10 ${boundary.thick ? 'h-1' : 'h-0.5'} ${isDark ? 'bg-gray-600' : 'bg-gray-400'}`}
+                className={`w-10 h-0.5 ${isDark ? 'bg-gray-600' : 'bg-gray-400'}`}
               />
             </div>
           </motion.div>
