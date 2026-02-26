@@ -87,9 +87,6 @@ export default function SkillsSection({ config }: SkillsSectionProps) {
                                         alt={`${skill.name} のアイコン`}
                                         className="h-8 w-8 rounded-md object-contain"
                                         loading="lazy"
-                                        decoding="async"
-                                        width={icon.width}
-                                        height={icon.height}
                                       />
                                     )}
                                     <CardTitle className={`text-xl ${config.textPrimary}`}>

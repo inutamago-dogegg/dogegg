@@ -94,7 +94,7 @@ export type AboutSocialLink = {
   label: string;
   handle: string;
   url: string;
-  icon: 'x' | 'github';
+  icon: 'x' | 'github' | 'unityroom';
 };
 
 export type AboutSection = {
@@ -185,7 +185,13 @@ export const SOCIAL_LINKS = {
     url: 'https://github.com/inutamago-dogegg',
     icon: 'github',
   },
-} as const satisfies Record<'x' | 'github', AboutSocialLink>;
+  unityroom: {
+    label: 'unityroom',
+    handle: '@dogegg',
+    url: 'https://unityroom.com/users/dogegg',
+    icon: 'unityroom',
+  }
+} as const satisfies Record<'x' | 'github' | 'unityroom', AboutSocialLink>;
 
 export const ABOUT_CONTENT = {
   subtitle: 'プロフィール',
@@ -197,6 +203,7 @@ export const ABOUT_CONTENT = {
   socials: [
     SOCIAL_LINKS.x,
     SOCIAL_LINKS.github,
+    SOCIAL_LINKS.unityroom,
   ] satisfies AboutSocialLink[],
   sections: [
     {

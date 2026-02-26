@@ -44,7 +44,7 @@ export default function ArticlesSection({ config, ogpData }: ArticlesSectionProp
 
               return (
                 <motion.div
-                  key={article.id}
+                  key={article.url}
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}

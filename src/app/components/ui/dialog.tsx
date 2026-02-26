@@ -3,7 +3,7 @@ import { cn } from "./utils";
 
 type DialogContextValue = {
   open: boolean;
-  onOpenChange?: (open: boolean) => void;
+  onOpenChange: (open: boolean) => void;
 };
 
 const DialogContext = React.createContext<DialogContextValue | null>(null);
@@ -25,7 +25,7 @@ function Dialog({
   onOpenChange?: (open: boolean) => void;
 }>) {
   return (
-    <DialogContext.Provider value={{ open, onOpenChange }}>
+    <DialogContext.Provider value={{ open, onOpenChange: onOpenChange ?? (() => {}) }}>
       {children}
     </DialogContext.Provider>
   );

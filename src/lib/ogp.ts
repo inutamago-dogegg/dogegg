@@ -16,7 +16,7 @@ const getMeta = (html: string, key: string, attr: 'property' | 'name' = 'propert
     let match: RegExpExecArray | null;
     while ((match = attrRegex.exec(tag))) {
       const [, rawKey, doubleQuoted, singleQuoted, unquoted] = match;
-      const attrKey = rawKey.trim().toLowerCase();
+      const attrKey = rawKey?.trim().toLowerCase();
       const attrValue = (doubleQuoted ?? singleQuoted ?? unquoted ?? '').trim();
       if (attrKey) {
         attrs[attrKey] = attrValue;
@@ -121,10 +121,10 @@ export const fetchOgp = async (target: string): Promise<OgpData | null> => {
     );
 
     return {
-      title,
-      description,
-      image: resolveUrl(image, target),
-      siteName,
+      title: title ?? '',
+      description: description ?? '',
+      image: resolveUrl(image, target) ?? '',
+      siteName: siteName ?? '',
       url: target,
     };
   } catch {

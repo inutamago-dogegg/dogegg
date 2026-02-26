@@ -83,8 +83,7 @@ export default function ProjectCard({
         {hasDetail && (
           <span
             className={`absolute right-3 top-3 inline-flex items-center justify-center rounded-full border ${config.surfaceBorder} ${config.surfaceBg} text-xs ${config.textMuted} h-7 w-7 opacity-0 transition-opacity duration-200 group-hover:opacity-100`}
-            aria-label="詳細あり"
-            title="詳細あり"
+            aria-hidden="true"
           >
             <Info className="h-4 w-4" />
           </span>
