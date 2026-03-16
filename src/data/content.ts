@@ -23,6 +23,21 @@ import UdonSharpIcon from '@/images/UdonSharp_Icon.png';
 import DaVinciResolveIcon from '@/images/DaVinci_Resolve_Icon.png';
 import DogeggIcon from '@/images/dogegg_icon.png';
 import ShokuzaiHeader from '@/images/Shokuzai_Header.png';
+import ShokuzaiDetail from '@/data/projects/shokuzai.md?raw';
+import SiteDetail from '@/data/projects/site.md?raw';
+import ElegoDetail from '@/data/projects/elego.md?raw';
+import TwoDetail from '@/data/projects/two.md?raw';
+import DeeperAndDeeperDetail from '@/data/projects/deeper-and-deeper.md?raw';
+import CrossTheCDetail from '@/data/projects/cross-the-c.md?raw';
+import QueenBeeDetail from '@/data/projects/queen-bee.md?raw';
+import MaruKaDetail from '@/data/projects/maru-ka.md?raw';
+import MemoryTranserDetail from '@/data/projects/memory-transer.md?raw';
+import VarivaRevengeDetail from '@/data/projects/variva-revenge.md?raw';
+import OrbitDetail from '@/data/projects/orbit.md?raw';
+import TsukamaranaiDeYuChanDetail from '@/data/projects/tsukamaranai-de-yu-chan.md?raw';
+import LogicalRoomDetail from '@/data/projects/logical-room.md?raw';
+import SchoolBreakinTagDetail from '@/data/projects/school-breakin-tag.md?raw';
+import RootShooterDetail from '@/data/projects/root-shooter.md?raw';
 
 export type CareerItem = {
   company: string;
@@ -601,11 +616,9 @@ export const PROJECTS: ProjectYearGroup[] = [
         period: '2025年11月~2026年3月',
         tech: [TECH.makeRiddle],
         member: '',
-        outline: '',
-        detailMarkdown: `
-### やったこと
-謎制作をしました
-`,
+        outline: '謎キャン2026で公演しました。\n'
+        + '「目が覚めると真っ白な部屋。ここはどこなのか、なぜここにいるのか、自分が何者なのかすら覚えていない。わかったことはただ一つ、どうやら私は罪を犯したらしい。」',
+        detailMarkdown: ShokuzaiDetail,
         genre: GENRE.riddle,
         playLink: { label: LABELS.ticket, url: 'https://nazocam2026.studio.site/content/atonement' },
         headerImage: ShokuzaiHeader,
@@ -618,10 +631,7 @@ export const PROJECTS: ProjectYearGroup[] = [
         outline: 'ポートフォリオサイトも兼ねて自分のホームページをつくりました',
         genre: GENRE.web,
         playLink: { label: 'このページ', url: 'https://inutamago-dogegg.github.io/dogegg/'},
-        detailMarkdown: `
-### やったこと
-Web制作は初めてでしたが、デザインはFigma AI、コーディングはCursorに手伝ってもらい公開まで何とかできました。
-`,
+        detailMarkdown: SiteDetail,
         headerImage: DogeggIcon,
         githubUrl: 'https://github.com/inutamago-dogegg/dogegg',
       },
@@ -631,10 +641,7 @@ Web制作は初めてでしたが、デザインはFigma AI、コーディング
         tech: CGC_TECHS,
         member: '20人(プランナー5人, プログラマー6人, 3Dデザイナー4人, 2Dデザイナー2人, シナリオ1人, サウンド2人)',
         outline: '感情を利用し敵を操って脱出を目指すステルスアクションゲーム',
-        detailMarkdown: `
-### やったこと
-[CAPCOM GAMES COMPETITION](https://www.capcom-games.com/cgc/2025/ja-jp/)というイベントで制作しました。ディレクター兼マネージャーとして経験者のメンバー19人をまとめ、企画~完成までを担当しました。未知のエンジン・6か月で完全締め切り・3Dアクション制作未経験という状況ながら、なんとか完成まで持っていきました。
-`,
+        detailMarkdown: ElegoDetail,
         genre: GENRE.game,
         playLink: { label: LABELS.play, url: 'https://gameparade.creators-guild.com/works/3532' },
         relatedLinks: [{ label: 'CAPCOM GAMES COMPETITION 公式ページ', url: 'https://www.capcom-games.com/cgc/2025/ja-jp/' }],
@@ -647,11 +654,9 @@ Web制作は初めてでしたが、デザインはFigma AI、コーディング
         period: '',
         tech: [TECH.makeRiddle],
         member: '',
-        outline: '',
-        detailMarkdown: `
-### やったこと
-全体構成・当日スタッフに関わりました。
-`,
+        outline: 'C-lock-row レーベルブラック\n'
+         + '『謎解き公演に慣れているあなたなら、2nd stepから始まる公演も無事にクリアできることでしょう。』',
+        detailMarkdown: TwoDetail,
         genre: GENRE.riddle,
         playLink: { label: LABELS.ticket, url: 'https://escape.id/Clockrow-org/e-url-wo-atenaidene22222/' },
         headerImage: NiHeader,
@@ -662,10 +667,7 @@ Web制作は初めてでしたが、デザインはFigma AI、コーディング
         tech: [TECH.unityUrp, TECH.unity, TECH.git, TECH.vcontainer, TECH.unitask],
         member: '8人(プランナー1人, プログラマー3人, 2Dデザイナー3人, サウンド1人)',
         outline: 'ダンジョンの深く深くに進みお宝を手に入れて帰還するゲーム',
-        detailMarkdown: `
-### やったこと
-リードプログラマとしてほぼ全てのプログラムを書きました。
-`,
+        detailMarkdown: DeeperAndDeeperDetail,
         genre: GENRE.game,
         playLink: { label: LABELS.play, url: 'https://unityroom.com/games/deeper_and_deeper?ref=trap.jp' },
         relatedLinks: [{ label: LABELS.related, url: 'https://trap.jp/post/2798/' }, { label: LABELS.related, url: 'https://trap.jp/post/2799/' }],
@@ -682,10 +684,7 @@ Web制作は初めてでしたが、デザインはFigma AI、コーディング
         tech: [TECH.unityUrp, TECH.git, TECH.r3, TECH.unitask, TECH.vcontainer],
         member: '約15人(プランナー4人, プログラマー3人, 3Dデザイナー3人, 2Dデザイナー1人, パズル制作7人)',
         outline: '船を操作してゴールを目指す氷床パズルゲーム',
-        detailMarkdown: `
-### やったこと
-ディレクター・マネージャー・リードプログラマとして参加しています。
-`,
+        detailMarkdown: CrossTheCDetail,
         genre: GENRE.game,
         playLink: { label: LABELS.play, url: 'https://gameparade.creators-guild.com/works/2763' },
         headerImage: CrossHeader,
@@ -699,10 +698,7 @@ Web制作は初めてでしたが、デザインはFigma AI、コーディング
         tech: [TECH.unity, TECH.git, TECH.unitask],
         member: '6人(プランナー1人, プログラマー3人, 2Dデザイナー2人, サウンド1人)',
         outline: '主人公・野心萌(やしん もえ)が学園トップを目指す学園シミュレーションカードゲーム',
-        detailMarkdown: `
-### やったこと
-リーダー兼リードプログラマとして制作しました。同じ学年で対等なメンバーが多く、白熱した企画議論ができましたが、あまりまとまりませんでした。拙いながらも仕様決定をし、メンバーに指示出しをしながら最後までプログラムを書きました。
-`,
+        detailMarkdown: QueenBeeDetail,
         genre: GENRE.game,
         playLink: { label: LABELS.play, url: 'https://unityroom.com/games/queenbee' },
         relatedLinks: [{ label: LABELS.related, url: 'https://trap.jp/post/2483/' }],
@@ -719,10 +715,7 @@ Web制作は初めてでしたが、デザインはFigma AI、コーディング
         tech: [TECH.unity, TECH.git],
         member: '5人(プログラマー3人, 2Dデザイナー2人)',
         outline: 'ひらがなを吸収して変身して戦う2D弾幕アクションゲーム',
-        detailMarkdown: `
-### やったこと
-プログラマ兼チームリーダーとして、新入生への講習やサポート・レビューなどを行いながら、2日で完成させられるゲーム性の考案やプログラム制作を行いました。
-`,
+        detailMarkdown: MaruKaDetail,
         genre: GENRE.game,
         playLink: { label: LABELS.play, url: 'https://trap.jp/post/1911/' },
         relatedLinks: [{ label: LABELS.related, url: 'https://trap.jp/post/1911/' }],
@@ -733,10 +726,7 @@ Web制作は初めてでしたが、デザインはFigma AI、コーディング
         tech: [TECH.unity, TECH.git, TECH.unirx, TECH.unitask],
         member: '9人(プランナー4人, プログラマー4人, 2Dデザイナー1人)',
         outline: '記憶を整理するアクションゲーム',
-        detailMarkdown: `
-### やったこと
-BitSummit Game Jam 2023で制作しました。リードエンジニアとして立候補し、他メンバーへのGitやコードエディター(Rider)の講習を行い、設計からタスクの割り振りまで行いました。途中からメンバーの脱落があり、急遽集会を開くなどして完成まで持っていきました。
-`,
+        detailMarkdown: MemoryTranserDetail,
         genre: GENRE.game,
         playLink: { label: LABELS.play, url: 'https://bitsummit-gamejam.itch.io/memorytranser' },
         githubUrl: 'https://github.com/BSGJ2023-T-Team07/MemoryTranser',
@@ -747,10 +737,7 @@ BitSummit Game Jam 2023で制作しました。リードエンジニアとして
         tech: [TECH.unity, TECH.git, TECH.r3, TECH.unitask, TECH.feel],
         member: '約10人(プランナー3人, プログラマー5人, 2Dデザイナー2人, サウンド2人, 弾幕制作2人)',
         outline: '敵の出してくる弾をパリィし敵に直接アタックする弾幕ゲー×2Dアクションの新感覚ゲーム！',
-        detailMarkdown: `
-### やったこと
-企画者に誘われ、リードプログラマとして技術的な面でメンバーを引っ張りました。プログラマでない人も敵の制作ができるようにエディター拡張に特に力を入れました。
-`,
+        detailMarkdown: VarivaRevengeDetail,
         genre: GENRE.game,
         playLink: { label: LABELS.play, url: 'https://gameparade.creators-guild.com/works/1559' },
         relatedLinks: [{ label: LABELS.related, url: 'https://trap.jp/post/1971/' }],
@@ -765,10 +752,7 @@ BitSummit Game Jam 2023で制作しました。リードエンジニアとして
         tech: [TECH.unityUrp, TECH.git, TECH.unirx, TECH.unitask],
         member: '5人(プランナー1人, プログラマー3人, 2Dデザイナー3人, サウンド1人)',
         outline: '星を回りながらその秘密を探るリソース管理アドベンチャー',
-        detailMarkdown: `
-### やったこと
-メインプログラマとしてコードやGitの規約を定め、協力して設計とゲームの実装を行いました。英語版対応・バグ修正をしてSteamで配信しています。
-`,
+        detailMarkdown: OrbitDetail,
         genre: GENRE.game,
         playLink: { label: LABELS.play, url: 'https://store.steampowered.com/app/2990710/Orbit/?l=japanese' },
         relatedLinks: [{ label: LABELS.related, url: 'https://trap.jp/post/2106/' }],
@@ -787,10 +771,7 @@ BitSummit Game Jam 2023で制作しました。リードエンジニアとして
         tech: [TECH.unity, TECH.git],
         member: '5人(プログラマ4人, 2Dデザイナー1人)',
         outline: '目玉に見つからないように主人公のゆうちゃんを操作してゴールを目指すアクションゲーム',
-        detailMarkdown: `
-### やったこと
-初心者枠として参加し、先輩の助けを借りながらプログラムを軽く書き、ゲームの仕様考案とステージ制作を主に行いました。
-`,
+        detailMarkdown: TsukamaranaiDeYuChanDetail,
         genre: GENRE.game,
         playLink: { label: LABELS.play, url: 'https://trap.jp/post/1607/' },
         relatedLinks: [{ label: LABELS.related, url: 'https://trap.jp/post/1607/' }],
@@ -802,10 +783,7 @@ BitSummit Game Jam 2023で制作しました。リードエンジニアとして
         tech: [TECH.unity, TECH.git],
         member: '約10人(プログラマー8人, 2Dデザイナー1人)',
         outline: '単純なルールが複雑に絡み合う2Dパズルアクションゲーム',
-        detailMarkdown: `
-### やったこと
-プログラマとして参加し、プレイヤー挙動やゲームシステムなどのバグ修正・新規実装・リファクター・改良などを行いました。
-`,
+        detailMarkdown: LogicalRoomDetail,
         genre: GENRE.game,
         playLink: { label: LABELS.play, url: 'https://trap.jp/post/2037/' },
         relatedLinks: [{ label: LABELS.related, url: 'https://trap.jp/post/2037/' }],
@@ -816,10 +794,7 @@ BitSummit Game Jam 2023で制作しました。リードエンジニアとして
         tech: [TECH.unity, TECH.git, TECH.udonSharp, TECH.vrchat],
         member: '約8人(プログラマー5人, 3Dデザイナー3人)',
         outline: '学校を舞台に地形を破壊できる爆弾を使って逃げ回るVRおにごっこ',
-        detailMarkdown: `
-### やったこと
-プロジェクト経験のあるプログラマとして初めは参加しました。しかし途中からリーダーがキャパオーバーしてしまい、サブリーダーとして制作を進行しました。他メンバーのGit周りのサポートやタスクのマネジメントなどを行いました。
-`,
+        detailMarkdown: SchoolBreakinTagDetail,
         genre: GENRE.game,
         playLink: {
           label: LABELS.play,
@@ -834,10 +809,7 @@ BitSummit Game Jam 2023で制作しました。リードエンジニアとして
         tech: [TECH.unity, TECH.git, TECH.pun2],
         member: '5人(プログラマー3人, 2Dデザイナー1人, サウンド1人)',
         outline: '野菜を育てて撃って戦う2D対戦アクションゲームです。',
-        detailMarkdown: `
-### やったこと
-プロジェクト経験のあるプログラマとしてゲームの実装を行いました。
-`,
+        detailMarkdown: RootShooterDetail,
         genre: GENRE.game,
         playLink: { label: LABELS.play, url: 'https://trap.jp/post/1746/' },
         relatedLinks: [{ label: LABELS.related, url: 'https://trap.jp/post/1746/' }],

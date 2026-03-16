@@ -256,7 +256,9 @@ export default function ProjectCard({
             {project.outline && (
               <div>
                 <p className={`text-xs font-semibold ${config.textMuted}`}>作品概要</p>
-                <p className={`text-sm ${config.textSecondary} break-words`}>{project.outline}</p>
+                <p className={`text-sm ${config.textSecondary} break-words whitespace-pre-line`}>
+                  {project.outline}
+                </p>
               </div>
             )}
             {detailSummary && (
