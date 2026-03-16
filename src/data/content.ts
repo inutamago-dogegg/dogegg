@@ -248,6 +248,19 @@ const CGC_TECHS = [TECH.reEngine, TECH.cSharp, TECH.python, TECH.subversion, TEC
 
 export const CAREERS: CareerItem[] = [
   {
+    company: 'UNL:OCK',
+    period: '2025年8月~現在',
+    startDate: '2025-08-10',
+    endDate: null,
+    representativeDate: '2025-08-10',
+    details: [
+      '電通大の謎解き制作サークルです',
+    ],
+    category: 'サークル',
+    url: 'https://x.com/UNE0CK',
+    tech: [TECH.makeRiddle],
+  },
+  {
     company: 'C-lock-row',
     period: '2025年7月~現在',
     startDate: '2025-07-01',
