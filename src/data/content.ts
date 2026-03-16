@@ -22,6 +22,7 @@ import PUN2Icon from '@/images/PUN2_Icon.jpg';
 import UdonSharpIcon from '@/images/UdonSharp_Icon.png';
 import DaVinciResolveIcon from '@/images/DaVinci_Resolve_Icon.png';
 import DogeggIcon from '@/images/dogegg_icon.png';
+import ShokuzaiHeader from '@/images/Shokuzai_Header.png';
 
 export type CareerItem = {
   company: string;
@@ -582,6 +583,20 @@ export const PROJECTS: ProjectYearGroup[] = [
   {
     year: '2025',
     items: [
+      {
+        title: '贖罪',
+        period: '2025年11月~2026年3月',
+        tech: [TECH.makeRiddle],
+        member: '',
+        outline: '',
+        detailMarkdown: `
+### やったこと
+謎制作をしました
+`,
+        genre: GENRE.riddle,
+        playLink: { label: LABELS.ticket, url: 'https://nazocam2026.studio.site/content/atonement' },
+        headerImage: ShokuzaiHeader,
+      },
       {
         title: 'このサイト',
         period: '2026年1月~現在',

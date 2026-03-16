@@ -6,7 +6,6 @@ export async function optimize(src: string, width: number = 64, height: number =
   return await getImage({ src, width, height, format: "webp" });
 }
 
-
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
