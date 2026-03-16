@@ -3,7 +3,6 @@ import App from '../app/App';
 import '@/styles/index.css';
 import { PROJECTS } from '@/data/content';
 import { fetchOgp, type OgpData } from '@/lib/ogp';
-import { ViewTransitions } from 'astro:transitions';
 
 const urlSet = new Set<string>();
 
@@ -62,7 +61,6 @@ const worksUrl = new URL(`${baseUrl}works/`, siteUrl).toString();
 		<link rel="icon" type="image/svg+xml" sizes="any" href={`${baseUrl}favicon.svg`} />
 		<meta name="viewport" content="width=device-width" />
 		<meta name="generator" content={Astro.generator} />
-		<ViewTransitions />
 		<meta property="og:title" content="Works | どぐえぐ" />
 		<meta property="og:description" content="制作物一覧" />
 		<meta property="og:image" content={ogImageUrl} />

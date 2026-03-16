@@ -1,7 +1,6 @@
 ---
 import App from '../app/App';
 import '@/styles/index.css';
-import { ViewTransitions } from 'astro:transitions';
 
 const baseUrl = import.meta.env.BASE_URL.endsWith('/')
   ? import.meta.env.BASE_URL
@@ -18,7 +17,6 @@ const rootUrl = new URL(baseUrl, siteUrl).toString();
 		<link rel="icon" type="image/svg+xml" sizes="any" href={`${baseUrl}favicon.svg`} />
 		<meta name="viewport" content="width=device-width" />
 		<meta name="generator" content={Astro.generator} />
-		<ViewTransitions />
 		<meta property="og:title" content="どぐえぐ" />
 		<meta property="og:description" content="トップページ" />
 		<meta property="og:image" content={ogImageUrl} />
