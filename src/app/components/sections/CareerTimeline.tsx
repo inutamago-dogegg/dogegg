@@ -98,7 +98,12 @@ export function CareerTimeline({ careers, isDark, config, onCareerClick }: Caree
     const elapsed = latestYearEndDate.getTime() - yearStart.getTime();
     const fraction = yearDuration > 0 ? Math.min(1, Math.max(0, elapsed / yearDuration)) : 1;
     const baseHeight = yearHeights[latestYear] ?? BASE_YEAR_HEIGHT;
-    yearHeights[latestYear] = Math.max(baseHeight * fraction, baseHeight * 0.1);
+    const latestYearCards = eventsByYear[latestYear] ?? [];
+    const latestYearMinHeight =
+      latestYearCards.length > 0
+        ? Math.max(...latestYearCards.map((career) => getCardHeight(career))) + CARD_GAP * 2
+        : 0;
+    yearHeights[latestYear] = Math.max(baseHeight * fraction, latestYearMinHeight);
   }
 
   // Calculate cumulative positions for years
@@ -310,13 +315,26 @@ export function CareerTimeline({ careers, isDark, config, onCareerClick }: Caree
     });
   }
 
+  const getMonthTickY = (year: number, month: number): number => {
+    const yearPos = yearPositions[year];
+    if (!yearPos) return 0;
+
+    if (year === latestYear && latestYear === now.getFullYear()) {
+      const displayedMonthCount = now.getMonth() + 1;
+      const denominator = Math.max(1, displayedMonthCount - 1);
+      const normalized = (month - 1) / denominator;
+      return yearPos.bottomY - normalized * (yearPos.bottomY - yearPos.topY);
+    }
+
+    return getYPosition(new Date(year, month - 1, 1));
+  };
+
   const monthTicks = years.flatMap((year) =>
     Array.from({ length: 12 }, (_, index) => {
       const month = index + 1;
-      const date = new Date(year, index, 1);
       return {
         key: `${year}-${month}`,
-        y: getYPosition(date),
+        y: getMonthTickY(year, month),
         month,
         year,
       };

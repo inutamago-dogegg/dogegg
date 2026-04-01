@@ -97,11 +97,25 @@ export default function ProjectCard({
           aria-label="詳細を開く"
         >
           <div className="mb-2">
-            <span
-              className={`inline-flex items-center rounded-md border ${config.surfaceBorder} ${config.chipBg} px-2 py-0.5 text-xs font-medium ${config.chipText}`}
-            >
-              {project.genre}
-            </span>
+            <div className="flex items-center gap-2 flex-wrap">
+              <span
+                className={`inline-flex items-center rounded-md border ${config.surfaceBorder} ${config.chipBg} px-2 py-0.5 text-xs font-medium ${config.chipText}`}
+              >
+                {project.genre}
+              </span>
+              {project.status && (
+                <Badge
+                  variant="static"
+                  className={`text-xs border ${
+                    project.status === '制作中'
+                      ? 'bg-emerald-100 border-emerald-300 text-emerald-800'
+                      : 'bg-slate-100 border-slate-300 text-slate-700'
+                  }`}
+                >
+                  {project.status}
+                </Badge>
+              )}
+            </div>
           </div>
           <div className="mb-2 min-w-0">
             <CardTitle className={`text-xl ${config.textPrimary} break-words`}>{project.title}</CardTitle>

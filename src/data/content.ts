@@ -47,7 +47,7 @@ export type CareerItem = {
   representativeDate: string;
   detailMarkdown?: string;
   details: string[];
-  category: 'サークル' | 'インターン' | 'イベント';
+  category: 'サークル' | 'インターン' | 'イベント' | 'プログラム';
   tech?: string[];
   url?: string;
 };
@@ -81,6 +81,7 @@ export type ProjectLink = {
 export type ProjectItem = {
   title: string;
   period: string;
+  status?: '制作中' | '完成';
   tech: string[];
   member: string;
   outline: string;
@@ -262,6 +263,18 @@ export const WORKS_NAV_SECTIONS = [{ id: 'works', label: PROFILE.sections.worksT
 const CGC_TECHS = [TECH.reEngine, TECH.cSharp, TECH.python, TECH.subversion, TECH.perforce];
 
 export const CAREERS: CareerItem[] = [
+  {
+    company: 'indie Game incubator',
+    period: '2026年4月~現在',
+    startDate: '2026-04-01',
+    endDate: null,
+    representativeDate: '2026-04-01',
+    details: [
+      'インディーゲームの支援プログラムです。',
+    ],
+    category: 'プログラム',
+    url: 'https://igi.dev/',
+  },
   {
     company: 'UNL:OCK',
     period: '2025年8月~現在',
@@ -614,6 +627,7 @@ export const PROJECTS: ProjectYearGroup[] = [
       {
         title: '贖罪',
         period: '2025年11月~2026年3月',
+        status: '完成',
         tech: [TECH.makeRiddle],
         member: '',
         outline: '謎キャン2026で公演しました。\n'
@@ -626,6 +640,7 @@ export const PROJECTS: ProjectYearGroup[] = [
       {
         title: 'このサイト',
         period: '2026年1月~現在',
+        status: '制作中',
         tech: [TECH.astro, TECH.react, TECH.typescript],
         member: '1人',
         outline: 'ポートフォリオサイトも兼ねて自分のホームページをつくりました',
@@ -636,8 +651,9 @@ export const PROJECTS: ProjectYearGroup[] = [
         githubUrl: 'https://github.com/inutamago-dogegg/dogegg',
       },
       {
-        title: 'Deeper and Deeper',
+        title: 'Deeper and Deeper (ハッカソン版)',
         period: '2025年12月 (準備1週間, 制作1週間)',
+        status: '完成',
         tech: [TECH.unityUrp, TECH.unity, TECH.git, TECH.vcontainer, TECH.unitask],
         member: '8人(プランナー1人, プログラマー3人, 2Dデザイナー3人, サウンド1人)',
         outline: 'ダンジョンの深く深くに進みお宝を手に入れて帰還するゲーム',
@@ -650,6 +666,7 @@ export const PROJECTS: ProjectYearGroup[] = [
       {
         title: 'ELEGO',
         period: '2025年4月~9月 (6か月)',
+        status: '完成',
         tech: CGC_TECHS,
         member: '20人(プランナー5人, プログラマー6人, 3Dデザイナー4人, 2Dデザイナー2人, シナリオ1人, サウンド2人)',
         outline: '感情を利用し敵を操って脱出を目指すステルスアクションゲーム',
@@ -664,6 +681,7 @@ export const PROJECTS: ProjectYearGroup[] = [
       {
         title: '2',
         period: '',
+        status: '完成',
         tech: [TECH.makeRiddle],
         member: '',
         outline: 'C-lock-row レーベルブラック\n'
@@ -681,6 +699,7 @@ export const PROJECTS: ProjectYearGroup[] = [
       {
         title: 'Cross the C',
         period: '2024年7月~現在 (約1年半)',
+        status: '制作中',
         tech: [TECH.unityUrp, TECH.git, TECH.r3, TECH.unitask, TECH.vcontainer],
         member: '約15人(プランナー4人, プログラマー3人, 3Dデザイナー3人, 2Dデザイナー1人, パズル制作7人)',
         outline: '船を操作してゴールを目指す氷床パズルゲーム',
@@ -688,13 +707,14 @@ export const PROJECTS: ProjectYearGroup[] = [
         genre: GENRE.game,
         playLink: { label: LABELS.play, url: 'https://gameparade.creators-guild.com/works/2763' },
         headerImage: CrossHeader,
-        awards: ['ゲームクリエイター甲子園2024総合大賞ノミネート', 'ゲームクリエイター甲子園2025総合大賞ノミネート'],
+        awards: ['ゲームクリエイター甲子園2024総合大賞ノミネート', 'ゲームクリエイター甲子園2025総合大賞ノミネート', 'indie Game incubator 第6期'],
         xUrl: 'https://x.com/CrosstheC_trap',
         steamUrl: 'https://store.steampowered.com/app/3382690/Cross_the_C/'
       },
       {
         title: 'Queen Bee',
         period: '2025年1月 (準備1週間, 制作1週間)',
+        status: '完成',
         tech: [TECH.unity, TECH.git, TECH.unitask],
         member: '6人(プランナー1人, プログラマー3人, 2Dデザイナー2人, サウンド1人)',
         outline: '主人公・野心萌(やしん もえ)が学園トップを目指す学園シミュレーションカードゲーム',
@@ -712,6 +732,7 @@ export const PROJECTS: ProjectYearGroup[] = [
       {
         title: '「」か？',
         period: '2023年6月 (準備1週間, 制作2日)',
+        status: '完成',
         tech: [TECH.unity, TECH.git],
         member: '5人(プログラマー3人, 2Dデザイナー2人)',
         outline: 'ひらがなを吸収して変身して戦う2D弾幕アクションゲーム',
@@ -723,6 +744,7 @@ export const PROJECTS: ProjectYearGroup[] = [
       {
         title: 'Memory Transer',
         period: '2023年5月~7月 (約2か月)',
+        status: '完成',
         tech: [TECH.unity, TECH.git, TECH.unirx, TECH.unitask],
         member: '9人(プランナー4人, プログラマー4人, 2Dデザイナー1人)',
         outline: '記憶を整理するアクションゲーム',
@@ -749,6 +771,7 @@ export const PROJECTS: ProjectYearGroup[] = [
       {
         title: 'Orbit',
         period: '2023年12月 (準備1週間, 制作1週間)',
+        status: '完成',
         tech: [TECH.unityUrp, TECH.git, TECH.unirx, TECH.unitask],
         member: '5人(プランナー1人, プログラマー3人, 2Dデザイナー3人, サウンド1人)',
         outline: '星を回りながらその秘密を探るリソース管理アドベンチャー',
@@ -768,6 +791,7 @@ export const PROJECTS: ProjectYearGroup[] = [
       {
         title: 'つかまらないで！ゆうちゃん',
         period: '2022年6月 (準備1週間, 制作1週間)',
+        status: '完成',
         tech: [TECH.unity, TECH.git],
         member: '5人(プログラマ4人, 2Dデザイナー1人)',
         outline: '目玉に見つからないように主人公のゆうちゃんを操作してゴールを目指すアクションゲーム',
@@ -791,6 +815,7 @@ export const PROJECTS: ProjectYearGroup[] = [
       {
         title: 'School Breakin` Tag',
         period: '2022年11月~2023年11月 (1年)',
+        status: '完成',
         tech: [TECH.unity, TECH.git, TECH.udonSharp, TECH.vrchat],
         member: '約8人(プログラマー5人, 3Dデザイナー3人)',
         outline: '学校を舞台に地形を破壊できる爆弾を使って逃げ回るVRおにごっこ',
@@ -806,6 +831,7 @@ export const PROJECTS: ProjectYearGroup[] = [
       {
         title: 'Root Shooter',
         period: '2022年12月 (準備1週間, 制作1週間)',
+        status: '完成',
         tech: [TECH.unity, TECH.git, TECH.pun2],
         member: '5人(プログラマー3人, 2Dデザイナー1人, サウンド1人)',
         outline: '野菜を育てて撃って戦う2D対戦アクションゲームです。',
