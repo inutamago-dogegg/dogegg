@@ -79,6 +79,34 @@ export default function HobbySection({ config, ogpData, isDark }: HobbySectionPr
                       </div>
                     </div>
                   )}
+                  {hobby.recents && hobby.recents.length > 0 && (
+                    <div className="mt-4">
+                      {hobby.recentsLabel && (
+                        <p className={`text-sm font-semibold ${config.textSecondary} mb-2`}>
+                          {hobby.recentsLabel}
+                        </p>
+                      )}
+                      <div className="grid gap-3 sm:grid-cols-2 min-w-0">
+                        {hobby.recents.map((recent) => {
+                          const ogp = ogpData[recent.url];
+                          return (
+                            <div key={recent.url} className="space-y-1 min-w-0">
+                              <OgpCard
+                                label={recent.label}
+                                url={recent.url}
+                                config={config}
+                                isDark={isDark}
+                                {...(ogp ? { data: ogp } : {})}
+                              />
+                              {recent.note && (
+                                <p className={`text-xs ${config.textMuted} px-2`}>{recent.note}</p>
+                              )}
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  )}
                 </CardContent>
               </Card>
             </motion.div>

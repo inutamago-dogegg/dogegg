@@ -3,6 +3,7 @@ import { Card, CardContent } from '@/app/components/ui/card';
 import { ARTICLES } from '@/data/content';
 import type { OgpMap } from '@/app/types';
 import type { PaletteConfig } from '@/lib/theme';
+import ArticleCardImage from '@/app/components/ArticleCardImage';
 
 type ArticlesSectionProps = {
   config: PaletteConfig;
@@ -62,20 +63,7 @@ export default function ArticlesSection({ config, ogpData }: ArticlesSectionProp
                         className="block"
                         title={article.url}
                       >
-                        {image ? (
-                          <img
-                            src={image}
-                            alt=""
-                            className={`h-44 w-full rounded-lg object-cover border ${config.surfaceBorder} ${config.surfaceBg} mb-4`}
-                            loading="lazy"
-                          />
-                        ) : (
-                          <div
-                            className={`h-44 w-full rounded-lg border ${config.surfaceBorder} ${config.surfaceBg} mb-4 flex items-center justify-center ${config.textMuted}`}
-                          >
-                            No Image
-                          </div>
-                        )}
+                        <ArticleCardImage image={image} domain={domain} config={config} />
                         <div className={`text-xl font-semibold ${config.textPrimary} mb-2`}>{title}</div>
                         <div className={`text-sm ${config.textMuted} flex items-center justify-between`}>
                           <span>{domain}</span>

@@ -123,7 +123,7 @@ export const fetchOgp = async (target: string): Promise<OgpData | null> => {
     return {
       title: title ?? '',
       description: description ?? '',
-      image: resolveUrl(image, target) ?? '',
+      image: resolveUrl(decodeHtmlEntities(image), target) ?? '',
       siteName: siteName ?? '',
       url: target,
     };

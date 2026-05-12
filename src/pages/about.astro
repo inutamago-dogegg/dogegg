@@ -23,6 +23,10 @@ HOBBIES.forEach((hobby: (typeof HOBBIES)[number]) => {
     (favorite: NonNullable<(typeof HOBBIES)[number]['favorites']>[number]) =>
       urlSet.add(favorite.url),
   );
+  hobby.recents?.forEach(
+    (recent: NonNullable<(typeof HOBBIES)[number]['recents']>[number]) =>
+      urlSet.add(recent.url),
+  );
 });
 
 ARTICLES.forEach((article: (typeof ARTICLES)[number]) => {

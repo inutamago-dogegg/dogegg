@@ -64,6 +64,8 @@ export type HobbyItem = {
   details: string[];
   favoritesLabel?: string;
   favorites?: HobbyLink[];
+  recentsLabel?: string;
+  recents?: HobbyLink[];
 };      
 
 export type SkillItem = {
@@ -111,7 +113,7 @@ export type AboutSocialLink = {
   label: string;
   handle: string;
   url: string;
-  icon: 'x' | 'github' | 'unityroom';
+  icon: 'x' | 'github' | 'unityroom' | 'qiita';
 };
 
 export type AboutSection = {
@@ -169,7 +171,7 @@ export const PROFILE = {
   title: 'どぐえぐ',
   tagline: 'ゲームを作るのが好きです',
   affiliation: '東京科学大学 情報理工学院 数理・計算科学系 学士3年',
-  clubs: ['東京科学大学デジタル創作同好会traP', 'C-lock-row'],
+  clubs: ['東京科学大学デジタル創作同好会traP', 'C-lock-row', 'UNL:OCK'],
   sections: {
     abaoutMeTitle: 'About Me',
     featuredTitle: 'Highlighted Works',
@@ -207,8 +209,15 @@ export const SOCIAL_LINKS = {
     handle: '@dogegg',
     url: 'https://unityroom.com/users/dogegg',
     icon: 'unityroom',
+  },
+  qiita: {
+    label: 'Qiita',
+    handle: '@inutamago-dogegg',
+    url: 'https://qiita.com/inutamago-dogegg',
+    icon: 'qiita',
+
   }
-} as const satisfies Record<'x' | 'github' | 'unityroom', AboutSocialLink>;
+} as const satisfies Record<'x' | 'github' | 'unityroom' | 'qiita', AboutSocialLink>;
 
 export const ABOUT_CONTENT = {
   subtitle: 'プロフィール',
@@ -221,6 +230,7 @@ export const ABOUT_CONTENT = {
     SOCIAL_LINKS.x,
     SOCIAL_LINKS.github,
     SOCIAL_LINKS.unityroom,
+    SOCIAL_LINKS.qiita,
   ] satisfies AboutSocialLink[],
   sections: [
     {
@@ -273,7 +283,8 @@ export const CAREERS: CareerItem[] = [
       'インディーゲームの支援プログラムです。',
     ],
     category: 'プログラム',
-    url: 'https://igi.dev/',
+    url: 'https://igi.dev',
+    tech: [TECH.unity, TECH.cSharp, TECH.git, TECH.vcontainer, TECH.unitask, TECH.r3, TECH.feel],
   },
   {
     company: 'UNL:OCK',
@@ -483,6 +494,17 @@ export const HOBBIES: HobbyItem[] = [
       { label: 'モンスターハンター', url: 'https://www.monsterhunter.com/ja/',
         note: '面白いです。'
       },
+    ],
+    recentsLabel: '最近遊んだゲーム',
+    recents: [
+      {
+        label: 'Slay the Spire 2', url: 'https://store.steampowered.com/app/2868840/Slay_the_Spire_2/',
+        note: 'リージェント以外アセンション10勝ちました'
+      },
+      {
+        label: 'Can of Wormholes', url: 'https://store.steampowered.com/app/1295320/Can_of_Wormholes/',
+        note: 'クリアしました'
+      }
     ],
   },
   {
@@ -846,6 +868,10 @@ export const PROJECTS: ProjectYearGroup[] = [
 ];
 
 export const ARTICLES: ArticleItem[] = [
+  {
+    date: '2026-05-08',
+    url: 'https://qiita.com/inutamago-dogegg/items/d4d947596d34e04e1189',
+  },
   {
     date: '2026-02-01',
     url: 'https://trap.jp/post/2799/',
