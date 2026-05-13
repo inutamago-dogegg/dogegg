@@ -72,7 +72,11 @@ export default function SiteFooter({
                       size="sm"
                       className={`${theme === t ? config.buttonBg : `hover:bg-gray-100 ${isDark ? 'hover:bg-gray-800' : ''}`} shrink-0`}
                     >
-                      {themeConfig[t].emoji} {themeConfig[t].name}
+                      <span
+                        className="inline-block w-3.5 h-3.5 rounded-sm shrink-0"
+                        style={{ backgroundColor: themeConfig[t].color }}
+                      />
+                      {themeConfig[t].name}
                     </Button>
                   ))}
                 </div>

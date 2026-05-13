@@ -20,6 +20,7 @@ export default function AboutIntroSection({ config, theme }: AboutIntroSectionPr
   const [openSections, setOpenSections] = useState<Record<string, boolean>>(() =>
     Object.fromEntries(collapsibleTitles.map((title) => [title, false])),
   );
+  const [iconRotations, setIconRotations] = useState(0);
 
   return (
     <section id="top" className="pt-32 pb-20 px-4 relative">
@@ -36,18 +37,27 @@ export default function AboutIntroSection({ config, theme }: AboutIntroSectionPr
             <CardContent className="px-6 py-10 space-y-10">
               <div className="grid gap-10 lg:grid-cols-[220px_1fr_240px] items-start text-left">
                 <div className="flex justify-center lg:justify-start">
-                  <div className={`h-48 w-48 rounded-full overflow-hidden border ${config.surfaceBorder} ${config.surfaceBg}`}>
+                  <motion.div
+                    className={`h-48 w-48 rounded-full overflow-hidden border ${config.surfaceBorder} ${config.surfaceBg} cursor-default`}
+                    animate={{ rotate: iconRotations * 360 }}
+                    transition={{ duration: 0.6, ease: 'easeInOut' }}
+                    onClick={() => setIconRotations((prev) => prev + 1)}
+                    title="クリックして回す"
+                  >
                     <img
                       src={avatarIcon.src}
                       alt={PROFILE.iconAlt}
                       className="h-full w-full object-cover"
                       loading="lazy"
                     />
-                  </div>
+                  </motion.div>
                 </div>
                 <div className="space-y-4 text-center lg:text-left">
                   <div className="flex items-center justify-center lg:justify-start gap-3">
-                    <span className="text-3xl">{themeConfig[theme].emoji}</span>
+                    <span
+                      className="inline-block w-8 h-8 rounded-sm shrink-0"
+                      style={{ backgroundColor: themeConfig[theme].color }}
+                    />
                     <h1 className={`text-4xl md:text-5xl ${config.textPrimary}`}>{PROFILE.name}</h1>
                   </div>
                   <div className={`text-xl ${config.textSecondary}`}>{PROFILE.tagline}</div>

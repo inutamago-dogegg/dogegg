@@ -24,6 +24,7 @@ export const themeConfig = {
   spring: {
     name: '',
     emoji: '🌸',
+    color: '#f472b6',
     palettes: {
       light: {
         fromColor: '#fdf2f8',
@@ -68,6 +69,7 @@ export const themeConfig = {
   summer: {
     name: '',
     emoji: '☀️',
+    color: '#38bdf8',
     palettes: {
       light: {
         fromColor: '#eff6ff',
@@ -112,6 +114,7 @@ export const themeConfig = {
   autumn: {
     name: '',
     emoji: '🍂',
+    color: '#fb923c',
     palettes: {
       light: {
         fromColor: '#fff7ed',
@@ -156,6 +159,7 @@ export const themeConfig = {
   winter: {
     name: '',
     emoji: '❄️',
+    color: '#94a3b8',
     palettes: {
       light: {
         fromColor: '#f8fafc',
