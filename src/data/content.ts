@@ -499,7 +499,7 @@ export const HOBBIES: HobbyItem[] = [
     recents: [
       {
         label: 'Slay the Spire 2', url: 'https://store.steampowered.com/app/2868840/Slay_the_Spire_2/',
-        note: 'リージェント以外アセンション10勝ちました'
+        note: '全キャラA10登頂しました'
       },
       {
         label: 'Can of Wormholes', url: 'https://store.steampowered.com/app/1295320/Can_of_Wormholes/',
