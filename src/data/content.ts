@@ -38,6 +38,7 @@ import TsukamaranaiDeYuChanDetail from '@/data/projects/tsukamaranai-de-yu-chan.
 import LogicalRoomDetail from '@/data/projects/logical-room.md?raw';
 import SchoolBreakinTagDetail from '@/data/projects/school-breakin-tag.md?raw';
 import RootShooterDetail from '@/data/projects/root-shooter.md?raw';
+import FlashelixIcon from '@/images/Flashelix_CoverImage.gif';
 
 export type CareerItem = {
   company: string;
@@ -125,7 +126,7 @@ export type AboutSection = {
 export const LABELS = {
   play: 'プレイリンク',
   related: '関連記事',
-  twitter: 'Twitter',
+  x: 'X',
   github: 'GitHub',
   ticket: 'チケットサイト',
 } as const;
@@ -158,6 +159,9 @@ const TECH = {
   blender: 'Blender',
   davinciResolve: 'DaVinci Resolve',
   competitiveProgramming: '競技プログラミング',
+  aseprite: 'Aseprite',
+  claude: 'Claude',
+  codex: 'CodeX'
 } as const;
 
 const GENRE = {
@@ -644,6 +648,34 @@ export const SKILL_SECTIONS = {
 
 export const PROJECTS: ProjectYearGroup[] = [
   {
+    year: '2026',
+    items: [
+      {
+        title: 'MissileShift',
+        period: '2026年6月(準備1週間, 制作2日)',
+        status: '完成',
+        tech: [TECH.unity, TECH.aseprite, TECH.shader, TECH.claude],
+        member: '7人',
+        outline: '部内春ハッカソンでグラフィックを担当しました',
+        genre: GENRE.game,
+        playLink: { label: 'MissileShift', url: 'https://unityroom.com/games/missileshift' },
+        relatedLinks: [{ label: LABELS.related, url: 'https://trap.jp/post/2611/' }]
+      },
+      {
+        title: 'Flashelix',
+        period: '2026年7月(制作4日)',
+        status: '完成',
+        tech: [TECH.unity, TECH.vcontainer, TECH.unitask, TECH.claude],
+        member: '5人',
+        outline: 'GMTK GameJam 2026 で制作しました。謎解きパズルアクションゲームです。',
+        genre: GENRE.game,
+        playLink: { label: 'Flashelix', url: 'https://inutamago-dogegg.itch.io/flashelix' },
+        headerImage: FlashelixIcon,
+        relatedLinks: [{ label: LABELS.x, url: 'https://x.com/dogegg314/status/2081938112364880060?s=20'}]
+      }
+    ]
+  },
+  {
     year: '2025',
     items: [
       {
@@ -868,6 +900,10 @@ export const PROJECTS: ProjectYearGroup[] = [
 ];
 
 export const ARTICLES: ArticleItem[] = [
+  {
+    date: '2026-07-17',
+    url: 'https://trap.jp/post/2611/',
+  },
   {
     date: '2026-05-08',
     url: 'https://qiita.com/inutamago-dogegg/items/d4d947596d34e04e1189',

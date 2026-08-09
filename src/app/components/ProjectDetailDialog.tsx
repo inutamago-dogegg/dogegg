@@ -59,7 +59,7 @@ export default function ProjectDetailDialog({
   }
   if (project.xUrl) {
     linkButtons.push({
-      label: LABELS.twitter,
+      label: LABELS.x,
       url: project.xUrl,
       icon: <ExternalLink className="w-4 h-4 mr-2" />,
     });

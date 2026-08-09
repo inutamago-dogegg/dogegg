@@ -37,7 +37,7 @@ export default function SiteFooter({
                   variant="ghost"
                   className={`${config.textMuted} border ${config.surfaceBorder} cursor-pointer ${isDark ? 'hover:bg-slate-800' : 'hover:bg-gray-100'}`}
                   onClick={() => window.open(SOCIAL_LINKS.x.url, '_blank')}
-                  aria-label={LABELS.twitter}
+                  aria-label={LABELS.x}
                   title={SOCIAL_LINKS.x.url}
                 >
                   <svg className="w-4 h-4 text-current" fill="currentColor" viewBox="0 0 24 24">
