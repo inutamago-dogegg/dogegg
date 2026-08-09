@@ -39,6 +39,7 @@ import LogicalRoomDetail from '@/data/projects/logical-room.md?raw';
 import SchoolBreakinTagDetail from '@/data/projects/school-breakin-tag.md?raw';
 import RootShooterDetail from '@/data/projects/root-shooter.md?raw';
 import FlashelixIcon from '@/images/Flashelix_CoverImage.gif';
+import AsepriteIcon from '@/images/Aseprite_Icon.png';
 
 export type CareerItem = {
   company: string;
@@ -614,6 +615,12 @@ export const SKILL_SECTIONS = {
   graphic: {
     title: 'グラフィック',
     items: [
+      {
+        name: TECH.aseprite,
+        icon: AsepriteIcon,
+        level: 2,
+        description: 'ドット絵の作成に用いています。'
+      },
       {
         name: TECH.figma,
         icon: FigmaIcon,

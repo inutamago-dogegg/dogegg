@@ -183,7 +183,7 @@ export default function App({ ogpData, articlesOgpData = {}, mode = 'home' }: Ap
 
   const projects = PROJECTS;
   const allProjects = PROJECTS.flatMap((group) => group.items);
-  const featuredOrder = ['Cross the C', 'ELEGO', 'Orbit', 'バリバリベンジ'];
+  const featuredOrder = ['Cross the C', 'ELEGO', 'Orbit', 'Flashelix'];
   const featuredProjects = featuredOrder
     .map((title) => allProjects.find((project) => project.title === title))
     .filter((project): project is ProjectItem => Boolean(project));
