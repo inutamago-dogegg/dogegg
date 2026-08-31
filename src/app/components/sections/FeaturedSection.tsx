@@ -4,6 +4,7 @@ import { Button } from '@/app/components/ui/button';
 import ProjectCard from '@/app/components/ProjectCard';
 import ProjectDetailDialog from '@/app/components/ProjectDetailDialog';
 import { PROFILE, type ProjectItem } from '@/data/content';
+import { normalizeProjectPresentation } from '@/data/projectPresentation';
 import type { OgpMap } from '@/app/types';
 import type { PaletteConfig } from '@/lib/theme';
 
@@ -23,6 +24,7 @@ export default function FeaturedSection({
   featuredProjects,
 }: FeaturedSectionProps) {
   const [selectedProject, setSelectedProject] = useState<ProjectItem | null>(null);
+  const normalizedProjects = featuredProjects.map(normalizeProjectPresentation);
   const makeHash = (value: string) => {
     const slug = value
       .toLowerCase()
@@ -51,7 +53,7 @@ export default function FeaturedSection({
         return;
       }
       const slug = hash.replace('#work-', '');
-      const target = featuredProjects.find((project) => makeHash(project.title) === slug);
+      const target = normalizedProjects.find((project) => makeHash(project.title) === slug);
       if (target) {
         setSelectedProject(target);
       } else {
@@ -79,7 +81,7 @@ export default function FeaturedSection({
         </motion.div>
 
         <div className="grid gap-6 md:grid-cols-2">
-          {featuredProjects.map((project, index) => (
+          {normalizedProjects.map((project, index) => (
             <ProjectCard
               key={`featured-${project.title}-${index}`}
               project={project}
