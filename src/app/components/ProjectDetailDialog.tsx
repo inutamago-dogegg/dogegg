@@ -12,6 +12,8 @@ import {
 } from '@/app/components/ui/dialog';
 import MarkdownContent from '@/app/components/MarkdownContent';
 import { LABELS, type ProjectItem } from '@/data/content';
+import MissileShiftDetail from '@/data/projects/missile-shift.md?raw';
+import FlashelixDetail from '@/data/projects/flashelix.md?raw';
 import type { PaletteConfig } from '@/lib/theme';
 
 type ProjectDetailDialogProps = {
@@ -40,7 +42,13 @@ export default function ProjectDetailDialog({
 
   if (!project) return null;
 
-  const detailMarkdown = project.detailMarkdown?.trim() ?? '';
+  const fallbackDetailMarkdown =
+    project.title === 'MissileShift'
+      ? MissileShiftDetail
+      : project.title === 'Flashelix'
+        ? FlashelixDetail
+        : '';
+  const detailMarkdown = project.detailMarkdown?.trim() || fallbackDetailMarkdown.trim();
 
   const linkButtons: Array<{ label: string; url: string; icon?: ReactNode }> = [];
   if (project.playLink) {
