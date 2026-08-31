@@ -4,6 +4,7 @@ import { motion } from 'motion/react';
 import ProjectCard from '@/app/components/ProjectCard';
 import ProjectDetailDialog from '@/app/components/ProjectDetailDialog';
 import { PROFILE, type ProjectItem, type ProjectYearGroup } from '@/data/content';
+import { normalizeProjectPresentation } from '@/data/projectPresentation';
 import type { OgpMap } from '@/app/types';
 import type { PaletteConfig } from '@/lib/theme';
 
@@ -25,6 +26,10 @@ export default function WorksSection({
   setOpenYears,
 }: WorksSectionProps) {
   const [selectedProject, setSelectedProject] = useState<ProjectItem | null>(null);
+  const normalizedProjects = projects.map((yearGroup) => ({
+    ...yearGroup,
+    items: yearGroup.items.map(normalizeProjectPresentation),
+  }));
   const makeHash = (value: string) => {
     const slug = value
       .toLowerCase()
@@ -53,7 +58,7 @@ export default function WorksSection({
         return;
       }
       const slug = hash.replace('#work-', '');
-      for (const yearGroup of projects) {
+      for (const yearGroup of normalizedProjects) {
         const target = yearGroup.items.find((project) => makeHash(project.title) === slug);
         if (target) {
           setSelectedProject(target);
@@ -82,7 +87,7 @@ export default function WorksSection({
           <p className={`text-xl ${config.textSecondary}`}>{PROFILE.sections.worksLead}</p>
         </motion.div>
 
-        {projects.map((yearGroup, yearIndex) => (
+        {normalizedProjects.map((yearGroup, yearIndex) => (
           <div key={yearGroup.year} id={`works-${yearGroup.year}`} className="mb-16">
             <motion.div
               initial={{ opacity: 0, x: -20 }}
