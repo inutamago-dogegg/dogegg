@@ -3,7 +3,7 @@ import MissileShiftDetail from '@/data/projects/missile-shift.md?raw';
 import FlashelixDetail from '@/data/projects/flashelix.md?raw';
 
 type ProjectPresentationOverride = Partial<
-  Pick<ProjectItem, 'title' | 'period' | 'outline' | 'detailMarkdown'>
+  Pick<ProjectItem, 'period' | 'outline' | 'detailMarkdown'>
 >;
 
 const PROJECT_PRESENTATION_OVERRIDES: Record<string, ProjectPresentationOverride> = {
@@ -21,7 +21,6 @@ const PROJECT_PRESENTATION_OVERRIDES: Record<string, ProjectPresentationOverride
     period: '2025年12月~2026年1月 (準備1週間, 制作1週間)',
   },
   'Cross the C': {
-    title: 'Cross the Sea',
     period: '2024年7月~現在 (約2年1か月)',
   },
   バリバリベンジ: {
@@ -31,7 +30,7 @@ const PROJECT_PRESENTATION_OVERRIDES: Record<string, ProjectPresentationOverride
 
 /**
  * content.ts に残っている過去の公開情報を、現在の表示内容へ正規化する。
- * 元タイトルは外部URLや既存データとの互換性のため保持する。
+ * 作品名や外部URLなどの識別情報は変更しない。
  */
 export function normalizeProjectPresentation(project: ProjectItem): ProjectItem {
   return {
