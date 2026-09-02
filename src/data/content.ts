@@ -121,7 +121,7 @@ export type AboutSocialLink = {
   label: string;
   handle: string;
   url: string;
-  icon: 'x' | 'github' | 'unityroom' | 'qiita' | 'pixiv';
+  icon: 'x' | 'github' | 'unityroom' | 'qiita' | 'pixiv' | 'itchio';
 };
 
 export type AboutSection = {
@@ -204,7 +204,7 @@ export const PROFILE = {
 
 export const SOCIAL_LINKS = {
   x: {
-    label: 'Twitter (X)',
+    label: 'X (Twitter)',
     handle: '@dogegg314',
     url: 'https://x.com/dogegg314',
     icon: 'x',
@@ -232,8 +232,14 @@ export const SOCIAL_LINKS = {
     handle: 'dogegg',
     url: 'https://www.pixiv.net/users/101265963',
     icon: 'pixiv'
-  }
-} as const satisfies Record<'x' | 'github' | 'unityroom' | 'qiita' | 'pixiv', AboutSocialLink>;
+  },
+  itchio: {
+    label: 'itch.io',
+    handle: '@inutamago-dogegg',
+    url: 'https://inutamago-dogegg.itch.io',
+    icon: 'itchio',
+  },
+} as const satisfies Record<'x' | 'github' | 'unityroom' | 'qiita' | 'pixiv' | 'itchio', AboutSocialLink>;
 
 export const ABOUT_CONTENT = {
   subtitle: 'プロフィール',
@@ -248,6 +254,7 @@ export const ABOUT_CONTENT = {
     SOCIAL_LINKS.unityroom,
     SOCIAL_LINKS.qiita,
     SOCIAL_LINKS.pixiv,
+    SOCIAL_LINKS.itchio,
   ] satisfies AboutSocialLink[],
   sections: [
     {
