@@ -11,6 +11,7 @@ import {
   DialogTitle,
 } from '@/app/components/ui/dialog';
 import MarkdownContent from '@/app/components/MarkdownContent';
+import ProjectVideoEmbed from '@/app/components/ProjectVideoEmbed';
 import { LABELS, type ProjectItem } from '@/data/content';
 import MissileShiftDetail from '@/data/projects/missile-shift.md?raw';
 import FlashelixDetail from '@/data/projects/flashelix.md?raw';
@@ -128,6 +129,19 @@ export default function ProjectDetailDialog({
           </div>
 
           <div className="px-6 pb-6 pt-3 space-y-4">
+            {project.videos && project.videos.length > 0 && (
+              <div className="space-y-4">
+                {project.videos.map((video, index) => (
+                  <ProjectVideoEmbed
+                    key={index}
+                    video={video}
+                    title={`${project.title} のプレイ映像`}
+                    fallbackUrl={project.steamUrl}
+                  />
+                ))}
+              </div>
+            )}
+
             <div>
               <h4 className={`text-sm font-semibold ${config.textMuted} mb-2`}>ジャンル</h4>
               <Badge className={`${config.badgeBg} border`}>{project.genre}</Badge>

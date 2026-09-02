@@ -82,6 +82,11 @@ export type ProjectLink = {
   url: string;
 };
 
+export type ProjectVideo =
+  | { type: 'youtube'; youtubeId: string; label?: string }
+  | { type: 'file'; src: string; poster?: string; label?: string }
+  | { type: 'steam'; hlsUrl: string; label?: string };
+
 export type ProjectItem = {
   title: string;
   period: string;
@@ -91,6 +96,7 @@ export type ProjectItem = {
   outline: string;
   genre: string;
   detailMarkdown?: string;
+  videos?: ProjectVideo[];
   xUrl?: string;
   githubUrl?: string;
   steamUrl?: string;
@@ -115,7 +121,7 @@ export type AboutSocialLink = {
   label: string;
   handle: string;
   url: string;
-  icon: 'x' | 'github' | 'unityroom' | 'qiita';
+  icon: 'x' | 'github' | 'unityroom' | 'qiita' | 'pixiv';
 };
 
 export type AboutSection = {
@@ -220,9 +226,14 @@ export const SOCIAL_LINKS = {
     handle: '@inutamago-dogegg',
     url: 'https://qiita.com/inutamago-dogegg',
     icon: 'qiita',
-
+  },
+  pixiv: {
+    label: 'pixiv',
+    handle: 'dogegg',
+    url: 'https://www.pixiv.net/users/101265963',
+    icon: 'pixiv'
   }
-} as const satisfies Record<'x' | 'github' | 'unityroom' | 'qiita', AboutSocialLink>;
+} as const satisfies Record<'x' | 'github' | 'unityroom' | 'qiita' | 'pixiv', AboutSocialLink>;
 
 export const ABOUT_CONTENT = {
   subtitle: 'プロフィール',
@@ -236,6 +247,7 @@ export const ABOUT_CONTENT = {
     SOCIAL_LINKS.github,
     SOCIAL_LINKS.unityroom,
     SOCIAL_LINKS.qiita,
+    SOCIAL_LINKS.pixiv,
   ] satisfies AboutSocialLink[],
   sections: [
     {
@@ -676,6 +688,7 @@ export const PROJECTS: ProjectYearGroup[] = [
         member: '5人',
         outline: 'GMTK GameJam 2026 で制作しました。謎解きパズルアクションゲームです。',
         genre: GENRE.game,
+        videos: [{ type: 'youtube', youtubeId: 'UDhom6uo4Uk' }],
         playLink: { label: 'Flashelix', url: 'https://inutamago-dogegg.itch.io/flashelix' },
         headerImage: FlashelixIcon,
         relatedLinks: [{ label: LABELS.x, url: 'https://x.com/dogegg314/status/2081938112364880060?s=20'}]
@@ -720,6 +733,7 @@ export const PROJECTS: ProjectYearGroup[] = [
         outline: 'ダンジョンの深く深くに進みお宝を手に入れて帰還するゲーム',
         detailMarkdown: DeeperAndDeeperDetail,
         genre: GENRE.game,
+        videos: [{ type: 'youtube', youtubeId: '8pNH1J0iWJU' }],
         playLink: { label: LABELS.play, url: 'https://unityroom.com/games/deeper_and_deeper?ref=trap.jp' },
         relatedLinks: [{ label: LABELS.related, url: 'https://trap.jp/post/2798/' }, { label: LABELS.related, url: 'https://trap.jp/post/2799/' }],
         headerImage: DeeperHeader,
@@ -733,6 +747,10 @@ export const PROJECTS: ProjectYearGroup[] = [
         outline: '感情を利用し敵を操って脱出を目指すステルスアクションゲーム',
         detailMarkdown: ElegoDetail,
         genre: GENRE.game,
+        videos: [
+          { type: 'youtube', youtubeId: '92SMz7qgv7c', label: 'プレイ映像' },
+          { type: 'youtube', youtubeId: '6zNbQU_C_6Y', label: '紹介映像' },
+        ],
         playLink: { label: LABELS.play, url: 'https://gameparade.creators-guild.com/works/3532' },
         relatedLinks: [{ label: 'CAPCOM GAMES COMPETITION 公式ページ', url: 'https://www.capcom-games.com/cgc/2025/ja-jp/' }],
         headerImage: ElegoHeader,
@@ -766,6 +784,10 @@ export const PROJECTS: ProjectYearGroup[] = [
         outline: '船を操作してゴールを目指す氷床パズルゲーム',
         detailMarkdown: CrossTheCDetail,
         genre: GENRE.game,
+        videos: [
+          { type: 'youtube', youtubeId: 'zcgRW9dC-FQ', label: 'プレイ映像' },
+          { type: 'youtube', youtubeId: 'SucxLzZiv94', label: 'PV' },
+        ],
         playLink: { label: LABELS.play, url: 'https://gameparade.creators-guild.com/works/2763' },
         headerImage: CrossHeader,
         awards: ['ゲームクリエイター甲子園2024総合大賞ノミネート', 'ゲームクリエイター甲子園2025総合大賞ノミネート', 'indie Game incubator 第6期'],
@@ -822,6 +844,7 @@ export const PROJECTS: ProjectYearGroup[] = [
         outline: '敵の出してくる弾をパリィし敵に直接アタックする弾幕ゲー×2Dアクションの新感覚ゲーム！',
         detailMarkdown: VarivaRevengeDetail,
         genre: GENRE.game,
+        videos: [{ type: 'youtube', youtubeId: 'gz6YvoUaEMY' }],
         playLink: { label: LABELS.play, url: 'https://gameparade.creators-guild.com/works/1559' },
         relatedLinks: [{ label: LABELS.related, url: 'https://trap.jp/post/1971/' }],
         headerImage: VariVaRevengeHeader,
@@ -838,6 +861,15 @@ export const PROJECTS: ProjectYearGroup[] = [
         outline: '星を回りながらその秘密を探るリソース管理アドベンチャー',
         detailMarkdown: OrbitDetail,
         genre: GENRE.game,
+        videos: [
+          { type: 'youtube', youtubeId: 'DgEWv1W5xjc', label: 'プレイ映像' },
+          {
+            type: 'steam',
+            label: 'Steam PV',
+            hlsUrl:
+              'https://video.akamai.steamstatic.com/store_trailers/2990710/821157/93aae42d5a2f2bccc85846267be2b503cb89f688/1750955954/hls_264_master.m3u8?t=1750082306',
+          },
+        ],
         playLink: { label: LABELS.play, url: 'https://store.steampowered.com/app/2990710/Orbit/?l=japanese' },
         relatedLinks: [{ label: LABELS.related, url: 'https://trap.jp/post/2106/' }],
         headerImage: OrbitHeader,
@@ -882,6 +914,10 @@ export const PROJECTS: ProjectYearGroup[] = [
         outline: '学校を舞台に地形を破壊できる爆弾を使って逃げ回るVRおにごっこ',
         detailMarkdown: SchoolBreakinTagDetail,
         genre: GENRE.game,
+        videos: [
+          { type: 'youtube', youtubeId: 'qhaXCnZwsWU', label: 'プレイ映像' },
+          { type: 'youtube', youtubeId: 'eAaNz5TVPyQ', label: '紹介映像' },
+        ],
         playLink: {
           label: LABELS.play,
           url: 'https://vrchat.com/home/launch?worldId=wrld_5fddc89d-6c2f-4208-8873-038ea25f80c5&instanceType=friend+',
