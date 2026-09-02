@@ -98,7 +98,7 @@ export default function ProjectVideoEmbed({ video, title, fallbackUrl }: Project
           />
         </div>
       ) : video.type === 'steam' ? (
-        <SteamHlsVideo hlsUrl={video.hlsUrl} title={embedTitle} fallbackUrl={fallbackUrl} />
+        <SteamHlsVideo hlsUrl={video.hlsUrl} title={embedTitle} {...(fallbackUrl ? { fallbackUrl } : {})} />
       ) : (
         <video
           className="aspect-video w-full rounded-lg bg-black"

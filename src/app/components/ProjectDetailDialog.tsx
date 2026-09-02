@@ -136,7 +136,7 @@ export default function ProjectDetailDialog({
                     key={index}
                     video={video}
                     title={`${project.title} のプレイ映像`}
-                    fallbackUrl={project.steamUrl}
+                    {...(project.steamUrl ? { fallbackUrl: project.steamUrl } : {})}
                   />
                 ))}
               </div>
