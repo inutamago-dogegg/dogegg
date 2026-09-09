@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import type { ReactNode } from 'react';
-import { ExternalLink, Github, X } from 'lucide-react';
+import { ArrowUpRight, ExternalLink, FileText, Github, X } from 'lucide-react';
 import { Button } from '@/app/components/ui/button';
 import { Badge } from '@/app/components/ui/badge';
 import {
@@ -13,6 +13,7 @@ import {
 import MarkdownContent from '@/app/components/MarkdownContent';
 import ProjectVideoEmbed from '@/app/components/ProjectVideoEmbed';
 import { LABELS, type ProjectItem } from '@/data/content';
+import { RELATED_LINK_METADATA } from '@/data/relatedLinkMetadata';
 import MissileShiftDetail from '@/data/projects/missile-shift.md?raw';
 import FlashelixDetail from '@/data/projects/flashelix.md?raw';
 import type { PaletteConfig } from '@/lib/theme';
@@ -24,6 +25,14 @@ type ProjectDetailDialogProps = {
   config: PaletteConfig;
   isDark: boolean;
 };
+
+function getLinkHost(url: string) {
+  try {
+    return new URL(url).hostname.replace(/^www\./, '');
+  } catch {
+    return url;
+  }
+}
 
 export default function ProjectDetailDialog({
   project,
@@ -53,7 +62,6 @@ export default function ProjectDetailDialog({
 
   const isDevelopmentArticleUrl = (url: string) => url.includes('trap.jp/post/');
   const relatedLinks = project.relatedLinks ?? [];
-  const developmentArticleLinks = relatedLinks.filter((link) => isDevelopmentArticleUrl(link.url));
   const primaryPlayLink =
     project.playLink && !isDevelopmentArticleUrl(project.playLink.url) ? project.playLink : undefined;
 
@@ -171,35 +179,53 @@ export default function ProjectDetailDialog({
             )}
 
             {relatedLinks.length > 0 && (
-              <div className="pt-2 space-y-2">
-                <h4 className={`text-sm font-semibold ${config.textMuted}`}>関連リンク / 開発記事</h4>
-                <p className={`text-sm ${config.textSecondary}`}>
-                  制作過程や実装の詳細、関連する記事はこちらからご覧いただけます。
-                </p>
+              <section className="pt-2 space-y-3">
+                <div>
+                  <h4 className={`text-sm font-semibold ${config.textMuted}`}>関連記事</h4>
+                  <p className={`mt-1 text-sm ${config.textSecondary}`}>関連記事は以下です。</p>
+                </div>
                 <div className="space-y-2">
                   {relatedLinks.map((link) => {
-                    const isDevelopmentArticle = isDevelopmentArticleUrl(link.url);
-                    const articleIndex = developmentArticleLinks.indexOf(link);
-                    const label = isDevelopmentArticle
-                      ? developmentArticleLinks.length > 1
-                        ? `開発記事を見る ${articleIndex + 1}`
-                        : '開発記事を見る'
-                      : link.label;
+                    const metadata = RELATED_LINK_METADATA[link.url];
+                    const genericLabel = link.label === LABELS.related;
+                    const title = metadata?.title ?? (genericLabel ? getLinkHost(link.url) : link.label);
+                    const siteName = metadata?.siteName ?? getLinkHost(link.url);
 
                     return (
-                      <Button
+                      <a
                         key={link.url}
-                        variant="outline"
-                        className={`w-full ${config.buttonOutline}`}
-                        onClick={() => window.open(link.url, '_blank')}
+                        href={link.url}
+                        target="_blank"
+                        rel="noreferrer"
+                        className={`group flex w-full items-center gap-3 rounded-xl border p-3 transition-all hover:-translate-y-0.5 hover:shadow-sm ${config.surfaceBg} ${config.cardBorder}`}
                       >
-                        <ExternalLink className="w-4 h-4 mr-2" />
-                        {label}
-                      </Button>
+                        <div
+                          className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-lg border ${config.chipBg} ${config.surfaceBorder}`}
+                        >
+                          <FileText className={`h-5 w-5 ${config.textMuted}`} />
+                        </div>
+                        <div className="min-w-0 flex-1">
+                          <div className={`text-sm font-semibold leading-snug ${config.textPrimary}`}>
+                            {title}
+                          </div>
+                          <div className={`mt-1 flex flex-wrap items-center gap-x-2 text-xs ${config.textMuted}`}>
+                            <span>{siteName}</span>
+                            {metadata?.date && (
+                              <>
+                                <span aria-hidden="true">·</span>
+                                <span>{metadata.date}</span>
+                              </>
+                            )}
+                          </div>
+                        </div>
+                        <ArrowUpRight
+                          className={`h-4 w-4 shrink-0 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5 ${config.textMuted}`}
+                        />
+                      </a>
                     );
                   })}
                 </div>
-              </div>
+              </section>
             )}
 
             <div>
