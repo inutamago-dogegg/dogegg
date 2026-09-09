@@ -13,7 +13,6 @@ const loadCareerSection = () => import('@/app/components/sections/CareerSection'
 const loadFeaturedSection = () => import('@/app/components/sections/FeaturedSection');
 const loadHobbySection = () => import('@/app/components/sections/HobbySection');
 const loadHomeSection = () => import('@/app/components/sections/HomeSection');
-const loadNotFoundSection = () => import('@/app/components/sections/NotFoundSection');
 const loadRecentArticlesSection = () => import('@/app/components/sections/RecentArticlesSection');
 const loadSkillsSection = () => import('@/app/components/sections/SkillsSection');
 const loadWorksSection = () => import('@/app/components/sections/WorksSection');
@@ -24,7 +23,6 @@ const CareerSection = lazy(loadCareerSection);
 const FeaturedSection = lazy(loadFeaturedSection);
 const HobbySection = lazy(loadHobbySection);
 const HomeSection = lazy(loadHomeSection);
-const NotFoundSection = lazy(loadNotFoundSection);
 const RecentArticlesSection = lazy(loadRecentArticlesSection);
 const SkillsSection = lazy(loadSkillsSection);
 const WorksSection = lazy(loadWorksSection);
@@ -33,7 +31,7 @@ export type AppProps = {
   ogpData: OgpMap;
   articlesOgpData?: OgpMap;
   headerImages?: HeaderImageMap;
-  mode?: 'home' | 'about' | 'works' | 'articles' | 'notFound';
+  mode?: 'home' | 'about' | 'works' | 'articles';
 }
 
 export default function App({ ogpData, articlesOgpData = {}, headerImages = {}, mode = 'home' }: AppProps) {
@@ -41,7 +39,6 @@ export default function App({ ogpData, articlesOgpData = {}, headerImages = {}, 
   const isAboutPage = mode === 'about';
   const isWorksPage = mode === 'works';
   const isArticlesPage = mode === 'articles';
-  const isNotFoundPage = mode === 'notFound';
   const [theme, setTheme] = useState<ThemeKey>(getInitialThemeKey());
   const [isDark, setIsDark] = useState(false);
   const config = themeConfig[theme].palettes[isDark ? 'dark' : 'light'];
@@ -123,9 +120,7 @@ export default function App({ ogpData, articlesOgpData = {}, headerImages = {}, 
               ? ['articles', 'footer']
               : isHomePage
                   ? ['home', 'footer']
-                  : isNotFoundPage
-                      ? ['notFound', 'footer']
-                      : ['footer'];
+                  : ['footer'];
     let cancelled = false;
     let index = 0;
     const timers: number[] = [];
@@ -141,7 +136,6 @@ export default function App({ ogpData, articlesOgpData = {}, headerImages = {}, 
       works: loadWorksSection,
       articles: loadArticlesSection,
       home: loadHomeSection,
-      notFound: loadNotFoundSection,
     };
 
     const preload = (key: string | undefined) => {
@@ -180,7 +174,7 @@ export default function App({ ogpData, articlesOgpData = {}, headerImages = {}, 
       cancelled = true;
       timers.forEach((id) => window.clearTimeout(id));
     };
-  }, [isAboutPage, isArticlesPage, isHomePage, isNotFoundPage, isWorksPage]);
+  }, [isAboutPage, isArticlesPage, isHomePage, isWorksPage]);
 
   const projects = PROJECTS;
   const allProjects = PROJECTS.flatMap((group) => group.items);
@@ -195,8 +189,6 @@ export default function App({ ogpData, articlesOgpData = {}, headerImages = {}, 
   const aboutUrl = `${baseUrl}about/`;
   const worksPageUrl = `${baseUrl}works/`;
   const articlesPageUrl = `${baseUrl}articles/`;
-  const diceBase = `${baseUrl}dice/`;
-  const showDebugPinzoro = false;
 
   return (
     <div className="min-h-screen relative overflow-x-hidden">
@@ -309,12 +301,6 @@ export default function App({ ogpData, articlesOgpData = {}, headerImages = {}, 
           {isAboutPage && visibleSections.hobby && (
             <Suspense fallback={sectionFallback}>
               <HobbySection config={config} ogpData={ogpData} isDark={isDark} />
-            </Suspense>
-          )}
-
-          {isNotFoundPage && visibleSections.notFound && (
-            <Suspense fallback={sectionFallback}>
-              <NotFoundSection diceBase={diceBase} showDebugPinzoro={showDebugPinzoro} />
             </Suspense>
           )}
 

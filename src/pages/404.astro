@@ -1,5 +1,5 @@
 ---
-import App from '../app/App';
+import VoxelShooterGame from '../app/components/notfound/VoxelShooterGame';
 import '@/styles/index.css';
 ---
 
@@ -7,9 +7,20 @@ import '@/styles/index.css';
 	<head>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width" />
+		<meta name="robots" content="noindex" />
 		<title>404 | Not Found</title>
+		<style>
+			html,
+			body {
+				margin: 0;
+				padding: 0;
+				overflow: hidden;
+				overscroll-behavior: none;
+				height: 100%;
+			}
+		</style>
 	</head>
 	<body>
-		<App client:load ogpData={{}} mode="notFound" />
+		<VoxelShooterGame client:load />
 	</body>
 </html>
