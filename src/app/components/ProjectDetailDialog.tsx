@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import type { ReactNode } from 'react';
-import { ArrowUpRight, ExternalLink, FileText, Github, X } from 'lucide-react';
+import { ArrowUpRight, ExternalLink, FileText, Github, Link2, X } from 'lucide-react';
 import { Button } from '@/app/components/ui/button';
 import { Badge } from '@/app/components/ui/badge';
 import {
@@ -12,7 +12,7 @@ import {
 } from '@/app/components/ui/dialog';
 import MarkdownContent from '@/app/components/MarkdownContent';
 import ProjectVideoEmbed from '@/app/components/ProjectVideoEmbed';
-import { LABELS, type ProjectItem } from '@/data/content';
+import { LABELS, type ProjectItem, type ProjectLink } from '@/data/content';
 import { RELATED_LINK_METADATA } from '@/data/relatedLinkMetadata';
 import MissileShiftDetail from '@/data/projects/missile-shift.md?raw';
 import FlashelixDetail from '@/data/projects/flashelix.md?raw';
@@ -32,6 +32,10 @@ function getLinkHost(url: string) {
   } catch {
     return url;
   }
+}
+
+function isArticleUrl(url: string) {
+  return url.includes('trap.jp/post/');
 }
 
 export default function ProjectDetailDialog({
@@ -60,10 +64,11 @@ export default function ProjectDetailDialog({
         : '';
   const detailMarkdown = project.detailMarkdown?.trim() || fallbackDetailMarkdown.trim();
 
-  const isDevelopmentArticleUrl = (url: string) => url.includes('trap.jp/post/');
   const relatedLinks = project.relatedLinks ?? [];
+  const articleLinks = relatedLinks.filter((link) => isArticleUrl(link.url));
+  const otherRelatedLinks = relatedLinks.filter((link) => !isArticleUrl(link.url));
   const primaryPlayLink =
-    project.playLink && !isDevelopmentArticleUrl(project.playLink.url) ? project.playLink : undefined;
+    project.playLink && !isArticleUrl(project.playLink.url) ? project.playLink : undefined;
 
   const linkButtons: Array<{ label: string; url: string; icon?: ReactNode }> = [];
   if (primaryPlayLink) {
@@ -94,6 +99,45 @@ export default function ProjectDetailDialog({
       icon: <ExternalLink className="w-4 h-4 mr-2" />,
     });
   }
+
+  const renderRelatedCard = (link: ProjectLink, article: boolean) => {
+    const metadata = RELATED_LINK_METADATA[link.url];
+    const genericLabel = link.label === LABELS.related;
+    const title = metadata?.title ?? (genericLabel ? getLinkHost(link.url) : link.label);
+    const siteName = metadata?.siteName ?? getLinkHost(link.url);
+    const Icon = article ? FileText : Link2;
+
+    return (
+      <a
+        key={link.url}
+        href={link.url}
+        target="_blank"
+        rel="noreferrer"
+        className={`group flex w-full items-center gap-3 rounded-xl border p-3 transition-all hover:-translate-y-0.5 hover:shadow-sm ${config.surfaceBg} ${config.cardBorder}`}
+      >
+        <div
+          className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-lg border ${config.chipBg} ${config.surfaceBorder}`}
+        >
+          <Icon className={`h-5 w-5 ${config.textMuted}`} />
+        </div>
+        <div className="min-w-0 flex-1">
+          <div className={`text-sm font-semibold leading-snug ${config.textPrimary}`}>{title}</div>
+          <div className={`mt-1 flex flex-wrap items-center gap-x-2 text-xs ${config.textMuted}`}>
+            <span>{siteName}</span>
+            {metadata?.date && (
+              <>
+                <span aria-hidden="true">·</span>
+                <span>{metadata.date}</span>
+              </>
+            )}
+          </div>
+        </div>
+        <ArrowUpRight
+          className={`h-4 w-4 shrink-0 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5 ${config.textMuted}`}
+        />
+      </a>
+    );
+  };
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -178,52 +222,20 @@ export default function ProjectDetailDialog({
               </div>
             )}
 
-            {relatedLinks.length > 0 && (
+            {articleLinks.length > 0 && (
               <section className="pt-2 space-y-3">
-                <div>
-                  <h4 className={`text-sm font-semibold ${config.textMuted}`}>関連記事</h4>
-                  <p className={`mt-1 text-sm ${config.textSecondary}`}>関連記事は以下です。</p>
-                </div>
+                <h4 className={`text-sm font-semibold ${config.textMuted}`}>関連記事</h4>
                 <div className="space-y-2">
-                  {relatedLinks.map((link) => {
-                    const metadata = RELATED_LINK_METADATA[link.url];
-                    const genericLabel = link.label === LABELS.related;
-                    const title = metadata?.title ?? (genericLabel ? getLinkHost(link.url) : link.label);
-                    const siteName = metadata?.siteName ?? getLinkHost(link.url);
+                  {articleLinks.map((link) => renderRelatedCard(link, true))}
+                </div>
+              </section>
+            )}
 
-                    return (
-                      <a
-                        key={link.url}
-                        href={link.url}
-                        target="_blank"
-                        rel="noreferrer"
-                        className={`group flex w-full items-center gap-3 rounded-xl border p-3 transition-all hover:-translate-y-0.5 hover:shadow-sm ${config.surfaceBg} ${config.cardBorder}`}
-                      >
-                        <div
-                          className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-lg border ${config.chipBg} ${config.surfaceBorder}`}
-                        >
-                          <FileText className={`h-5 w-5 ${config.textMuted}`} />
-                        </div>
-                        <div className="min-w-0 flex-1">
-                          <div className={`text-sm font-semibold leading-snug ${config.textPrimary}`}>
-                            {title}
-                          </div>
-                          <div className={`mt-1 flex flex-wrap items-center gap-x-2 text-xs ${config.textMuted}`}>
-                            <span>{siteName}</span>
-                            {metadata?.date && (
-                              <>
-                                <span aria-hidden="true">·</span>
-                                <span>{metadata.date}</span>
-                              </>
-                            )}
-                          </div>
-                        </div>
-                        <ArrowUpRight
-                          className={`h-4 w-4 shrink-0 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5 ${config.textMuted}`}
-                        />
-                      </a>
-                    );
-                  })}
+            {otherRelatedLinks.length > 0 && (
+              <section className="pt-2 space-y-3">
+                <h4 className={`text-sm font-semibold ${config.textMuted}`}>関連リンク</h4>
+                <div className="space-y-2">
+                  {otherRelatedLinks.map((link) => renderRelatedCard(link, false))}
                 </div>
               </section>
             )}
