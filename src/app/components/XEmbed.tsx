@@ -6,11 +6,6 @@ type TwitterWidgets = {
     element: HTMLElement,
     options?: Record<string, string | boolean | number>,
   ) => Promise<HTMLElement | undefined>;
-  createTimeline?: (
-    dataSource: { sourceType: 'profile'; screenName: string },
-    element: HTMLElement,
-    options?: Record<string, string | boolean | number>,
-  ) => Promise<HTMLElement | undefined>;
 };
 
 type TwitterApi = {
@@ -36,15 +31,6 @@ function normalizeForTwitterWidgets(url: string) {
   return url.replace(/^https:\/\/(?:www\.)?x\.com\//, 'https://twitter.com/');
 }
 
-function getHandle(url: string) {
-  try {
-    const parsed = new URL(url);
-    return parsed.pathname.split('/').filter(Boolean)[0] ?? '';
-  } catch {
-    return '';
-  }
-}
-
 function getTweetId(url: string) {
   const match = url.match(/\/status\/(\d+)/);
   return match?.[1] ?? null;
@@ -56,7 +42,7 @@ function waitForWidgets(timeoutMs = 10000): Promise<TwitterApi> {
 
     const check = () => {
       const api = window.twttr;
-      if (api?.widgets?.createTweet && api.widgets.createTimeline) {
+      if (api?.widgets?.createTweet) {
         resolve(api);
         return;
       }
@@ -74,7 +60,7 @@ function waitForWidgets(timeoutMs = 10000): Promise<TwitterApi> {
 }
 
 function loadWidgets(): Promise<TwitterApi> {
-  if (window.twttr?.widgets?.createTweet && window.twttr.widgets.createTimeline) {
+  if (window.twttr?.widgets?.createTweet) {
     return Promise.resolve(window.twttr);
   }
 
@@ -87,7 +73,7 @@ function loadWidgets(): Promise<TwitterApi> {
 
     const existing = document.getElementById(WIDGET_SCRIPT_ID) as HTMLScriptElement | null;
     if (existing) {
-      if (window.twttr?.widgets?.createTweet && window.twttr.widgets.createTimeline) {
+      if (window.twttr?.widgets?.createTweet) {
         resolve(window.twttr);
       } else {
         existing.addEventListener('load', finish, { once: true });
@@ -118,11 +104,13 @@ function loadWidgets(): Promise<TwitterApi> {
   return widgetsPromise;
 }
 
+// Renders a single tweet. Account/profile links are intentionally not handled here —
+// the profile timeline widget pulls a full scrollable feed and is slow to load, so
+// those render via the lightweight XProfileCard instead.
 export default function XEmbed({ url }: XEmbedProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const normalizedUrl = useMemo(() => normalizeForTwitterWidgets(url), [url]);
   const tweetId = useMemo(() => getTweetId(normalizedUrl), [normalizedUrl]);
-  const handle = useMemo(() => getHandle(normalizedUrl), [normalizedUrl]);
   const [failed, setFailed] = useState(false);
 
   useEffect(() => {
@@ -131,7 +119,10 @@ export default function XEmbed({ url }: XEmbedProps) {
 
     const render = async () => {
       const container = containerRef.current;
-      if (!container) return;
+      if (!container || !tweetId) {
+        setFailed(true);
+        return;
+      }
 
       container.replaceChildren();
 
@@ -139,25 +130,12 @@ export default function XEmbed({ url }: XEmbedProps) {
         const api = await loadWidgets();
         if (cancelled || !containerRef.current) return;
 
-        let result: HTMLElement | undefined;
-        if (tweetId) {
-          result = await api.widgets?.createTweet?.(tweetId, containerRef.current, {
-            dnt: true,
-            align: 'center',
-            conversation: 'none',
-            width: 550,
-          });
-        } else if (handle) {
-          result = await api.widgets?.createTimeline?.(
-            { sourceType: 'profile', screenName: handle },
-            containerRef.current,
-            {
-              dnt: true,
-              height: 420,
-              chrome: 'noheader nofooter transparent',
-            },
-          );
-        }
+        const result = await api.widgets?.createTweet?.(tweetId, containerRef.current, {
+          dnt: true,
+          align: 'center',
+          conversation: 'none',
+          width: 550,
+        });
 
         if (!cancelled && !result) setFailed(true);
       } catch (error) {
@@ -171,7 +149,7 @@ export default function XEmbed({ url }: XEmbedProps) {
     return () => {
       cancelled = true;
     };
-  }, [handle, tweetId]);
+  }, [tweetId]);
 
   return (
     <div className="overflow-hidden rounded-xl">

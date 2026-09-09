@@ -5,13 +5,14 @@ import ProjectCard from '@/app/components/ProjectCard';
 import ProjectDetailDialog from '@/app/components/ProjectDetailDialog';
 import { PROFILE, type ProjectItem, type ProjectYearGroup } from '@/data/content';
 import { normalizeProjectPresentation } from '@/data/projectPresentation';
-import type { OgpMap } from '@/app/types';
+import type { HeaderImageMap, OgpMap } from '@/app/types';
 import type { PaletteConfig } from '@/lib/theme';
 
 type WorksSectionProps = {
   config: PaletteConfig;
   isDark: boolean;
   ogpData: OgpMap;
+  headerImages: HeaderImageMap;
   projects: ProjectYearGroup[];
   openYears: Record<string, boolean>;
   setOpenYears: Dispatch<SetStateAction<Record<string, boolean>>>;
@@ -21,6 +22,7 @@ export default function WorksSection({
   config,
   isDark,
   ogpData,
+  headerImages,
   projects,
   openYears,
   setOpenYears,
@@ -134,6 +136,7 @@ export default function WorksSection({
                     config={config}
                     isDark={isDark}
                     ogpData={ogpData}
+                    headerImages={headerImages}
                     onSelect={openProjectDetail}
                   />
                 ))}
@@ -148,6 +151,8 @@ export default function WorksSection({
           onOpenChange={(open) => !open && closeProjectDetail()}
           config={config}
           isDark={isDark}
+          ogpData={ogpData}
+          headerImages={headerImages}
         />
       </div>
     </section>

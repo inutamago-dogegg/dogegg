@@ -68,11 +68,11 @@ export type HobbyItem = {
   favorites?: HobbyLink[];
   recentsLabel?: string;
   recents?: HobbyLink[];
-};      
+};
 
 export type SkillItem = {
   name: string;
-  icon?: ImageMetadata; 
+  icon?: ImageMetadata;
   level: number;
   description: string;
 };
@@ -684,7 +684,7 @@ export const PROJECTS: ProjectYearGroup[] = [
         member: '7人',
         outline: '部内春ハッカソンでグラフィックを担当しました',
         genre: GENRE.game,
-        playLink: { label: 'MissileShift', url: 'https://unityroom.com/games/missileshift' },
+        playLink: { label: LABELS.play, url: 'https://unityroom.com/games/missileshift' },
         relatedLinks: [{ label: LABELS.related, url: 'https://trap.jp/post/2611/' }]
       },
       {
@@ -696,7 +696,7 @@ export const PROJECTS: ProjectYearGroup[] = [
         outline: 'GMTK GameJam 2026 で制作しました。謎解きパズルアクションゲームです。',
         genre: GENRE.game,
         videos: [{ type: 'youtube', youtubeId: 'UDhom6uo4Uk' }],
-        playLink: { label: 'Flashelix', url: 'https://inutamago-dogegg.itch.io/flashelix' },
+        playLink: { label: LABELS.play, url: 'https://inutamago-dogegg.itch.io/flashelix' },
         headerImage: FlashelixIcon,
         relatedLinks: [{ label: LABELS.x, url: 'https://x.com/dogegg314/status/2081938112364880060?s=20'}]
       }

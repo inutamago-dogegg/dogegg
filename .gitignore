@@ -1,5 +1,8 @@
 # build output
 dist/
+
+# build-time OGP image cache
+public/cache/
 # generated types
 .astro/
 

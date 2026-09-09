@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react';
 import type { OgpData } from '@/lib/ogp';
 import type { PaletteConfig } from '@/lib/theme';
 
@@ -6,6 +7,7 @@ type OgpCardProps = {
   label: string;
   data?: OgpData;
   emphasis?: boolean;
+  icon?: ReactNode;
   config: PaletteConfig;
   isDark: boolean;
 };
@@ -15,6 +17,7 @@ export default function OgpCard({
   label,
   data,
   emphasis = false,
+  icon,
   config,
   isDark,
 }: OgpCardProps) {
@@ -33,7 +36,10 @@ export default function OgpCard({
         className={`${baseClass} ${highlightClass}`}
         title={url}
       >
-        <span className={`font-medium ${labelClass}`}>{label}</span>
+        <span className={`inline-flex items-center gap-1.5 font-medium ${labelClass}`}>
+          {icon}
+          {label}
+        </span>
         <span className={`block text-xs ${config.textMuted} break-all`}>{url}</span>
       </a>
     );
@@ -60,7 +66,10 @@ export default function OgpCard({
           <div className={`h-16 w-16 rounded-lg ${mediaBg} border ${config.surfaceBorder}`} />
         )}
         <div className="min-w-0">
-          <p className={`text-xs ${labelClass}`}>{label}</p>
+          <p className={`inline-flex items-center gap-1.5 text-xs ${labelClass}`}>
+            {icon}
+            {label}
+          </p>
           <p className={`text-sm font-semibold ${config.textPrimary} ${hoverTitle} line-clamp-2`}>
             {data.title ?? data.url}
           </p>

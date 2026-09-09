@@ -4,7 +4,7 @@ import SectionNav from '@/app/components/SectionNav';
 import SiteFooter from '@/app/components/SiteFooter';
 import SiteHeader from '@/app/components/SiteHeader';
 import { ABOUT_NAV_SECTIONS, PROJECTS, PROFILE, type ProjectItem } from '@/data/content';
-import type { OgpMap } from '@/app/types';
+import type { HeaderImageMap, OgpMap } from '@/app/types';
 import { themeConfig, type ThemeKey, getInitialThemeKey } from '@/lib/theme';
 
 const loadAboutIntroSection = () => import('@/app/components/sections/AboutIntroSection');
@@ -32,10 +32,11 @@ const WorksSection = lazy(loadWorksSection);
 export type AppProps = {
   ogpData: OgpMap;
   articlesOgpData?: OgpMap;
+  headerImages?: HeaderImageMap;
   mode?: 'home' | 'about' | 'works' | 'articles' | 'notFound';
 }
 
-export default function App({ ogpData, articlesOgpData = {}, mode = 'home' }: AppProps) {
+export default function App({ ogpData, articlesOgpData = {}, headerImages = {}, mode = 'home' }: AppProps) {
   const isHomePage = mode === 'home';
   const isAboutPage = mode === 'about';
   const isWorksPage = mode === 'works';
@@ -291,6 +292,7 @@ export default function App({ ogpData, articlesOgpData = {}, mode = 'home' }: Ap
                 config={config}
                 isDark={isDark}
                 ogpData={ogpData}
+                headerImages={headerImages}
                 projects={projects}
                 openYears={openYears}
                 setOpenYears={setOpenYears}

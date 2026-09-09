@@ -11,12 +11,16 @@ import {
   DialogTitle,
 } from '@/app/components/ui/dialog';
 import MarkdownContent from '@/app/components/MarkdownContent';
+import OgpCard from '@/app/components/OgpCard';
 import ProjectVideoEmbed from '@/app/components/ProjectVideoEmbed';
 import XEmbed from '@/app/components/XEmbed';
+import XProfileCard from '@/app/components/XProfileCard';
 import { LABELS, type ProjectItem, type ProjectLink } from '@/data/content';
 import { RELATED_LINK_METADATA } from '@/data/relatedLinkMetadata';
 import MissileShiftDetail from '@/data/projects/missile-shift.md?raw';
 import FlashelixDetail from '@/data/projects/flashelix.md?raw';
+import steamIcon from '@/images/Steam_icon_logo.svg';
+import type { HeaderImageMap, OgpMap } from '@/app/types';
 import type { PaletteConfig } from '@/lib/theme';
 
 type ProjectDetailDialogProps = {
@@ -25,6 +29,8 @@ type ProjectDetailDialogProps = {
   onOpenChange: (open: boolean) => void;
   config: PaletteConfig;
   isDark: boolean;
+  ogpData?: OgpMap;
+  headerImages?: HeaderImageMap;
 };
 
 function getLinkHost(url: string) {
@@ -48,8 +54,12 @@ function isXUrl(url: string) {
   }
 }
 
-function getPagePreviewUrl(url: string) {
-  return `https://image.thum.io/get/width/640/crop/360/noanimate/${url}`;
+function isXTweetUrl(url: string) {
+  try {
+    return isXUrl(url) && /\/status\/\d+/.test(new URL(url).pathname);
+  } catch {
+    return false;
+  }
 }
 
 export default function ProjectDetailDialog({
@@ -58,6 +68,8 @@ export default function ProjectDetailDialog({
   onOpenChange,
   config,
   isDark,
+  ogpData = {},
+  headerImages = {},
 }: ProjectDetailDialogProps) {
   useEffect(() => {
     if (!open) return;
@@ -83,41 +95,48 @@ export default function ProjectDetailDialog({
   const nonXRelatedLinks = relatedLinks.filter((link) => !isXUrl(link.url));
   const articleLinks = nonXRelatedLinks.filter((link) => isArticleUrl(link.url));
   const otherRelatedLinks = nonXRelatedLinks.filter((link) => !isArticleUrl(link.url));
-  const xEmbedUrls = Array.from(
+  const xUrls = Array.from(
     new Set([project.xUrl, ...xRelatedLinks.map((link) => link.url)].filter((url): url is string => Boolean(url))),
   );
+  const xTweetUrls = xUrls.filter(isXTweetUrl);
+  const xProfileUrls = xUrls.filter((url) => !isXTweetUrl(url));
   const primaryPlayLink =
     project.playLink && !isArticleUrl(project.playLink.url) ? project.playLink : undefined;
 
-  const linkButtons: Array<{ label: string; url: string; icon?: ReactNode }> = [];
+  const quickLinks: Array<{ label: string; url: string; icon: ReactNode; emphasis: boolean }> = [];
   if (primaryPlayLink) {
-    linkButtons.push({
+    quickLinks.push({
       label: primaryPlayLink.label,
       url: primaryPlayLink.url,
-      icon: <ExternalLink className="w-4 h-4 mr-2" />,
+      icon: <ExternalLink className="h-4 w-4" />,
+      emphasis: true,
     });
   }
   if (project.githubUrl) {
-    linkButtons.push({
+    quickLinks.push({
       label: LABELS.github,
       url: project.githubUrl,
-      icon: <Github className="w-4 h-4 mr-2" />,
+      icon: <Github className="h-4 w-4" />,
+      emphasis: false,
     });
   }
   if (project.steamUrl) {
-    linkButtons.push({
+    quickLinks.push({
       label: 'Steam',
       url: project.steamUrl,
-      icon: <ExternalLink className="w-4 h-4 mr-2" />,
+      icon: <img src={steamIcon.src} alt="" className="h-4 w-4" />,
+      emphasis: false,
     });
   }
+
+  const mediaFallbackBg = isDark ? 'bg-slate-800' : 'bg-gray-100';
 
   const renderRelatedCard = (link: ProjectLink) => {
     const metadata = RELATED_LINK_METADATA[link.url];
     const genericLabel = link.label === LABELS.related;
     const title = metadata?.title ?? (genericLabel ? getLinkHost(link.url) : link.label);
     const siteName = metadata?.siteName ?? getLinkHost(link.url);
-    const previewImage = metadata?.imageUrl ?? project.headerImage?.src ?? getPagePreviewUrl(link.url);
+    const previewImage = ogpData[link.url]?.image || project.headerImage?.src || headerImages[project.title];
 
     return (
       <a
@@ -128,12 +147,16 @@ export default function ProjectDetailDialog({
         className={`group flex w-full overflow-hidden rounded-xl border transition-all hover:-translate-y-0.5 hover:shadow-sm ${config.surfaceBg} ${config.cardBorder}`}
       >
         <div className={`w-32 shrink-0 border-r ${config.surfaceBorder} sm:w-40`}>
-          <img
-            src={previewImage}
-            alt=""
-            loading="lazy"
-            className="h-full min-h-24 w-full object-cover transition-transform duration-200 group-hover:scale-[1.02]"
-          />
+          {previewImage ? (
+            <img
+              src={previewImage}
+              alt=""
+              loading="lazy"
+              className="h-full min-h-24 w-full object-cover transition-transform duration-200 group-hover:scale-[1.02]"
+            />
+          ) : (
+            <div className={`h-full min-h-24 w-full ${mediaFallbackBg}`} />
+          )}
         </div>
         <div className="flex min-w-0 flex-1 items-center gap-3 p-3">
           <div className="min-w-0 flex-1">
@@ -159,7 +182,7 @@ export default function ProjectDetailDialog({
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent
-        className={`${isDark ? 'bg-gray-900 border-gray-700' : 'bg-white'} max-w-2xl overflow-hidden`}
+        className={`${isDark ? 'bg-gray-900 border-gray-700' : 'bg-white'} max-w-2xl md:max-w-3xl lg:max-w-4xl overflow-hidden`}
       >
         <div className="max-h-[85vh] overflow-y-auto">
           <div
@@ -239,12 +262,33 @@ export default function ProjectDetailDialog({
               </div>
             )}
 
-            {xEmbedUrls.length > 0 && (
+            {(xTweetUrls.length > 0 || xProfileUrls.length > 0 || quickLinks.length > 0) && (
               <section className="pt-2 space-y-3">
-                <h4 className={`text-sm font-semibold ${config.textMuted}`}>X</h4>
+                <h4 className={`text-sm font-semibold ${config.textMuted}`}>リンク</h4>
                 <div className="space-y-4">
-                  {xEmbedUrls.map((url) => (
+                  {xTweetUrls.map((url) => (
                     <XEmbed key={url} url={url} />
+                  ))}
+                  {xProfileUrls.map((url) => (
+                    <XProfileCard
+                      key={url}
+                      url={url}
+                      config={config}
+                      isDark={isDark}
+                      {...(ogpData[url] ? { data: ogpData[url] } : {})}
+                    />
+                  ))}
+                  {quickLinks.map((link) => (
+                    <OgpCard
+                      key={link.url}
+                      url={link.url}
+                      label={link.label}
+                      icon={link.icon}
+                      emphasis={link.emphasis}
+                      config={config}
+                      isDark={isDark}
+                      {...(ogpData[link.url] ? { data: ogpData[link.url] } : {})}
+                    />
                   ))}
                 </div>
               </section>
@@ -274,21 +318,6 @@ export default function ProjectDetailDialog({
                 ))}
               </div>
             </div>
-
-            {linkButtons.length > 0 && (
-              <div className="pt-4 space-y-2">
-                {linkButtons.map((link) => (
-                  <Button
-                    key={link.url}
-                    className={`${config.buttonBg} text-white w-full`}
-                    onClick={() => window.open(link.url, '_blank')}
-                  >
-                    {link.icon}
-                    {link.label}
-                  </Button>
-                ))}
-              </div>
-            )}
           </div>
         </div>
       </DialogContent>

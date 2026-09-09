@@ -3,6 +3,19 @@ import App from '../app/App';
 import '@/styles/index.css';
 import { PROJECTS } from '@/data/content';
 import { fetchOgp, type OgpData } from '@/lib/ogp';
+import { cacheRemoteImage } from '@/lib/imageCache';
+import { RELATED_LINK_METADATA } from '@/data/relatedLinkMetadata';
+
+const isXUrl = (url: string) => {
+  try {
+    const host = new URL(url).hostname.replace(/^www\./, '');
+    return host === 'x.com' || host === 'twitter.com';
+  } catch {
+    return false;
+  }
+};
+
+const isXProfileUrl = (url: string) => isXUrl(url) && !/\/status\/\d+/.test(new URL(url).pathname);
 
 const urlSet = new Set<string>();
 
@@ -11,40 +24,75 @@ PROJECTS.forEach((group: (typeof PROJECTS)[number]) => {
     if (item.playLink) {
       urlSet.add(item.playLink.url);
     }
+    if (item.githubUrl) {
+      urlSet.add(item.githubUrl);
+    }
+    if (item.steamUrl) {
+      urlSet.add(item.steamUrl);
+    }
+    if (item.xUrl && isXProfileUrl(item.xUrl)) {
+      urlSet.add(item.xUrl);
+    }
     item.relatedLinks?.forEach(
-      (link: NonNullable<(typeof PROJECTS)[number]['items'][number]['relatedLinks']>[number]) =>
-        urlSet.add(link.url),
+      (link: NonNullable<(typeof PROJECTS)[number]['items'][number]['relatedLinks']>[number]) => {
+        if (isXUrl(link.url) && !isXProfileUrl(link.url)) return;
+        urlSet.add(link.url);
+      },
     );
   });
 });
 
+const getPageScreenshotUrl = (url: string) =>
+  `https://image.thum.io/get/width/640/crop/360/noanimate/${url}`;
+
 const ogpEntries = await Promise.all(
   Array.from(urlSet).map(async (url) => {
     const data = await fetchOgp(url);
-    if (data) {
-      return [url, data] as const;
+    const base: OgpData = data ?? (() => {
+      let host = url;
+      try {
+        host = new URL(url).hostname;
+      } catch {
+        host = url;
+      }
+      return { url, title: url, siteName: host, description: host };
+    })();
+
+    // A manually curated thumbnail (see relatedLinkMetadata.ts) takes priority over
+    // the scraped og:image, both are cached locally at build time so pages never
+    // hotlink third-party hosts (trap.jp's blog CDN rejects browser-origin requests).
+    const manualImage = RELATED_LINK_METADATA[url]?.imageUrl;
+    let image = base.image;
+    if (manualImage) {
+      const cachedManual = await cacheRemoteImage(manualImage);
+      if (cachedManual) image = cachedManual;
+    }
+    if (!image) {
+      image = await cacheRemoteImage(getPageScreenshotUrl(url));
     }
 
-    let host = url;
-    try {
-      host = new URL(url).hostname;
-    } catch {
-      host = url;
-    }
-
-    return [
-      url,
-      {
-        url,
-        title: url,
-        siteName: host,
-        description: host,
-      },
-    ] as const;
+    return [url, { ...base, image: image ?? base.image }] as const;
   }),
 );
 
 const ogpData = Object.fromEntries(ogpEntries) as Record<string, OgpData>;
+
+const headerImages: Record<string, string> = {};
+PROJECTS.forEach((group: (typeof PROJECTS)[number]) => {
+  group.items.forEach((item: (typeof PROJECTS)[number]['items'][number]) => {
+    if (item.headerImage) return;
+    const candidateUrls = [
+      ...(item.relatedLinks?.map((link) => link.url) ?? []),
+      ...(item.playLink ? [item.playLink.url] : []),
+      ...(item.githubUrl ? [item.githubUrl] : []),
+      ...(item.steamUrl ? [item.steamUrl] : []),
+    ];
+    const image = candidateUrls.map((url) => ogpData[url]?.image).find((value) => Boolean(value));
+    if (image) {
+      headerImages[item.title] = image;
+    }
+  });
+});
 
 const baseUrl = import.meta.env.BASE_URL.endsWith('/')
   ? import.meta.env.BASE_URL
@@ -70,6 +118,6 @@ const worksUrl = new URL(`${baseUrl}works/`, siteUrl).toString();
 		<title>Works | どぐえぐ</title>
 	</head>
 	<body>
-		<App client:load ogpData={ogpData} mode="works" />
+		<App client:load ogpData={ogpData} headerImages={headerImages} mode="works" />
 	</body>
 </html>

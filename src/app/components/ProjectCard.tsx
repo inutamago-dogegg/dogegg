@@ -8,7 +8,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/app
 import OgpCard from '@/app/components/OgpCard';
 import { LABELS, type ProjectItem } from '@/data/content';
 import steamIcon from '@/images/Steam_icon_logo.svg';
-import type { OgpMap } from '@/app/types';
+import type { HeaderImageMap, OgpMap } from '@/app/types';
 import type { PaletteConfig } from '@/lib/theme';
 
 type ProjectCardProps = {
@@ -17,6 +17,7 @@ type ProjectCardProps = {
   config: PaletteConfig;
   isDark: boolean;
   ogpData: OgpMap;
+  headerImages?: HeaderImageMap;
   onSelect?: (project: ProjectItem) => void;
 };
 
@@ -26,11 +27,13 @@ export default function ProjectCard({
   config,
   isDark,
   ogpData,
+  headerImages = {},
   onSelect,
 }: ProjectCardProps) {
   const xUrl = project.xUrl;
   const githubUrl = project.githubUrl;
   const steamUrl = project.steamUrl;
+  const headerImageSrc = project.headerImage?.src ?? headerImages[project.title];
   const handleStop = (event: MouseEvent) => event.stopPropagation();
   const hasDetail = Boolean(project.detailMarkdown || project.outline || project.member);
   const detailSummaryData = (() => {
@@ -123,7 +126,7 @@ export default function ProjectCard({
           <CardDescription className={`text-sm ${config.textMuted}`}>{project.period}</CardDescription>
         </CardHeader>
         <CardContent className="min-w-0">
-          {project.headerImage && (
+          {headerImageSrc && (
             <div className="relative mb-4">
               <button
                 type="button"
@@ -135,13 +138,14 @@ export default function ProjectCard({
                 }}
               >
                 <img
-                  src={project.headerImage.src}
+                  src={headerImageSrc}
                   alt={`${project.title} のヘッダー画像`}
                   className={`h-44 w-full rounded-lg object-contain border ${config.surfaceBorder} ${config.surfaceBg}`}
                   loading="lazy"
                   decoding="async"
-                  width={project.headerImage.width}
-                  height={project.headerImage.height}
+                  {...(project.headerImage
+                    ? { width: project.headerImage.width, height: project.headerImage.height }
+                    : {})}
                 />
               </button>
               {(xUrl || githubUrl || steamUrl) && (
@@ -206,7 +210,7 @@ export default function ProjectCard({
               )}
             </div>
           )}
-          {!project.headerImage && (xUrl || githubUrl || steamUrl) && (
+          {!headerImageSrc && (xUrl || githubUrl || steamUrl) && (
             <div className="flex items-center gap-1 mb-4">
               {xUrl && (
                 <Button

@@ -1,3 +1,5 @@
+import { cacheRemoteImage } from '@/lib/imageCache';
+
 export type OgpData = {
   title?: string;
   description?: string;
@@ -119,11 +121,13 @@ export const fetchOgp = async (target: string): Promise<OgpData | null> => {
     const siteName = decodeHtmlEntities(
       getMeta(html, 'og:site_name') ?? new URL(target).hostname,
     );
+    const resolvedImage = resolveUrl(decodeHtmlEntities(image), target);
+    const cachedImage = await cacheRemoteImage(resolvedImage);
 
     return {
       title: title ?? '',
       description: description ?? '',
-      image: resolveUrl(decodeHtmlEntities(image), target) ?? '',
+      image: cachedImage ?? resolvedImage ?? '',
       siteName: siteName ?? '',
       url: target,
     };
