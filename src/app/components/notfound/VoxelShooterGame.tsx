@@ -340,11 +340,11 @@ export default function VoxelShooterGame() {
   const progressRatio = hud.total > 0 ? (hud.total - hud.remaining) / hud.total : 0;
 
   const shareText = clearResult
-    ? `どぐえぐのサイトの404ページを ${clearResult.time.toFixed(2)}秒 でクリアした！`
+    ? `404 NOT FOUNDを ${clearResult.time.toFixed(2)}秒 でクリアした！`
     : '';
   const shareHref =
     clearResult && pageUrl
-      ? `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(pageUrl)}&via=dogegg314`
+      ? `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(pageUrl)}`
       : '#';
 
   return (
