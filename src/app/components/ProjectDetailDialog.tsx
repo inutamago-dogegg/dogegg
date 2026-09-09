@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import type { ReactNode } from 'react';
-import { ArrowUpRight, ExternalLink, FileText, Github, Link2, X } from 'lucide-react';
+import { ArrowUpRight, ExternalLink, Github, X } from 'lucide-react';
 import { Button } from '@/app/components/ui/button';
 import { Badge } from '@/app/components/ui/badge';
 import {
@@ -12,6 +12,7 @@ import {
 } from '@/app/components/ui/dialog';
 import MarkdownContent from '@/app/components/MarkdownContent';
 import ProjectVideoEmbed from '@/app/components/ProjectVideoEmbed';
+import XEmbed from '@/app/components/XEmbed';
 import { LABELS, type ProjectItem, type ProjectLink } from '@/data/content';
 import { RELATED_LINK_METADATA } from '@/data/relatedLinkMetadata';
 import MissileShiftDetail from '@/data/projects/missile-shift.md?raw';
@@ -36,6 +37,19 @@ function getLinkHost(url: string) {
 
 function isArticleUrl(url: string) {
   return url.includes('trap.jp/post/');
+}
+
+function isXUrl(url: string) {
+  try {
+    const host = new URL(url).hostname.replace(/^www\./, '');
+    return host === 'x.com' || host === 'twitter.com';
+  } catch {
+    return false;
+  }
+}
+
+function getPagePreviewUrl(url: string) {
+  return `https://image.thum.io/get/width/640/crop/360/noanimate/${url}`;
 }
 
 export default function ProjectDetailDialog({
@@ -65,8 +79,13 @@ export default function ProjectDetailDialog({
   const detailMarkdown = project.detailMarkdown?.trim() || fallbackDetailMarkdown.trim();
 
   const relatedLinks = project.relatedLinks ?? [];
-  const articleLinks = relatedLinks.filter((link) => isArticleUrl(link.url));
-  const otherRelatedLinks = relatedLinks.filter((link) => !isArticleUrl(link.url));
+  const xRelatedLinks = relatedLinks.filter((link) => isXUrl(link.url));
+  const nonXRelatedLinks = relatedLinks.filter((link) => !isXUrl(link.url));
+  const articleLinks = nonXRelatedLinks.filter((link) => isArticleUrl(link.url));
+  const otherRelatedLinks = nonXRelatedLinks.filter((link) => !isArticleUrl(link.url));
+  const xEmbedUrls = Array.from(
+    new Set([project.xUrl, ...xRelatedLinks.map((link) => link.url)].filter((url): url is string => Boolean(url))),
+  );
   const primaryPlayLink =
     project.playLink && !isArticleUrl(project.playLink.url) ? project.playLink : undefined;
 
@@ -85,13 +104,6 @@ export default function ProjectDetailDialog({
       icon: <Github className="w-4 h-4 mr-2" />,
     });
   }
-  if (project.xUrl) {
-    linkButtons.push({
-      label: LABELS.x,
-      url: project.xUrl,
-      icon: <ExternalLink className="w-4 h-4 mr-2" />,
-    });
-  }
   if (project.steamUrl) {
     linkButtons.push({
       label: 'Steam',
@@ -100,12 +112,12 @@ export default function ProjectDetailDialog({
     });
   }
 
-  const renderRelatedCard = (link: ProjectLink, article: boolean) => {
+  const renderRelatedCard = (link: ProjectLink) => {
     const metadata = RELATED_LINK_METADATA[link.url];
     const genericLabel = link.label === LABELS.related;
     const title = metadata?.title ?? (genericLabel ? getLinkHost(link.url) : link.label);
     const siteName = metadata?.siteName ?? getLinkHost(link.url);
-    const Icon = article ? FileText : Link2;
+    const previewImage = metadata?.imageUrl ?? project.headerImage?.src ?? getPagePreviewUrl(link.url);
 
     return (
       <a
@@ -113,28 +125,33 @@ export default function ProjectDetailDialog({
         href={link.url}
         target="_blank"
         rel="noreferrer"
-        className={`group flex w-full items-center gap-3 rounded-xl border p-3 transition-all hover:-translate-y-0.5 hover:shadow-sm ${config.surfaceBg} ${config.cardBorder}`}
+        className={`group flex w-full overflow-hidden rounded-xl border transition-all hover:-translate-y-0.5 hover:shadow-sm ${config.surfaceBg} ${config.cardBorder}`}
       >
-        <div
-          className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-lg border ${config.chipBg} ${config.surfaceBorder}`}
-        >
-          <Icon className={`h-5 w-5 ${config.textMuted}`} />
+        <div className={`w-32 shrink-0 border-r ${config.surfaceBorder} sm:w-40`}>
+          <img
+            src={previewImage}
+            alt=""
+            loading="lazy"
+            className="h-full min-h-24 w-full object-cover transition-transform duration-200 group-hover:scale-[1.02]"
+          />
         </div>
-        <div className="min-w-0 flex-1">
-          <div className={`text-sm font-semibold leading-snug ${config.textPrimary}`}>{title}</div>
-          <div className={`mt-1 flex flex-wrap items-center gap-x-2 text-xs ${config.textMuted}`}>
-            <span>{siteName}</span>
-            {metadata?.date && (
-              <>
-                <span aria-hidden="true">·</span>
-                <span>{metadata.date}</span>
-              </>
-            )}
+        <div className="flex min-w-0 flex-1 items-center gap-3 p-3">
+          <div className="min-w-0 flex-1">
+            <div className={`text-sm font-semibold leading-snug ${config.textPrimary}`}>{title}</div>
+            <div className={`mt-1 flex flex-wrap items-center gap-x-2 text-xs ${config.textMuted}`}>
+              <span>{siteName}</span>
+              {metadata?.date && (
+                <>
+                  <span aria-hidden="true">·</span>
+                  <span>{metadata.date}</span>
+                </>
+              )}
+            </div>
           </div>
+          <ArrowUpRight
+            className={`h-4 w-4 shrink-0 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5 ${config.textMuted}`}
+          />
         </div>
-        <ArrowUpRight
-          className={`h-4 w-4 shrink-0 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5 ${config.textMuted}`}
-        />
       </a>
     );
   };
@@ -222,21 +239,28 @@ export default function ProjectDetailDialog({
               </div>
             )}
 
+            {xEmbedUrls.length > 0 && (
+              <section className="pt-2 space-y-3">
+                <h4 className={`text-sm font-semibold ${config.textMuted}`}>X</h4>
+                <div className="space-y-4">
+                  {xEmbedUrls.map((url) => (
+                    <XEmbed key={url} url={url} />
+                  ))}
+                </div>
+              </section>
+            )}
+
             {articleLinks.length > 0 && (
               <section className="pt-2 space-y-3">
                 <h4 className={`text-sm font-semibold ${config.textMuted}`}>関連記事</h4>
-                <div className="space-y-2">
-                  {articleLinks.map((link) => renderRelatedCard(link, true))}
-                </div>
+                <div className="space-y-2">{articleLinks.map(renderRelatedCard)}</div>
               </section>
             )}
 
             {otherRelatedLinks.length > 0 && (
               <section className="pt-2 space-y-3">
                 <h4 className={`text-sm font-semibold ${config.textMuted}`}>関連リンク</h4>
-                <div className="space-y-2">
-                  {otherRelatedLinks.map((link) => renderRelatedCard(link, false))}
-                </div>
+                <div className="space-y-2">{otherRelatedLinks.map(renderRelatedCard)}</div>
               </section>
             )}
 
