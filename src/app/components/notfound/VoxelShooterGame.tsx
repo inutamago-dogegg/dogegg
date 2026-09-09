@@ -4,7 +4,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import doggIconAsset from '@/images/dogegg_icon.png';
-import { createGameState, fireShot, stepGame, updateViewport } from './engine';
+import { createGameState, fireShot, setPointer, stepGame, updateViewport } from './engine';
 import { createBackground, drawFrame } from './render';
 import type { RenderResources } from './render';
 import { BEST_TIME_STORAGE_KEY, BUFF_STYLES, GAME_CONFIG, PALETTE } from './config';
@@ -121,6 +121,8 @@ export default function VoxelShooterGame() {
   const [bestTime, setBestTime] = useState<number | null>(null);
   const [clearResult, setClearResult] = useState<ClearResult | null>(null);
   const [pageUrl, setPageUrl] = useState<string>('');
+  /** 一度でもポインタ位置を取得したか(取得後はレティクル描画に任せてOSカーソルを隠す)。 */
+  const [hasPointer, setHasPointer] = useState<boolean>(false);
 
   const baseUrl = import.meta.env.BASE_URL.endsWith('/')
     ? import.meta.env.BASE_URL
@@ -297,8 +299,23 @@ export default function VoxelShooterGame() {
     };
   }, []);
 
+  // ポインタ座標をキャンバス左上基準のCSSピクセルに変換して engine に反映する。
+  const applyPointerFromEvent = (event: React.PointerEvent<HTMLCanvasElement>) => {
+    const state = gameRef.current;
+    const canvas = canvasRef.current;
+    if (!state || !canvas) return;
+    const rect = canvas.getBoundingClientRect();
+    setPointer(state, event.clientX - rect.left, event.clientY - rect.top);
+    // 照準レティクルが出るまではOSカーソルを隠さない(狙点が一切見えない状態を避ける)。
+    if (!hasPointer) setHasPointer(true);
+  };
+
+  const handlePointerMove = (event: React.PointerEvent<HTMLCanvasElement>) => {
+    applyPointerFromEvent(event);
+  };
   const handlePointerDown = (event: React.PointerEvent<HTMLCanvasElement>) => {
     event.preventDefault();
+    applyPointerFromEvent(event);
     firingRef.current = true;
     const state = gameRef.current;
     if (state) fireShot(state);
@@ -338,7 +355,8 @@ export default function VoxelShooterGame() {
     >
       <canvas
         ref={canvasRef}
-        className="absolute inset-0 h-full w-full touch-none cursor-crosshair"
+        className={`absolute inset-0 h-full w-full touch-none ${hasPointer ? 'cursor-none' : 'cursor-crosshair'}`}
+        onPointerMove={handlePointerMove}
         onPointerDown={handlePointerDown}
         onPointerUp={stopFiring}
         onPointerCancel={stopFiring}
@@ -406,13 +424,13 @@ export default function VoxelShooterGame() {
             className="absolute bottom-16 left-1/2 -translate-x-1/2 animate-pulse px-4 py-2 text-center text-xs sm:bottom-20 sm:text-sm"
             style={{ background: PALETTE.uiPanel, border: `2px solid ${PALETTE.uiBorder}` }}
           >
-            クリック / タップ長押しで発射
+            マウスで狙って クリック長押しで発射
           </div>
         )}
 
         <a
           href={baseUrl}
-          className="pointer-events-auto absolute bottom-3 right-3 border-2 px-3 py-2 text-xs sm:bottom-4 sm:right-4 sm:text-sm"
+          className="pointer-events-auto absolute bottom-3 right-3 cursor-pointer border-2 px-3 py-2 text-xs sm:bottom-4 sm:right-4 sm:text-sm"
           style={{ background: PALETTE.uiPanel, borderColor: PALETTE.uiBorder, color: PALETTE.uiText }}
         >
           ← ホームに戻る
@@ -449,7 +467,7 @@ export default function VoxelShooterGame() {
               <button
                 type="button"
                 onClick={handleRestart}
-                className="pointer-events-auto w-full border-2 px-4 py-2 text-sm sm:text-base"
+                className="pointer-events-auto w-full cursor-pointer border-2 px-4 py-2 text-sm sm:text-base"
                 style={{ background: PALETTE.uiAccent, borderColor: PALETTE.uiBorder, color: PALETTE.bgDeep }}
               >
                 もう一度
@@ -461,14 +479,14 @@ export default function VoxelShooterGame() {
                 onClick={(event) => {
                   if (shareHref === '#') event.preventDefault();
                 }}
-                className="pointer-events-auto w-full border-2 px-4 py-2 text-sm sm:text-base"
+                className="pointer-events-auto w-full cursor-pointer border-2 px-4 py-2 text-sm sm:text-base"
                 style={{ background: '#1d9bf0', borderColor: PALETTE.uiBorder, color: '#ffffff' }}
               >
                 Xに投稿
               </a>
               <a
                 href={baseUrl}
-                className="pointer-events-auto mt-1 text-xs underline sm:text-sm"
+                className="pointer-events-auto mt-1 cursor-pointer text-xs underline sm:text-sm"
                 style={{ color: PALETTE.uiMuted }}
               >
                 ← TOPへ戻る

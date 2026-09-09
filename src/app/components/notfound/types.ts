@@ -127,7 +127,7 @@ export type ShipState = {
   y: number;
   /** 軌道角(ラジアン)。これが増えることで文字の周りをグルグル周回する。 */
   angle: number;
-  /** 照準角(ラジアン)。常に軌道の中心(文字)を向く。 */
+  /** 照準角(ラジアン)。マウス/タッチ位置を向く(未取得のうちは軌道の中心を向く)。 */
   aim: number;
   /** 進行方向(ラジアン)。トロッコの向き(軌道の接線)。 */
   heading: number;
@@ -149,10 +149,21 @@ export type SpinBuffState = {
   duration: number;
 };
 
+/** 照準の狙い先(マウス/タッチ位置)。 */
+export type PointerState = {
+  /** ワールド座標(CSSピクセル) */
+  x: number;
+  y: number;
+  /** 一度でも位置を取得できたか。false のうちは軌道中心を狙う。 */
+  active: boolean;
+};
+
 export type GameState = {
   /** キャンバスの論理サイズ(CSSピクセル) */
   width: number;
   height: number;
+  /** 照準の狙い先 */
+  pointer: PointerState;
   phase: GamePhase;
   /** 経過時間(秒)。phase === 'playing' の間だけ加算。 */
   elapsed: number;

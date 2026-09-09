@@ -181,6 +181,8 @@ export function drawFrame(
   drawShip(ctx, state, res, timeMs);
   drawParticles(ctx, state);
   drawFloatingTexts(ctx, state);
+  drawAimAssistLine(ctx, state);
+  drawReticle(ctx, state, timeMs);
 
   ctx.restore();
 }
@@ -573,6 +575,99 @@ function drawFloatingText(ctx: CanvasRenderingContext2D, t: FloatingText): void 
   ctx.globalAlpha = alpha;
   ctx.fillStyle = t.color;
   ctx.fillText(t.text, Math.round(t.x), Math.round(t.y - rise));
+}
+
+// ---------------------------------------------------------------------------
+// 照準(マウス/タッチ位置のレティクル・自機からの補助線)
+// ---------------------------------------------------------------------------
+
+/**
+ * 自機からポインタへ向かう控えめな照準補助線。狙いの向きが直感的に分かるよう、
+ * 薄いドットを一定間隔で並べるだけに留める(画面がうるさくならないように)。
+ * pointer.active のときのみ描画。
+ */
+function drawAimAssistLine(ctx: CanvasRenderingContext2D, state: GameState): void {
+  if (!state.pointer.active) return;
+
+  const sx = state.ship.x;
+  const sy = state.ship.y;
+  const dx = state.pointer.x - sx;
+  const dy = state.pointer.y - sy;
+  const dist = Math.hypot(dx, dy);
+  if (dist < 1) return;
+
+  const step = 14; // ドット間隔(ピクセル)
+  const dotSize = 2;
+  const nx = dx / dist;
+  const ny = dy / dist;
+  const dotCount = Math.floor(dist / step);
+
+  ctx.globalAlpha = 0.2;
+  ctx.fillStyle = PALETTE.uiAccent;
+  for (let i = 1; i < dotCount; i++) {
+    const px = Math.round(sx + nx * step * i);
+    const py = Math.round(sy + ny * step * i);
+    ctx.fillRect(px - dotSize / 2, py - dotSize / 2, dotSize, dotSize);
+  }
+  ctx.globalAlpha = 1;
+}
+
+/**
+ * 照準レティクルをポインタ位置にドット絵で描く(四隅の角括弧+中央のドット)。
+ * 暗い岩壁でも視認できるよう1pxの暗い縁取りを敷いてから明色を重ねる。
+ * timeMs で軽く脈動させ、狙点の位置を強調する。
+ */
+function drawReticle(ctx: CanvasRenderingContext2D, state: GameState, timeMs: number): void {
+  if (!state.pointer.active) return;
+
+  const x = Math.round(state.pointer.x);
+  const y = Math.round(state.pointer.y);
+  // 脈動(0..1)でサイズをわずかに変化させる
+  const pulse = 0.5 + 0.5 * Math.sin(timeMs / 260);
+  const radius = Math.round(10 + pulse * 2);
+  const cornerLen = 5;
+  const thickness = 2;
+
+  const drawCorner = (dirX: 1 | -1, dirY: 1 | -1, inset: number) => {
+    const ox = x + dirX * (radius + inset);
+    const oy = y + dirY * (radius + inset);
+    // 横棒
+    ctx.fillRect(
+      dirX > 0 ? ox - cornerLen : ox,
+      dirY > 0 ? oy - thickness : oy,
+      cornerLen,
+      thickness,
+    );
+    // 縦棒
+    ctx.fillRect(
+      dirX > 0 ? ox - thickness : ox,
+      dirY > 0 ? oy - cornerLen : oy,
+      thickness,
+      cornerLen,
+    );
+  };
+
+  // 縁取り(暗色を1px太らせて先に敷く)
+  ctx.fillStyle = '#000000';
+  ctx.globalAlpha = 0.6;
+  for (const dirX of [1, -1] as const) {
+    for (const dirY of [1, -1] as const) {
+      drawCorner(dirX, dirY, -1);
+    }
+  }
+  ctx.fillRect(x - 1, y - 1, 3, 3);
+
+  // 本体(視認性重視の明色)
+  ctx.globalAlpha = 1;
+  ctx.fillStyle = PALETTE.uiAccent;
+  for (const dirX of [1, -1] as const) {
+    for (const dirY of [1, -1] as const) {
+      drawCorner(dirX, dirY, 0);
+    }
+  }
+  // 中央のドット
+  ctx.fillStyle = PALETTE.bullet;
+  ctx.fillRect(x - 1, y - 1, 2, 2);
 }
 
 // 「クリックで発射」の案内は自機に追従させると軌道上を高速で動き回って読めないため、

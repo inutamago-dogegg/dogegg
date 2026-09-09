@@ -2,7 +2,7 @@
 // 状態(GameState)は再生成せず、常にミューテーションして更新する。
 // 描画は render.ts 側の責務なので、ここでは座標・数値状態の更新のみを行う。
 
-import type { GameState, Voxel, Item, Orbit, ShipState } from './types';
+import type { GameState, Voxel, Item, Orbit, ShipState, PointerState } from './types';
 import {
   GAME_CONFIG,
   PALETTE,
@@ -29,14 +29,18 @@ function computeOrbit(width: number, height: number): Orbit {
   };
 }
 
-/** 軌道角(ship.angle)から位置・照準角・進行方向を再計算してshipへ反映する。 */
-function updateShipFromAngle(ship: ShipState, orbit: Orbit): void {
+/** 軌道角(ship.angle)から位置・進行方向を再計算し、照準角(aim)もポインタ基準で再計算してshipへ反映する。 */
+function updateShipFromAngle(ship: ShipState, orbit: Orbit, pointer: PointerState): void {
   const cos = Math.cos(ship.angle);
   const sin = Math.sin(ship.angle);
   ship.x = orbit.cx + orbit.rx * cos;
   ship.y = orbit.cy + orbit.ry * sin;
-  // 照準は常に軌道の中心(=文字の中心)を向く
-  ship.aim = Math.atan2(orbit.cy - ship.y, orbit.cx - ship.x);
+  // 照準はポインタ位置を向く。ポインタ未取得のうちは従来どおり軌道中心(=文字の中心)を向く
+  if (pointer.active) {
+    ship.aim = Math.atan2(pointer.y - ship.y, pointer.x - ship.x);
+  } else {
+    ship.aim = Math.atan2(orbit.cy - ship.y, orbit.cx - ship.x);
+  }
   // 進行方向は楕円の接線ベクトル (-rx*sin, ry*cos) の向き
   ship.heading = Math.atan2(orbit.ry * cos, -orbit.rx * sin);
 }
@@ -289,11 +293,13 @@ function spawnBullet(
 export function createGameState(width: number, height: number): GameState {
   const field = buildVoxelField(width, height);
   const orbit = computeOrbit(width, height);
+  const pointer: PointerState = { x: orbit.cx, y: orbit.cy, active: false };
   const ship: ShipState = { x: 0, y: 0, angle: 0, aim: 0, heading: 0, recoil: 0 };
-  updateShipFromAngle(ship, orbit);
+  updateShipFromAngle(ship, orbit, pointer);
   return {
     width,
     height,
+    pointer,
     phase: 'ready',
     elapsed: 0,
     field,
@@ -324,7 +330,16 @@ export function updateViewport(state: GameState, width: number, height: number):
   orbit.cy = height / 2;
   orbit.rx = Math.max(60, width / 2 - margin);
   orbit.ry = Math.max(60, height / 2 - margin);
-  updateShipFromAngle(state.ship, orbit);
+  updateShipFromAngle(state.ship, orbit, state.pointer);
+}
+
+/** マウス/タッチ位置を更新する。ワールド座標(CSSピクセル)で受け取る。 */
+export function setPointer(state: GameState, x: number, y: number): void {
+  state.pointer.x = x;
+  state.pointer.y = y;
+  state.pointer.active = true;
+  // 次の描画/発射に即反映されるようその場でaimも再計算する
+  updateShipFromAngle(state.ship, state.orbit, state.pointer);
 }
 
 /** 発射入力。クールダウン中は何もしない。ready→playing遷移もここで行う。 */
@@ -339,7 +354,7 @@ export function fireShot(state: GameState): void {
   state.fireCooldown = weaponKind === 'rapid' ? GAME_CONFIG.fire.rapidCooldown : GAME_CONFIG.fire.baseCooldown;
   state.ship.recoil = 1;
 
-  // 銃口・発射方向は照準角(aim)基準。aimは常に軌道中心(文字)を向く。
+  // 銃口・発射方向は照準角(aim)基準。aimはポインタ方向(未取得時は軌道中心)を向く。
   const muzzleX = state.ship.x + Math.cos(state.ship.aim) * GAME_CONFIG.ship.muzzleDistance;
   const muzzleY = state.ship.y + Math.sin(state.ship.aim) * GAME_CONFIG.ship.muzzleDistance;
 
@@ -416,7 +431,7 @@ export function stepGame(state: GameState, dt: number): void {
   let angle = (state.ship.angle + angularSpeed * clampedDt) % (Math.PI * 2);
   if (angle < 0) angle += Math.PI * 2;
   state.ship.angle = angle;
-  updateShipFromAngle(state.ship, state.orbit);
+  updateShipFromAngle(state.ship, state.orbit, state.pointer);
   state.ship.recoil = Math.max(0, state.ship.recoil - clampedDt / 0.12);
 
   // クールダウン・バフ残り時間

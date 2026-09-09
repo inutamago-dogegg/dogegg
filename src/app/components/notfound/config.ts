@@ -5,10 +5,10 @@ import type { BuffKind, WeaponBuffKind } from './types';
 
 export const GAME_CONFIG = {
   ship: {
-    /** 通常時の周回角速度(ラジアン/秒)。約1.8秒で文字の周りを1周する。 */
-    baseSpin: 3.4,
-    /** 回転速度バフ中の周回角速度(ラジアン/秒) */
-    buffSpin: 6.2,
+    /** 通常時の周回角速度(ラジアン/秒)。約3.5秒で文字の周りを1周する。 */
+    baseSpin: 1.8,
+    /** 回転速度バフ中の周回角速度(ラジアン/秒)。約2秒で1周。 */
+    buffSpin: 3.2,
     /** トロッコ+砲塔の見た目半径(ピクセル) */
     radius: 34,
     /** 銃口までの距離(ピクセル) */
