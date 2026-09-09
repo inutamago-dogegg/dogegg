@@ -51,11 +51,17 @@ export default function ProjectDetailDialog({
         : '';
   const detailMarkdown = project.detailMarkdown?.trim() || fallbackDetailMarkdown.trim();
 
+  const isDevelopmentArticleUrl = (url: string) => url.includes('trap.jp/post/');
+  const relatedLinks = project.relatedLinks ?? [];
+  const developmentArticleLinks = relatedLinks.filter((link) => isDevelopmentArticleUrl(link.url));
+  const primaryPlayLink =
+    project.playLink && !isDevelopmentArticleUrl(project.playLink.url) ? project.playLink : undefined;
+
   const linkButtons: Array<{ label: string; url: string; icon?: ReactNode }> = [];
-  if (project.playLink) {
+  if (primaryPlayLink) {
     linkButtons.push({
-      label: project.playLink.label,
-      url: project.playLink.url,
+      label: primaryPlayLink.label,
+      url: primaryPlayLink.url,
       icon: <ExternalLink className="w-4 h-4 mr-2" />,
     });
   }
@@ -103,12 +109,12 @@ export default function ProjectDetailDialog({
             <div className="px-6 pt-6 pb-4">
               <DialogHeader>
                 <div className="flex items-center gap-3">
-                  {project.playLink ? (
+                  {primaryPlayLink ? (
                     <button
                       type="button"
-                      onClick={() => window.open(project.playLink?.url, '_blank')}
+                      onClick={() => window.open(primaryPlayLink.url, '_blank')}
                       className={`p-3 ${config.buttonBg} rounded-lg`}
-                      aria-label={project.playLink.label}
+                      aria-label={primaryPlayLink.label}
                     >
                       <ExternalLink className="w-6 h-6 text-white" />
                     </button>
@@ -161,6 +167,38 @@ export default function ProjectDetailDialog({
               <div className="space-y-2">
                 <h4 className={`text-sm font-semibold ${config.textMuted}`}>詳細</h4>
                 <MarkdownContent content={detailMarkdown} config={config} />
+              </div>
+            )}
+
+            {relatedLinks.length > 0 && (
+              <div className="pt-2 space-y-2">
+                <h4 className={`text-sm font-semibold ${config.textMuted}`}>関連リンク / 開発記事</h4>
+                <p className={`text-sm ${config.textSecondary}`}>
+                  制作過程や実装の詳細、関連する記事はこちらからご覧いただけます。
+                </p>
+                <div className="space-y-2">
+                  {relatedLinks.map((link) => {
+                    const isDevelopmentArticle = isDevelopmentArticleUrl(link.url);
+                    const articleIndex = developmentArticleLinks.indexOf(link);
+                    const label = isDevelopmentArticle
+                      ? developmentArticleLinks.length > 1
+                        ? `開発記事を見る ${articleIndex + 1}`
+                        : '開発記事を見る'
+                      : link.label;
+
+                    return (
+                      <Button
+                        key={link.url}
+                        variant="outline"
+                        className={`w-full ${config.buttonOutline}`}
+                        onClick={() => window.open(link.url, '_blank')}
+                      >
+                        <ExternalLink className="w-4 h-4 mr-2" />
+                        {label}
+                      </Button>
+                    );
+                  })}
+                </div>
               </div>
             )}
 
