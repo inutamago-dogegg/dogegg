@@ -13,8 +13,7 @@ import {
 import MarkdownContent from '@/app/components/MarkdownContent';
 import OgpCard from '@/app/components/OgpCard';
 import ProjectVideoEmbed from '@/app/components/ProjectVideoEmbed';
-import XEmbed from '@/app/components/XEmbed';
-import XProfileCard from '@/app/components/XProfileCard';
+import XProfileCard, { XLogo } from '@/app/components/XProfileCard';
 import { LABELS, type ProjectItem, type ProjectLink } from '@/data/content';
 import { RELATED_LINK_METADATA } from '@/data/relatedLinkMetadata';
 import MissileShiftDetail from '@/data/projects/missile-shift.md?raw';
@@ -90,7 +89,16 @@ export default function ProjectDetailDialog({
         : '';
   const detailMarkdown = project.detailMarkdown?.trim() || fallbackDetailMarkdown.trim();
 
-  const relatedLinks = project.relatedLinks ?? [];
+  const primaryPlayLink =
+    project.playLink && !isArticleUrl(project.playLink.url) ? project.playLink : undefined;
+
+  // A related link that points at the same URL as the play link card shown below is
+  // redundant — keep only the play link card in that case. (Play links that are
+  // themselves an article page render via the "関連記事" card instead, so they're
+  // left alone here.)
+  const relatedLinks = (project.relatedLinks ?? []).filter(
+    (link) => link.url !== primaryPlayLink?.url,
+  );
   const xRelatedLinks = relatedLinks.filter((link) => isXUrl(link.url));
   const nonXRelatedLinks = relatedLinks.filter((link) => !isXUrl(link.url));
   const articleLinks = nonXRelatedLinks.filter((link) => isArticleUrl(link.url));
@@ -100,8 +108,6 @@ export default function ProjectDetailDialog({
   );
   const xTweetUrls = xUrls.filter(isXTweetUrl);
   const xProfileUrls = xUrls.filter((url) => !isXTweetUrl(url));
-  const primaryPlayLink =
-    project.playLink && !isArticleUrl(project.playLink.url) ? project.playLink : undefined;
 
   const quickLinks: Array<{ label: string; url: string; icon: ReactNode; emphasis: boolean }> = [];
   if (primaryPlayLink) {
@@ -128,6 +134,14 @@ export default function ProjectDetailDialog({
       emphasis: false,
     });
   }
+  xTweetUrls.forEach((url) => {
+    quickLinks.push({
+      label: LABELS.x,
+      url,
+      icon: <XLogo className="h-4 w-4" />,
+      emphasis: false,
+    });
+  });
 
   const mediaFallbackBg = isDark ? 'bg-slate-800' : 'bg-gray-100';
 
@@ -262,13 +276,10 @@ export default function ProjectDetailDialog({
               </div>
             )}
 
-            {(xTweetUrls.length > 0 || xProfileUrls.length > 0 || quickLinks.length > 0) && (
+            {(xProfileUrls.length > 0 || quickLinks.length > 0) && (
               <section className="pt-2 space-y-3">
                 <h4 className={`text-sm font-semibold ${config.textMuted}`}>リンク</h4>
                 <div className="space-y-4">
-                  {xTweetUrls.map((url) => (
-                    <XEmbed key={url} url={url} />
-                  ))}
                   {xProfileUrls.map((url) => (
                     <XProfileCard
                       key={url}

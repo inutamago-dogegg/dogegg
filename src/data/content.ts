@@ -500,19 +500,19 @@ export const HOBBIES: HobbyItem[] = [
     ],
     favoritesLabel: '好きなゲーム',
     favorites: [
-      { label: 'The Witness', url: 'https://store.steampowered.com/app/210970/The_Witness/',
+      { label: 'The Witness', url: 'https://store.steampowered.com/app/210970/The_Witness/?l=japanese',
         note: '面白いです。'
       },
-      { label: 'Outer Wilds', url: 'https://store.steampowered.com/app/753640/Outer_Wilds/',
+      { label: 'Outer Wilds', url: 'https://store.steampowered.com/app/753640/Outer_Wilds/?l=japanese',
         note: '人生で1番のゲームです。'
       },
-      { label: 'パクレットのうさちゃん捕獲ゲーム', url: 'https://store.steampowered.com/app/1628610/_/',
+      { label: 'パクレットのうさちゃん捕獲ゲーム', url: 'https://store.steampowered.com/app/1628610/_/?l=japanese',
         note: '面白いです。'
       },
-      { label: 'Stray', url: 'https://store.steampowered.com/app/1332010/Stray/',
+      { label: 'Stray', url: 'https://store.steampowered.com/app/1332010/Stray/?l=japanese',
         note: '猫ちゃんが可愛い'
       },
-      { label: 'Leap Year', url: 'https://store.steampowered.com/app/2951770/Leap_Year/',
+      { label: 'Leap Year', url: 'https://store.steampowered.com/app/2951770/Leap_Year/?l=japanese',
         note: '面白いです。'
       },
       { label: 'モンスターハンター', url: 'https://www.monsterhunter.com/ja/',
@@ -522,11 +522,11 @@ export const HOBBIES: HobbyItem[] = [
     recentsLabel: '最近遊んだゲーム',
     recents: [
       {
-        label: 'Slay the Spire 2', url: 'https://store.steampowered.com/app/2868840/Slay_the_Spire_2/',
+        label: 'Slay the Spire 2', url: 'https://store.steampowered.com/app/2868840/Slay_the_Spire_2/?l=japanese',
         note: '全キャラA10登頂しました'
       },
       {
-        label: 'Can of Wormholes', url: 'https://store.steampowered.com/app/1295320/Can_of_Wormholes/',
+        label: 'Can of Wormholes', url: 'https://store.steampowered.com/app/1295320/Can_of_Wormholes/?l=japanese',
         note: 'クリアしました'
       }
     ],
@@ -799,7 +799,7 @@ export const PROJECTS: ProjectYearGroup[] = [
         headerImage: CrossHeader,
         awards: ['ゲームクリエイター甲子園2024総合大賞ノミネート', 'ゲームクリエイター甲子園2025総合大賞ノミネート', 'indie Game incubator 第6期'],
         xUrl: 'https://x.com/CrosstheC_trap',
-        steamUrl: 'https://store.steampowered.com/app/3382690/Cross_the_C/'
+        steamUrl: 'https://store.steampowered.com/app/3382690/Cross_the_C/?l=japanese'
       },
       {
         title: 'Queen Bee',
@@ -856,7 +856,7 @@ export const PROJECTS: ProjectYearGroup[] = [
         relatedLinks: [{ label: LABELS.related, url: 'https://trap.jp/post/1971/' }],
         headerImage: VariVaRevengeHeader,
         awards: ['ゲームクリエイター甲子園2024総合大賞ノミネート', 'Game^3 19th 優秀賞'],
-        steamUrl: 'https://store.steampowered.com/app/2721190/_/',
+        steamUrl: 'https://store.steampowered.com/app/2721190/_/?l=japanese',
 
       },
       {
@@ -881,7 +881,7 @@ export const PROJECTS: ProjectYearGroup[] = [
         relatedLinks: [{ label: LABELS.related, url: 'https://trap.jp/post/2106/' }],
         headerImage: OrbitHeader,
         awards: ['部内冬ハッカソン23 最優秀賞'],
-        steamUrl: 'https://store.steampowered.com/app/2990710/Orbit/'
+        steamUrl: 'https://store.steampowered.com/app/2990710/Orbit/?l=japanese'
       },
     ],
   },

@@ -34,6 +34,11 @@ export default function ProjectCard({
   const githubUrl = project.githubUrl;
   const steamUrl = project.steamUrl;
   const headerImageSrc = project.headerImage?.src ?? headerImages[project.title];
+  // A related link that points at the same URL as the play link is redundant — keep
+  // only the play link card in that case.
+  const relatedLinks = (project.relatedLinks ?? []).filter(
+    (link) => link.url !== project.playLink?.url,
+  );
   const handleStop = (event: MouseEvent) => event.stopPropagation();
   const hasDetail = Boolean(project.detailMarkdown || project.outline || project.member);
   const detailSummaryData = (() => {
@@ -314,14 +319,14 @@ export default function ProjectCard({
             </div>
           )}
 
-          {project.relatedLinks && project.relatedLinks.length > 0 && (
+          {relatedLinks.length > 0 && (
             <div
               className="space-y-2 mb-6"
               onClick={handleStop}
               onMouseEnter={() => setIsInnerHover(true)}
               onMouseLeave={() => setIsInnerHover(false)}
             >
-              {project.relatedLinks.map((link) => {
+              {relatedLinks.map((link) => {
                 const ogp = ogpData[link.url];
                 return (
                   <OgpCard

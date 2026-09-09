@@ -8,7 +8,7 @@ type XProfileCardProps = {
   isDark: boolean;
 };
 
-function XLogo({ className }: { className?: string }) {
+export function XLogo({ className }: { className?: string }) {
   return (
     <svg className={className} fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
       <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
@@ -32,10 +32,10 @@ function getDisplayName(title: string | undefined) {
   return match?.[1]?.trim() || title;
 }
 
-// A single tweet embeds quickly via the official widget, but the profile timeline widget
-// pulls in a full scrollable feed and is noticeably slow to load. For account links we
-// instead show a lightweight static preview built from the same build-time cached OGP
-// data used elsewhere, giving just a glimpse of the profile (avatar, name, bio).
+// X's own embed widgets (timeline and single-tweet) depend on a third-party script that
+// loads unreliably in production (slow, sometimes blocked). Account links instead render
+// as a lightweight static preview built from the same build-time cached OGP data used
+// elsewhere, giving just a glimpse of the profile (avatar, name, bio).
 export default function XProfileCard({ url, data, config, isDark }: XProfileCardProps) {
   const handle = getHandle(url);
   const mediaBg = isDark ? 'bg-slate-800' : 'bg-gray-100';

@@ -6,17 +6,6 @@ import { fetchOgp, type OgpData } from '@/lib/ogp';
 import { cacheRemoteImage } from '@/lib/imageCache';
 import { RELATED_LINK_METADATA } from '@/data/relatedLinkMetadata';
 
-const isXUrl = (url: string) => {
-  try {
-    const host = new URL(url).hostname.replace(/^www\./, '');
-    return host === 'x.com' || host === 'twitter.com';
-  } catch {
-    return false;
-  }
-};
-
-const isXProfileUrl = (url: string) => isXUrl(url) && !/\/status\/\d+/.test(new URL(url).pathname);
-
 const urlSet = new Set<string>();
 
 PROJECTS.forEach((group: (typeof PROJECTS)[number]) => {
@@ -30,14 +19,12 @@ PROJECTS.forEach((group: (typeof PROJECTS)[number]) => {
     if (item.steamUrl) {
       urlSet.add(item.steamUrl);
     }
-    if (item.xUrl && isXProfileUrl(item.xUrl)) {
+    if (item.xUrl) {
       urlSet.add(item.xUrl);
     }
     item.relatedLinks?.forEach(
-      (link: NonNullable<(typeof PROJECTS)[number]['items'][number]['relatedLinks']>[number]) => {
-        if (isXUrl(link.url) && !isXProfileUrl(link.url)) return;
-        urlSet.add(link.url);
-      },
+      (link: NonNullable<(typeof PROJECTS)[number]['items'][number]['relatedLinks']>[number]) =>
+        urlSet.add(link.url),
     );
   });
 });
