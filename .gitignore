@@ -28,3 +28,6 @@ pnpm-debug.log*
 
 # cursor
 .cursor/
+
+# local planning / spec docs (not part of the shipped project)
+docs/
