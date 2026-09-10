@@ -1,14 +1,14 @@
 // 404ボクセルシューティングの調整値とドット絵パレット。
 // 難易度・演出のバランス調整はすべてこのファイルで完結させる。
 
-import type { BuffKind, WeaponBuffKind } from './types';
+import type { BuffKind } from './types';
 
 export const GAME_CONFIG = {
   ship: {
     /** 通常時の周回角速度(ラジアン/秒)。約3.5秒で文字の周りを1周する。 */
     baseSpin: 1.8,
-    /** 回転速度バフ中の周回角速度(ラジアン/秒)。約2秒で1周。 */
-    buffSpin: 3.2,
+    /** 回転速度バフ中の周回角速度(ラジアン/秒)。添字が重ねがけレベル-1。 */
+    buffSpins: [3.2, 4.2, 5.2],
     /** トロッコ+砲塔の見た目半径(ピクセル) */
     radius: 34,
     /** 銃口までの距離(ピクセル) */
@@ -19,8 +19,6 @@ export const GAME_CONFIG = {
   fire: {
     /** 通常時の発射間隔(秒) */
     baseCooldown: 0.135,
-    /** 連射バフ中の発射間隔(秒) */
-    rapidCooldown: 0.06,
     /** 弾速(ピクセル/秒) */
     bulletSpeed: 940,
     /** 通常弾の半径(ピクセル) */
@@ -28,24 +26,32 @@ export const GAME_CONFIG = {
     /** 通常弾のダメージ */
     bulletDamage: 1,
   },
+  // 強化は種類が違えば同時に有効(重ねがけ)になり、効果は掛け合わさる。
+  // 各配列は添字が「重ねがけレベル - 1」に対応する。
   weapon: {
-    /** ワイド/スプレッド弾: 1発の入力で count 発を spreadRad の範囲に扇状発射 */
-    spread: { count: 3, spreadRad: 0.22 },
-    /** パワーショット: 大型・貫通 */
-    power: { radius: 11, damage: 3, pierce: 6, speedScale: 0.85 },
-    /** 爆発弾: 着弾点を中心に radiusCells セル分の範囲へダメージ */
-    explosive: { radius: 7, damage: 1, radiusCells: 2.4, blastDamage: 3 },
-    /** 連射: クールダウンのみ変化(fire.rapidCooldown を使用) */
+    /** ワイド/スプレッド弾: 1回の発射で counts 発を spreadRads の角度範囲に扇状発射 */
+    spread: { counts: [3, 5, 7], spreadRads: [0.22, 0.34, 0.46] },
+    /** パワーショット: 大型・貫通・高ダメージ */
+    power: { radii: [11, 14, 17], damages: [3, 5, 7], pierces: [6, 9, 12], speedScale: 0.85 },
+    /** 爆発弾: 着弾点を中心に radiusCells セル分の範囲へ blastDamages のダメージ */
+    explosive: { radius: 7, damage: 1, radiusCells: [2.4, 3.0, 3.6], blastDamages: [3, 4, 5] },
+    /** 連射: 発射間隔を短縮する */
+    rapid: { cooldowns: [0.075, 0.055, 0.04] },
   },
   buff: {
-    /** 武器系バフの効果時間(秒) */
-    weaponDuration: 8,
-    /** 回転速度バフの効果時間(秒) */
-    spinDuration: 8,
+    /** 強化の効果時間(秒)。取り直すとこの値にリセットされる。 */
+    duration: 6.5,
+    /** 同じ強化を取り直して上げられる上限レベル */
+    maxLevel: 3,
   },
   item: {
-    /** ボクセル破壊1回あたりのドロップ確率 */
-    dropRate: 0.09,
+    /** ボクセル破壊1回あたりのランダムドロップ確率 */
+    dropRate: 0.03,
+    /**
+     * 確定ドロップの間隔(破壊数)。ドロップが出るたびにカウンタをリセットする。
+     * 運だけでクリアタイムが極端にブレる(強化なしの単調な時間が続く)のを防ぐための天井。
+     */
+    guaranteedDropInterval: 18,
     /** 弾で撃ち抜くための当たり判定半径(ピクセル) */
     radius: 14,
     /** ドロップ直後の初速(ピクセル/秒) */
@@ -128,8 +134,12 @@ export const BUFF_STYLES: Record<BuffKind, { color: string; light: string; label
 /** ドロップ抽選の対象(全5種を等確率)。 */
 export const DROPPABLE_BUFFS: readonly BuffKind[] = ['spread', 'power', 'explosive', 'rapid', 'spin'];
 
-/** 武器系バフかどうかの判定。 */
-export const isWeaponBuff = (kind: BuffKind): kind is WeaponBuffKind => kind !== 'spin';
+/** 重ねがけレベル(1始まり)に対応する値を配列から取り出す。範囲外は末尾/先頭にフォールバックする。 */
+export function byLevel<T>(values: readonly T[], level: number, fallback: T): T {
+  if (values.length === 0) return fallback;
+  const index = Math.min(Math.max(Math.floor(level) - 1, 0), values.length - 1);
+  return values[index] ?? fallback;
+}
 
 /** ベストタイム保存に使う localStorage キー。 */
 export const BEST_TIME_STORAGE_KEY = 'dogegg-404-voxel-best-time';

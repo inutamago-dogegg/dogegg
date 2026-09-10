@@ -9,7 +9,7 @@ import {
   VOXEL_COLORS,
   BUFF_STYLES,
   DROPPABLE_BUFFS,
-  isWeaponBuff,
+  byLevel,
 } from './config';
 import { buildVoxelField, computeOrbitMargin } from './layout';
 
@@ -134,11 +134,18 @@ function spawnDebris(state: GameState, voxel: Voxel): void {
   }
 }
 
-/** ボクセル破壊時のアイテムドロップ抽選。 */
+/**
+ * ボクセル破壊時のアイテムドロップ抽選。
+ * 破壊のたびに breaksSinceDrop を加算し、guaranteedDropInterval に達したら確定ドロップ(天井)。
+ * それ未満なら従来どおり dropRate の確率で抽選する。ドロップが出た経路によらずカウンタをリセットする。
+ */
 function dropItem(state: GameState, x: number, y: number): void {
-  if (Math.random() >= GAME_CONFIG.item.dropRate) return;
+  state.breaksSinceDrop++;
+  const guaranteed = state.breaksSinceDrop >= GAME_CONFIG.item.guaranteedDropInterval;
+  if (!guaranteed && Math.random() >= GAME_CONFIG.item.dropRate) return;
   const kind = DROPPABLE_BUFFS[Math.floor(Math.random() * DROPPABLE_BUFFS.length)];
   if (kind === undefined) return;
+  state.breaksSinceDrop = 0;
   const angle = Math.random() * Math.PI * 2;
   const speed = GAME_CONFIG.item.driftSpeed;
   state.items.push({
@@ -215,11 +222,13 @@ function damageVoxelsInCircle(state: GameState, x: number, y: number, radius: nu
   return hit;
 }
 
-/** 爆発弾の着弾処理: 範囲内の全ボクセルにblastDamageを与え、シェイク・ヒットストップ・光パーティクルを発生させる。 */
-function explodeAt(state: GameState, x: number, y: number): void {
+/** 爆発弾の着弾処理: 範囲内の全ボクセルにblastDamageを与え、シェイク・ヒットストップ・光パーティクルを発生させる。
+ * 半径・威力は弾が発射時点で確定させた値(blastRadiusCells/blastDamage)を使う。
+ * これにより、飛翔中にバフが切れても発射時の威力で爆発する。
+ */
+function explodeAt(state: GameState, x: number, y: number, radiusCells: number, blastDamage: number): void {
   const field = state.field;
-  const cfg = GAME_CONFIG.weapon.explosive;
-  const radius = cfg.radiusCells * field.cellSize;
+  const radius = radiusCells * field.cellSize;
   const radiusSq = radius * radius;
   for (let i = 0; i < field.cells.length; i++) {
     const voxel = field.cells[i];
@@ -227,7 +236,7 @@ function explodeAt(state: GameState, x: number, y: number): void {
     const dx = voxel.x - x;
     const dy = voxel.y - y;
     if (dx * dx + dy * dy <= radiusSq) {
-      damageVoxel(state, voxel, cfg.blastDamage);
+      damageVoxel(state, voxel, blastDamage);
     }
   }
   state.shake = Math.min(GAME_CONFIG.fx.shakeMax, state.shake + GAME_CONFIG.fx.shakePerBlast);
@@ -235,25 +244,31 @@ function explodeAt(state: GameState, x: number, y: number): void {
   spawnGlow(state, x, y, PALETTE.lantern, randInt(10, 16));
 }
 
-/** アイテム取得処理: バフ適用、演出テキスト・光パーティクル、ヒットストップ。 */
+/**
+ * アイテム取得処理: バフ適用、演出テキスト・光パーティクル、ヒットストップ。
+ * 同じ種類のバフを既に持っていればレベルアップ(上限あり)+効果時間リセット、
+ * 持っていなければレベル1で新規追加する。種類が異なるバフは全て同時に有効。
+ */
 function collectItem(state: GameState, item: Item): void {
   const style = BUFF_STYLES[item.kind];
-  if (isWeaponBuff(item.kind)) {
-    state.weaponBuff = {
-      kind: item.kind,
-      remaining: GAME_CONFIG.buff.weaponDuration,
-      duration: GAME_CONFIG.buff.weaponDuration,
-    };
+  const duration = GAME_CONFIG.buff.duration;
+  const existing = state.buffs.find((b) => b.kind === item.kind);
+  let level: number;
+  if (existing) {
+    existing.level = Math.min(existing.level + 1, GAME_CONFIG.buff.maxLevel);
+    existing.remaining = duration;
+    existing.duration = duration;
+    level = existing.level;
   } else {
-    state.spinBuff = {
-      remaining: GAME_CONFIG.buff.spinDuration,
-      duration: GAME_CONFIG.buff.spinDuration,
-    };
+    level = 1;
+    state.buffs.push({ kind: item.kind, level, remaining: duration, duration });
   }
+  // レベル2以上なら「WIDE Lv2」のようにレベルが分かる表示にする
+  const label = level > 1 ? `${style.shortLabel} Lv${level}` : style.shortLabel;
   state.floatingTexts.push({
     x: item.x,
     y: item.y,
-    text: style.shortLabel,
+    text: label,
     life: 1.0,
     maxLife: 1.0,
     color: style.color,
@@ -274,6 +289,8 @@ function spawnBullet(
   damage: number,
   pierce: number,
   explosive: boolean,
+  blastRadiusCells: number,
+  blastDamage: number,
 ): void {
   state.bullets.push({
     x,
@@ -284,6 +301,8 @@ function spawnBullet(
     damage,
     pierce,
     explosive,
+    blastRadiusCells,
+    blastDamage,
     age: 0,
     dead: false,
   });
@@ -309,14 +328,14 @@ export function createGameState(width: number, height: number): GameState {
     items: [],
     particles: [],
     floatingTexts: [],
-    weaponBuff: null,
-    spinBuff: null,
+    buffs: [],
     fireCooldown: 0,
     shake: 0,
     hitStop: 0,
     destroyed: 0,
     combo: 0,
     comboTimer: 0,
+    breaksSinceDrop: 0,
   };
 }
 
@@ -350,62 +369,75 @@ export function fireShot(state: GameState): void {
   }
   if (state.fireCooldown > 0) return;
 
-  const weaponKind = state.weaponBuff?.kind;
-  state.fireCooldown = weaponKind === 'rapid' ? GAME_CONFIG.fire.rapidCooldown : GAME_CONFIG.fire.baseCooldown;
+  // 種類の異なるバフは全て同時に効く。ここで各バフを引いて弾の性能に合成する。
+  const spreadBuff = state.buffs.find((b) => b.kind === 'spread');
+  const powerBuff = state.buffs.find((b) => b.kind === 'power');
+  const explosiveBuff = state.buffs.find((b) => b.kind === 'explosive');
+  const rapidBuff = state.buffs.find((b) => b.kind === 'rapid');
+
+  state.fireCooldown = rapidBuff
+    ? byLevel<number>(GAME_CONFIG.weapon.rapid.cooldowns, rapidBuff.level, GAME_CONFIG.fire.baseCooldown)
+    : GAME_CONFIG.fire.baseCooldown;
   state.ship.recoil = 1;
 
   // 銃口・発射方向は照準角(aim)基準。aimはポインタ方向(未取得時は軌道中心)を向く。
   const muzzleX = state.ship.x + Math.cos(state.ship.aim) * GAME_CONFIG.ship.muzzleDistance;
   const muzzleY = state.ship.y + Math.sin(state.ship.aim) * GAME_CONFIG.ship.muzzleDistance;
 
-  if (weaponKind === 'spread') {
-    const { spreadRad } = GAME_CONFIG.weapon.spread;
-    // count はリテラル型(3)のため number として受け、count===1 判定の意味を保つ
-    const count: number = GAME_CONFIG.weapon.spread.count;
+  // 弾の性能を1つの雛形として組み立てる。初期値は通常弾。
+  // config側のas const由来のリテラル型がletで広がらないため、number注釈で明示する。
+  let speed: number = GAME_CONFIG.fire.bulletSpeed;
+  let radius: number = GAME_CONFIG.fire.bulletRadius;
+  let damage: number = GAME_CONFIG.fire.bulletDamage;
+  let pierce = 0;
+  let explosive = false;
+  let blastRadiusCells = 0;
+  let blastDamage = 0;
+
+  if (powerBuff) {
+    const cfg = GAME_CONFIG.weapon.power;
+    radius = byLevel<number>(cfg.radii, powerBuff.level, radius);
+    damage = byLevel<number>(cfg.damages, powerBuff.level, damage);
+    pierce = byLevel<number>(cfg.pierces, powerBuff.level, pierce);
+    speed *= cfg.speedScale;
+  }
+
+  if (explosiveBuff) {
+    const cfg = GAME_CONFIG.weapon.explosive;
+    explosive = true;
+    blastRadiusCells = byLevel<number>(cfg.radiusCells, explosiveBuff.level, 0);
+    blastDamage = byLevel<number>(cfg.blastDamages, explosiveBuff.level, 0);
+    // powerと併用していない場合のみ、弾自体を爆発弾基準の見た目・威力にする
+    // (power併用時はpowerの大型弾のまま爆発させるのが正しい挙動)
+    if (!powerBuff) {
+      radius = cfg.radius;
+      damage = cfg.damage;
+    }
+  }
+
+  if (spreadBuff) {
+    const cfg = GAME_CONFIG.weapon.spread;
+    const count = byLevel<number>(cfg.counts, spreadBuff.level, 1);
+    const spreadRad = byLevel<number>(cfg.spreadRads, spreadBuff.level, 0);
     const half = spreadRad / 2;
     for (let i = 0; i < count; i++) {
       const t = count === 1 ? 0.5 : i / (count - 1);
       const angle = state.ship.aim - half + spreadRad * t;
-      spawnBullet(
-        state,
-        muzzleX,
-        muzzleY,
-        angle,
-        GAME_CONFIG.fire.bulletSpeed,
-        GAME_CONFIG.fire.bulletRadius,
-        GAME_CONFIG.fire.bulletDamage,
-        0,
-        false,
-      );
+      spawnBullet(state, muzzleX, muzzleY, angle, speed, radius, damage, pierce, explosive, blastRadiusCells, blastDamage);
     }
-  } else if (weaponKind === 'power') {
-    const cfg = GAME_CONFIG.weapon.power;
-    spawnBullet(
-      state,
-      muzzleX,
-      muzzleY,
-      state.ship.aim,
-      GAME_CONFIG.fire.bulletSpeed * cfg.speedScale,
-      cfg.radius,
-      cfg.damage,
-      cfg.pierce,
-      false,
-    );
-  } else if (weaponKind === 'explosive') {
-    const cfg = GAME_CONFIG.weapon.explosive;
-    spawnBullet(state, muzzleX, muzzleY, state.ship.aim, GAME_CONFIG.fire.bulletSpeed, cfg.radius, cfg.damage, 0, true);
   } else {
-    // バフ無し、または連射バフ(クールダウンのみ変化)
     spawnBullet(
       state,
       muzzleX,
       muzzleY,
       state.ship.aim,
-      GAME_CONFIG.fire.bulletSpeed,
-      GAME_CONFIG.fire.bulletRadius,
-      GAME_CONFIG.fire.bulletDamage,
-      0,
-      false,
+      speed,
+      radius,
+      damage,
+      pierce,
+      explosive,
+      blastRadiusCells,
+      blastDamage,
     );
   }
 
@@ -427,22 +459,23 @@ export function stepGame(state: GameState, dt: number): void {
   }
 
   // 自機の軌道周回・反動減衰
-  const angularSpeed = state.spinBuff ? GAME_CONFIG.ship.buffSpin : GAME_CONFIG.ship.baseSpin;
+  const spinBuff = state.buffs.find((b) => b.kind === 'spin');
+  const angularSpeed = spinBuff
+    ? byLevel<number>(GAME_CONFIG.ship.buffSpins, spinBuff.level, GAME_CONFIG.ship.baseSpin)
+    : GAME_CONFIG.ship.baseSpin;
   let angle = (state.ship.angle + angularSpeed * clampedDt) % (Math.PI * 2);
   if (angle < 0) angle += Math.PI * 2;
   state.ship.angle = angle;
   updateShipFromAngle(state.ship, state.orbit, state.pointer);
   state.ship.recoil = Math.max(0, state.ship.recoil - clampedDt / 0.12);
 
-  // クールダウン・バフ残り時間
+  // クールダウン・バフ残り時間。逆順ループでspliceし、途中削除してもインデックスがずれないようにする
   state.fireCooldown = Math.max(0, state.fireCooldown - clampedDt);
-  if (state.weaponBuff) {
-    state.weaponBuff.remaining -= clampedDt;
-    if (state.weaponBuff.remaining <= 0) state.weaponBuff = null;
-  }
-  if (state.spinBuff) {
-    state.spinBuff.remaining -= clampedDt;
-    if (state.spinBuff.remaining <= 0) state.spinBuff = null;
+  for (let i = state.buffs.length - 1; i >= 0; i--) {
+    const buff = state.buffs[i];
+    if (!buff) continue;
+    buff.remaining -= clampedDt;
+    if (buff.remaining <= 0) state.buffs.splice(i, 1);
   }
 
   // 弾の更新(サブステップ移動でトンネリングを防止)
@@ -464,7 +497,7 @@ export function stepGame(state: GameState, dt: number): void {
       const hit = damageVoxelsInCircle(state, bullet.x, bullet.y, bullet.radius, bullet.damage);
       if (hit) {
         if (bullet.explosive) {
-          explodeAt(state, bullet.x, bullet.y);
+          explodeAt(state, bullet.x, bullet.y, bullet.blastRadiusCells, bullet.blastDamage);
         }
         if (bullet.pierce > 0) {
           bullet.pierce--;

@@ -57,6 +57,10 @@ export type Bullet = {
   pierce: number;
   /** 着弾時に範囲爆発するか */
   explosive: boolean;
+  /** 爆発半径(セル数)。発射時点の強化レベルで決まる。explosive でなければ 0。 */
+  blastRadiusCells: number;
+  /** 爆発の与ダメージ。explosive でなければ 0。 */
+  blastDamage: number;
   /** 生成からの経過秒(トレイル演出用) */
   age: number;
   dead: boolean;
@@ -135,17 +139,18 @@ export type ShipState = {
   recoil: number;
 };
 
-export type WeaponBuffState = {
-  kind: WeaponBuffKind;
+/**
+ * 強化(バフ)1件の状態。
+ * 種類の異なる強化は同時に有効化でき、効果は重ねがけされる。
+ * 同じ種類を取り直すとレベルが上がり、効果時間もリセットされる。
+ */
+export type BuffState = {
+  kind: BuffKind;
+  /** 重ねがけレベル(1 〜 GAME_CONFIG.buff.maxLevel) */
+  level: number;
   /** 残り効果時間(秒) */
   remaining: number;
   /** 効果時間の初期値(秒)。ゲージ表示に使う。 */
-  duration: number;
-};
-
-export type SpinBuffState = {
-  /** 残り効果時間(秒) */
-  remaining: number;
   duration: number;
 };
 
@@ -175,10 +180,11 @@ export type GameState = {
   items: Item[];
   particles: Particle[];
   floatingTexts: FloatingText[];
-  /** 武器系バフ。null なら通常弾。 */
-  weaponBuff: WeaponBuffState | null;
-  /** 回転速度バフ。武器系と同時に有効化できる。 */
-  spinBuff: SpinBuffState | null;
+  /**
+   * 有効な強化の一覧(種類ごとに最大1件)。
+   * 種類が異なれば同時に有効で、効果は掛け合わさる(例: ワイド×パワー×ばくはつ)。
+   */
+  buffs: BuffState[];
   /** 次に発射できるまでの残り時間(秒) */
   fireCooldown: number;
   /** 画面シェイク強度(ピクセル)。時間で減衰。 */
@@ -187,6 +193,8 @@ export type GameState = {
   hitStop: number;
   /** 破壊したボクセルの累計数 */
   destroyed: number;
+  /** 直近のアイテムドロップ以降に破壊したボクセル数(確定ドロップの判定に使う) */
+  breaksSinceDrop: number;
   /** 連続破壊コンボ数 */
   combo: number;
   /** コンボ持続の残り時間(秒)。0でコンボリセット。 */

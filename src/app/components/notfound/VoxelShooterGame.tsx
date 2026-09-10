@@ -8,7 +8,7 @@ import { createGameState, fireShot, setPointer, stepGame, updateViewport } from 
 import { createBackground, drawFrame } from './render';
 import type { RenderResources } from './render';
 import { BEST_TIME_STORAGE_KEY, BUFF_STYLES, GAME_CONFIG, PALETTE } from './config';
-import type { BuffKind, GamePhase, GameState, SpinBuffState, WeaponBuffState } from './types';
+import type { BuffState, GamePhase, GameState } from './types';
 
 /** HUD 表示用に間引いて同期する状態(毎フレームの setState を避けるため)。 */
 type HudState = {
@@ -16,8 +16,8 @@ type HudState = {
   elapsed: number;
   remaining: number;
   total: number;
-  weaponBuff: WeaponBuffState | null;
-  spinBuff: SpinBuffState | null;
+  /** 有効な強化一覧(取得順)。種類ごとに最大1件、最大5件。 */
+  buffs: BuffState[];
 };
 
 const INITIAL_HUD: HudState = {
@@ -25,8 +25,7 @@ const INITIAL_HUD: HudState = {
   elapsed: 0,
   remaining: 0,
   total: 0,
-  weaponBuff: null,
-  spinBuff: null,
+  buffs: [],
 };
 
 /** クリア結果(クリアタイムとベスト更新判定)。 */
@@ -74,22 +73,22 @@ function writeBestTime(value: number): void {
 }
 
 type BuffBarProps = {
-  kind: BuffKind;
-  remaining: number;
-  duration: number;
+  buff: BuffState;
 };
 
-/** バフ1件分の残り時間ゲージ。 */
-function BuffBar({ kind, remaining, duration }: BuffBarProps) {
+/** バフ1件分の残り時間ゲージ。レベル2以上のみ「Lv2」等を名前の右に添える。 */
+function BuffBar({ buff }: BuffBarProps) {
+  const { kind, level, remaining, duration } = buff;
   const style = BUFF_STYLES[kind];
   const ratio = duration > 0 ? Math.max(0, Math.min(1, remaining / duration)) : 0;
   return (
-    <div className="flex items-center gap-2 text-[10px] sm:text-xs">
-      <span className="w-24 shrink-0 truncate font-bold" style={{ color: style.color }}>
+    <div className="flex items-center gap-1.5 text-[9px] sm:gap-2 sm:text-xs">
+      <span className="w-16 shrink-0 truncate font-bold sm:w-24" style={{ color: style.color }}>
         {style.label}
+        {level >= 2 && <span className="ml-1 opacity-80">Lv{level}</span>}
       </span>
       <div
-        className="h-1.5 flex-1"
+        className="h-1 flex-1 sm:h-1.5"
         style={{ background: 'rgba(0,0,0,0.45)', border: `1px solid ${style.color}` }}
       >
         <div
@@ -243,8 +242,8 @@ export default function VoxelShooterGame() {
           elapsed: state.elapsed,
           remaining: state.field.remaining,
           total: state.field.total,
-          weaponBuff: state.weaponBuff,
-          spinBuff: state.spinBuff,
+          // engine 側で毎フレーム書き換えられるミュータブルな配列なので、参照共有を避けるため浅コピーする。
+          buffs: state.buffs.map((b) => ({ ...b })),
         });
       }
     };
@@ -399,21 +398,14 @@ export default function VoxelShooterGame() {
             />
           </div>
 
-          {(hud.weaponBuff || hud.spinBuff) && (
+          {hud.buffs.length > 0 && (
             <div
-              className="flex flex-col gap-1 px-3 py-2"
+              className="flex flex-col gap-0.5 px-2 py-1.5 sm:gap-1 sm:px-3 sm:py-2"
               style={{ background: PALETTE.uiPanel, border: `2px solid ${PALETTE.uiBorder}` }}
             >
-              {hud.weaponBuff && (
-                <BuffBar
-                  kind={hud.weaponBuff.kind}
-                  remaining={hud.weaponBuff.remaining}
-                  duration={hud.weaponBuff.duration}
-                />
-              )}
-              {hud.spinBuff && (
-                <BuffBar kind="spin" remaining={hud.spinBuff.remaining} duration={hud.spinBuff.duration} />
-              )}
+              {hud.buffs.map((buff) => (
+                <BuffBar key={buff.kind} buff={buff} />
+              ))}
             </div>
           )}
         </div>
